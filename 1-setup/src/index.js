@@ -7,7 +7,15 @@ const PORT = process.env.PORT || 3000;
 const mockUser = [
     { id: 1, name: "John Doe", age: 25 },
     { id: 2, name: "Jane Doe", age: 24 },
+    { id: 3, name: "Alice Smith", age: 30 },
+    { id: 4, name: "Bob Johnson", age: 28 },
+    { id: 5, name: "Emily Brown", age: 27 }
 ];
+
+//base route - localhost:3000/ or http://127.0.0.1:3000/
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+})
 
 {/* 1 start */ }
 
@@ -26,10 +34,21 @@ app.get("/", (req, res) => {
 
 {/* 2 start */ }
 
-//localhost:3000/api/users will return [{"id":1,"name":"John Doe","age":25},{"id":2,"name":"Jane Doe","age":24}]
+//localhost:3000/api/users will return - "all users" / [{"id":1,"name":"John Doe","age":25},{"id":2,"name":"Jane Doe","age":24}]
 
 app.get("/api/users", (req, res) => {
-    res.send(mockUser);
+    console.log(req.query); 
+    // { filter: 'name', value: 'ice' } for http://localhost:3000/api/users?filter=name&value=ice
+    
+    // destructuring query parameters
+    const { query: { filter, value }, } = req;
+
+    // when filter is undefined and value is defined
+    if(filter && value){
+        const findUser = mockUser.filter((user) => user[filter].includes(value));
+        return res.send(findUser); 
+    }
+    return res.send(mockUser);
 });
 
 {/* 2 end */ }
@@ -37,7 +56,7 @@ app.get("/api/users", (req, res) => {
 
 {/* 3 start */ }
 
-// http://localhost:3000/api/users/1234 will return - Not Found
+// http://localhost:3000/api/users/1234 will return - "specific user" Not Found
 // http://localhost:3000/api/users/asdsaf will return - {"message":"Invalid ID supplied"}
 // http://localhost:3000/api/users/1 will return - {"id":1,"name":"John Doe","age":25}
 
@@ -45,10 +64,10 @@ app.get("/api/users/:id", (req, res) => {
     const parsedId = parseInt(req.params.id);
     if (isNaN(parsedId)) {
         return res.status(400).send({ message: "Invalid ID supplied" });
-    }else{
+    } else {
         const findUser = mockUser.find((user) => user.id === parsedId);
-    if (!findUser) return res.sendStatus(404);
-    return res.send(findUser);
+        if (!findUser) return res.sendStatus(404);
+        return res.send(findUser);
     }
 });
 
@@ -65,7 +84,3 @@ app.get("/api/products", (req, res) => {
 })
 {/* 4 end */ }
 
-//base route - localhost:3000/ or http://127.0.0.1:3000/
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
-})
