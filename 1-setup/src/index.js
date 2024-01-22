@@ -43,11 +43,22 @@ app.get("/api/users", (req, res) => {
     // destructuring query parameters
     const { query: { filter, value }, } = req;
 
-    // when filter is undefined and value is defined
+    // // when filter is undefined and value is defined
+    // if(filter && value){
+    //     const findUser = mockUser.filter((user) => user[filter].includes(value));
+    //     return res.send(findUser); 
+    // }
+    
+    // even though the above code works, it searches for the exact match of the value.
+    // for example, if we search for "ice" in name, it will return Alice
+    // but if we search for "ICE" in name, it will return nothing
+    // to solve this, we can use regex
     if(filter && value){
-        const findUser = mockUser.filter((user) => user[filter].includes(value));
+        const regex = new RegExp(value, 'i');
+        const findUser = mockUser.filter((user) => regex.test(user[filter]));
         return res.send(findUser); 
-    }
+    };
+
     return res.send(mockUser);
 });
 
