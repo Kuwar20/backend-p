@@ -2,6 +2,8 @@ import express from "express";
 
 const app = express();
 
+app.use(express.json());
+
 const PORT = process.env.PORT || 3000;
 
 const mockUser = [
@@ -37,9 +39,9 @@ app.get("/", (req, res) => {
 //localhost:3000/api/users will return - "all users" / [{"id":1,"name":"John Doe","age":25},{"id":2,"name":"Jane Doe","age":24}]
 
 app.get("/api/users", (req, res) => {
-    console.log(req.query); 
+    console.log(req.query);
     // { filter: 'name', value: 'ice' } for http://localhost:3000/api/users?filter=name&value=ice
-    
+
     // destructuring query parameters
     const { query: { filter, value }, } = req;
 
@@ -48,21 +50,39 @@ app.get("/api/users", (req, res) => {
     //     const findUser = mockUser.filter((user) => user[filter].includes(value));
     //     return res.send(findUser); 
     // }
-    
+
     // even though the above code works, it searches for the exact match of the value.
     // for example, if we search for "ice" in name, it will return Alice
     // but if we search for "ICE" in name, it will return nothing
     // to solve this, we can use regex
-    if(filter && value){
+    if (filter && value) {
         const regex = new RegExp(value, 'i');
         const findUser = mockUser.filter((user) => regex.test(user[filter]));
-        return res.send(findUser); 
+        return res.send(findUser);
     };
 
     return res.send(mockUser);
 });
 
 {/* 2 end */ }
+
+
+{/* 2.1 start */ }
+
+// http://localhost:3000/api/users will return - {"id":6,"name":"Kuwar-Singh","age":"45"} and then increment id by 1 every time we send the body
+// when we send the body - {"name": "Kuwar-Singh","age": "45"}
+
+app.post("/api/users", (req, res) => {
+   // console.log(req.body);
+    const { body } = req;
+    const newUser = { id: mockUser[mockUser.length - 1].id + 1, ...body };
+    mockUser.push(newUser);
+    return res.status(201).send(newUser);
+})
+// to make it work, we need to add middleware - app.use(express.json());
+// now it will return OK in postman and it will console output whatever we send in postman body
+
+{/* 2.1 end */ }
 
 
 {/* 3 start */ }
