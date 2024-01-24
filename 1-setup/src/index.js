@@ -73,7 +73,7 @@ app.get("/api/users", (req, res) => {
 // when we send the body - {"name": "Kuwar-Singh","age": "45"}
 
 app.post("/api/users", (req, res) => {
-   // console.log(req.body);
+    // console.log(req.body);
     const { body } = req;
     const newUser = { id: mockUser[mockUser.length - 1].id + 1, ...body };
     mockUser.push(newUser);
@@ -115,3 +115,25 @@ app.get("/api/products", (req, res) => {
 })
 {/* 4 end */ }
 
+
+{/* 5 start */ }
+
+// PUT- http://localhost:3000/api/users/2 will return with body {"name":"John Doe 2","age": "25"} it will return ok
+// GET- http://localhost:3000/api/users/2 will return - {"id":2,"name":"John Doe 2","age":"25"}
+
+app.put("/api/users/:id", (req, res) => {
+    const { body, params: { id } } = req;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+
+    const findUserIndex = mockUser.findIndex(
+        (user) => user.id === parsedId
+    )
+
+    if (findUserIndex === -1) return res.sendStatus(404);
+
+    mockUser[findUserIndex] = { id: parsedId, ...body };
+    return res.sendStatus(200);
+})
+
+{/* 5 end */ }
