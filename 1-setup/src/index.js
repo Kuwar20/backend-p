@@ -4,6 +4,15 @@ const app = express();
 
 app.use(express.json());
 
+const logggingMiddleware = (req, res, next) => {
+    console.log(`${req.method} - ${req.url}`);
+    next();
+};
+
+// app.use(logggingMiddleware);
+// this is a global middleware, it will run for every request
+// we can also use it for specific routes
+
 const PORT = process.env.PORT || 3000;
 
 const mockUser = [
@@ -27,14 +36,20 @@ app.listen(PORT, () => {
 //     res.send("Hello World");
 // });
 
-//localhost:3000/ will return {"message":"Hello World"} with status code 201 (check in network tab)
-app.get("/", (req, res) => {
-    res.status(201).send({ message: "Hello World" });
-});
+// localhost:3000/ will return {"message":"Hello World"} with status code 201 (check in network tab)
+
+// app.get("/", (req, res) => {
+//     res.status(201).send({ message: "Hello World" });
+// });
+
 // HTTP is a protocol used for communication between a client (like a web browser) and a server. It is the foundation of data communication on the World Wide Web.
 // How it Works: When you open a website in your browser, the browser sends an HTTP request to the server hosting the website, asking for specific resources (like HTML pages, images, or scripts). The server then responds with the requested data.
 // HTTPS is an extension of HTTP with an additional layer of security provided by SSL/TLS (Secure Sockets Layer/Transport Layer Security) protocols.
 // HTTPS encrypts the data exchanged between the client and server, ensuring that it remains secure and confidential. This is crucial for protecting sensitive information like login credentials, personal details, and financial transactions.
+
+app.get("/", logggingMiddleware, (req, res) => {
+    res.status(201).send({ message: "Hello World" });
+});
 
 {/* 1 end */ }
 
