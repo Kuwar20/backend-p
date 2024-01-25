@@ -137,3 +137,27 @@ app.put("/api/users/:id", (req, res) => {
 })
 
 {/* 5 end */ }
+
+{/* 6 start */ }
+
+
+// PATCH- http://localhost:3000/api/users/2 with body {"name":"kuwar singh patch request"} it will return ok
+// GET- http://localhost:3000/api/users/2 will return - {"id":2,"name":"kuwar singh patch request","age":"24"}
+
+app.patch("/api/users/:id", (req, res) => {
+    const { body, params: { id } } = req;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+
+    const findUserIndex = mockUser.findIndex(
+        (user) => user.id === parsedId
+    )
+
+    if (findUserIndex === -1) return res.sendStatus(404);
+
+    mockUser[findUserIndex] = { ...mockUser[findUserIndex], ...body };
+    return res.sendStatus(200);
+})
+
+
+{/* 6 end */ }
