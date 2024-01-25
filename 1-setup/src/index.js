@@ -14,6 +14,7 @@ const mockUser = [
     { id: 5, name: "Emily Brown", age: 27 }
 ];
 
+//When you run a Node.js application with this code, it turns your computer into a server. The server is a program that listens for incoming requests from the internet and responds to them. In this case, it's a basic server, 
 //base route - localhost:3000/ or http://127.0.0.1:3000/
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
@@ -21,7 +22,7 @@ app.listen(PORT, () => {
 
 {/* 1 start */ }
 
-// //localhost:3000/ will return "Hello World"
+// localhost:3000/ will return "Hello World"
 // app.get("/",(req,res)=>{
 //     res.send("Hello World");
 // });
@@ -30,6 +31,10 @@ app.listen(PORT, () => {
 app.get("/", (req, res) => {
     res.status(201).send({ message: "Hello World" });
 });
+// HTTP is a protocol used for communication between a client (like a web browser) and a server. It is the foundation of data communication on the World Wide Web.
+// How it Works: When you open a website in your browser, the browser sends an HTTP request to the server hosting the website, asking for specific resources (like HTML pages, images, or scripts). The server then responds with the requested data.
+// HTTPS is an extension of HTTP with an additional layer of security provided by SSL/TLS (Secure Sockets Layer/Transport Layer Security) protocols.
+// HTTPS encrypts the data exchanged between the client and server, ensuring that it remains secure and confidential. This is crucial for protecting sensitive information like login credentials, personal details, and financial transactions.
 
 {/* 1 end */ }
 
@@ -161,3 +166,24 @@ app.patch("/api/users/:id", (req, res) => {
 
 
 {/* 6 end */ }
+
+{/* 7 start */ }
+
+// DELETE- http://localhost:3000/api/users/2 will return ok
+// GET- http://localhost:3000/api/users/2 will return - Not Found
+
+app.delete("/api/users/:id", (req, res) => {
+    const { params: { id } } = req;
+    // or const id = req.params.id; or const { id } = req.params;
+    const parsedId = parseInt(id);
+    if (isNaN(parsedId)) return res.sendStatus(400);
+
+    const findUserIndex = mockUser.findIndex(
+        (user) => user.id === parsedId
+    )
+
+    if (findUserIndex === -1) return res.sendStatus(404);
+
+    mockUser.splice(findUserIndex, 1);
+    return res.sendStatus(200);
+});
