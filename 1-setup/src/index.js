@@ -53,6 +53,8 @@ app.get("/", logggingMiddleware, (req, res) => {
 
 {/* 1 end */ }
 
+// here we are registering the middleware for the routes below it
+//app.use(logggingMiddleware);
 
 {/* 2 start */ }
 
