@@ -58,7 +58,7 @@ router.get("/by-number/:number", async (req, res) => {
 //to search a specific user from db using name 
 // http://localhost:3000/api/user/by-name/:name
 router.get("/by-name/:name", async (req, res) => {
-    try{
+    try {
         const userName = req.params.name;
         const name = await User.findOne({ name: { $regex: new RegExp(userName, "i") } });
 
@@ -66,7 +66,25 @@ router.get("/by-name/:name", async (req, res) => {
             return res.status(404).send("User not found");
         }
         res.status(200).json(name);
-    }catch(err){
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// http://localhost:3000/api/user/delete-by-name/:name
+router.delete("/delete-by-name/:name", async (req, res) => {
+    try {
+        const userName = req.params.name;
+
+        const deletedUser = await User.findOneAndDelete({ name: userName });
+
+        if (!deletedUser) {
+            return res.status(404).send("User not found");
+        }
+
+        res.status(200).json({ message: "User deleted successfully", deletedUser });
+    } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
