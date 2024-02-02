@@ -55,5 +55,21 @@ router.get("/by-number/:number", async (req, res) => {
     }
 });
 
+//to search a specific user from db using name 
+// http://localhost:3000/api/user/by-name/:name
+router.get("/by-name/:name", async (req, res) => {
+    try{
+        const userName = req.params.name;
+        const name = await User.findOne({ name: { $regex: new RegExp(userName, "i") } });
+
+        if (!name) {
+            return res.status(404).send("User not found");
+        }
+        res.status(200).json(name);
+    }catch(err){
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 export default router;
