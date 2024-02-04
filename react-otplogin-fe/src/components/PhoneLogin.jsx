@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import OtpInput from "./OtpInput";
 
+//Functional Component Definition: PhoneOtpLogin
 const PhoneOtpLogin = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [showOtpInput, setShowOtpInput] = useState(false);
+
+    //Event Handlers:handlePhoneNumber, handlePhoneSubmit, onOtpSubmit
+    //React has the same events as HTML: click, change, mouseover etc.
+    //To pass an argument to an event handler, use an arrow function.
 
     const handlePhoneNumber = (event) => {
         // this will let us type in the input field
