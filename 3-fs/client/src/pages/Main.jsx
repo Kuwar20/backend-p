@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import "./Main.css";
+import Signin from "./Signin";
 
 const Main = () => {
   return (
@@ -15,6 +16,7 @@ const Main = () => {
           </p>
         </div>
       </div>
+      <Signin />
     </div>
   );
 };

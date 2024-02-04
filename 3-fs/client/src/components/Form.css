@@ -1,0 +1,50 @@
+.form-group {
+    max-width: 300px;
+    /* Adjust the maximum width as needed */
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    /* Border color */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Optional box shadow for a subtle effect */
+
+    /* Center the form-group */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    /* Border color for input fields */
+    border-radius: 4px;
+}
+
+.form-group button {
+    background-color: #4caf50;
+    /* Green background color - you can change it */
+    color: white;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-group button:hover {
+    background-color: #45a049;
+    /* Darker green color on hover */
+}
