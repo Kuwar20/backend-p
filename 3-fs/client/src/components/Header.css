@@ -30,6 +30,11 @@
 
 .header .right{
     margin-right: 12%;
+    display: flex;
+}
+
+.header .right a{
+    margin-left: 20px;
 }
 
 body {

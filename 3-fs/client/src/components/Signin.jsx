@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import "./Signin.css";
 
 const Signin = () => {
@@ -62,6 +63,8 @@ const Signin = () => {
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
                 <button type="submit">Submit</button>
+                <p className="endpara">                <Link to="/search">Search instead?</Link>
+                </p>
             </form>
         </div>
     );
