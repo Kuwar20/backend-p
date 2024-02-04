@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./Form.css";
+import "./Signin.css";
 
-const Form = () => {
+const Signin = () => {
     const [name, setName] = useState("");
     const [number, setNumber] = useState("");
     const [error, setError] = useState("");
@@ -67,4 +67,4 @@ const Form = () => {
     );
 };
 
-export default Form;
+export default Signin;
