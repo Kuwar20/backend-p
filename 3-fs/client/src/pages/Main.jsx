@@ -1,12 +1,10 @@
 import React from "react";
 import Header from "../components/Header";
 import "./Main.css";
-import Signin from "./Signin";
 
 const Main = () => {
   return (
     <div>
-      <Header />
       <div className="main-container">
         <div className="main-content">
           <p>
@@ -16,7 +14,6 @@ const Main = () => {
           </p>
         </div>
       </div>
-      <Signin />
     </div>
   );
 };
