@@ -1,0 +1,30 @@
+.header {
+    background-color: #3498db;
+    /* Set background color */
+    color: #ffffff;
+    /* Set text color */
+    padding: 10px;
+    /* Add padding around the content */
+    display: flex;
+    /* Use flexbox for layout */
+    justify-content: space-between;
+    /* Space items evenly */
+    align-items: center;
+    /* Center items vertically */
+}
+
+.header h2 {
+    margin: 0;
+}
+
+.header .left{
+    margin-left: 4%;
+}
+
+.header .right{
+    margin-right: 12%;
+}
+
+body {
+    margin: 0;
+}
