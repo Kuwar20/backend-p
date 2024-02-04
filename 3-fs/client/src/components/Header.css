@@ -17,6 +17,13 @@
     margin: 0;
 }
 
+/* Without this link tag will under line and not follow css */
+.header a{
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-block;
+}
+
 .header .left{
     margin-left: 4%;
 }
