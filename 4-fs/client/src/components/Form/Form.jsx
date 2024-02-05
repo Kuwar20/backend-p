@@ -3,7 +3,23 @@ import './Form.css'
 
 const Form = () => {
   return (
-    <div>Form</div>
+    <div className='form'>
+      <form>
+        <label>Name:
+          <input type="text"
+            placeholder='Name'
+            />
+        </label>
+        <br />
+        <label>Email:
+          <input type="email"
+            placeholder='Email'
+            />
+        </label>
+        <br />
+          <button>Submit</button>
+      </form>
+    </div>
   )
 }
 
