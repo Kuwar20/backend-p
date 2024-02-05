@@ -5,15 +5,18 @@ import './Search.css'
 const Search = () => {
     const [nameInput, setNameInput] = useState('');
     const [numberInput, setNumberInput] = useState('');
-    const [responseData, setResponseData] = useState(null);
+    //const [responseData, setResponseData] = useState(null);
+    const [searchResponse, setSearchResponse] = useState(null);
+    const [allResponse, setAllResponse] = useState(null);
 
     const handleSearch = async () => {
+        setAllResponse(null);
         if (nameInput) {
             // Call API 1 with nameInput as parameter
             try {
                 const response = await axios.get(`http://localhost:3000/api/user/by-name/${nameInput}`);
                 console.log(response.data);
-                setResponseData(response.data);
+                setSearchResponse(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -22,16 +25,27 @@ const Search = () => {
             try {
                 const response = await axios.get(`http://localhost:3000/api/user/by-number/${numberInput}`);
                 console.log(response.data);
-                setResponseData(response.data);
+                setSearchResponse(response.data);
             } catch (error) {
                 console.error(error);
             }
         }
     }
+    const handleSearchAll = async () => {
+        setSearchResponse(null);
+        try {
+            const response = await axios.get('http://localhost:3000/api/user/all');
+            console.log(response.data);
+            setAllResponse(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     const handleReset = () => {
         setNameInput('');
         setNumberInput('');
-        setResponseData(null);
+        setSearchResponse(null);
+        setAllResponse(null);
     }
 
     return (
@@ -50,7 +64,7 @@ const Search = () => {
                 Number:
                 <input
                     type="number"
-                    placeholder='search by name'
+                    placeholder='search by number'
                     value={numberInput}
                     onChange={(e) => setNumberInput(e.target.value)}
                 />
@@ -58,7 +72,7 @@ const Search = () => {
             <br />
             <div className='button'>
                 <button className="search-button" onClick={handleSearch} >Search</button>
-                <button className="search-button">Search all</button>
+                <button className="search-button" onClick={handleSearchAll}>Search all</button>
                 <button className="delete-button">Delete</button>
             </div>
             <br />
@@ -67,12 +81,24 @@ const Search = () => {
             </div>
             {/* {responseData && <div>{JSON.stringify(responseData)}</div>}
             this gives output as {"_id":"65bf782c65424719787ba59e","name":"nisha kumari","number":"1324567895","createdAt":"2024-02-04T11:42:36.495Z","__v":0} */}
-            {responseData &&
-                <div className='response'>
-                    <p>Name: {responseData.name}</p>
-                    <p>Number: {responseData.number}</p>
+            {searchResponse && (Array.isArray(searchResponse) ? searchResponse : [searchResponse]).map((item, index) => (
+                <div key={index}>
+                    <p>Name: {item.name}</p>
+                    <p>Number: {item.number}</p>
                 </div>
-            }
+            ))}
+            {allResponse && (
+                <>
+                    <p>Total people are: {allResponse.length}</p>
+                    {allResponse.map((item, index) => (
+                        <div key={index} style={{borderBottom: '1px solid #000', marginBottom: '1px'}} >
+                            <p>{index + 1}: Name: {item.name}</p>
+                            <p>Number: {item.number}</p>
+                            <p>Created At: {new Date(item.createdAt).toLocaleString()}</p>
+                        </div>
+                    ))}
+                </>
+            )}
         </div>
     )
 }
