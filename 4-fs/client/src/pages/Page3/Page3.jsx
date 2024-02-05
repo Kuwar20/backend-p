@@ -3,7 +3,9 @@ import './Page3.css'
 
 const Page3 = () => {
   return (
-    <div>Page3</div>
+    <div className='content2'>
+      <p>This is also a page - Page 3</p>
+    </div>
   )
 }
 
