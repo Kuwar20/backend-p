@@ -41,6 +41,32 @@ const Search = () => {
             console.error(error);
         }
     }
+    const handleDelete = async () => {
+        setSearchResponse(null);
+        setAllResponse(null);
+        if (nameInput) {
+            // Call API to search for the user
+            try {
+                const response = await axios.get(`http://localhost:3000/api/user/by-name/${nameInput}`);
+                console.log(response.data);  
+                if (response.data.name) {
+                    // If user is found, confirm the deletion
+                    const confirmed = window.confirm(`Did you mean "${response.data.name}"?`);
+                    if (confirmed) {
+                        // If confirmed, delete the user
+                        const deleteResponse = await axios.delete(`http://localhost:3000/api/user/delete-by-name/${response.data.name}`);
+                        console.log(deleteResponse.data);
+                        alert('User Deleted successfully');
+                    }
+                } else {
+                    alert('User not found');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+    
     const handleReset = () => {
         setNameInput('');
         setNumberInput('');
@@ -73,7 +99,7 @@ const Search = () => {
             <div className='button'>
                 <button className="search-button" onClick={handleSearch} >Search</button>
                 <button className="search-button" onClick={handleSearchAll}>Search all</button>
-                <button className="delete-button">Delete</button>
+                <button className="delete-button" onClick={handleDelete}>Delete</button>
             </div>
             <br />
             <div className='reset'>
@@ -99,6 +125,7 @@ const Search = () => {
                     ))}
                 </>
             )}
+
         </div>
     )
 }
