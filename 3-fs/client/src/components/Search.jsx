@@ -28,6 +28,11 @@ const Search = () => {
             }
         }
     }
+    const handleReset = () => {
+        setNameInput('');
+        setNumberInput('');
+        setResponseData(null);
+    }
 
     return (
         <div className='card-container'>
@@ -56,14 +61,18 @@ const Search = () => {
                 <button className="search-button">Search all</button>
                 <button className="delete-button">Delete</button>
             </div>
+            <br />
+            <div className='reset'>
+                <button onClick={handleReset}>Reset</button>
+            </div>
             {/* {responseData && <div>{JSON.stringify(responseData)}</div>}
             this gives output as {"_id":"65bf782c65424719787ba59e","name":"nisha kumari","number":"1324567895","createdAt":"2024-02-04T11:42:36.495Z","__v":0} */}
-            {responseData && 
-            <div className='response'>
-                <p>Name: {responseData.name}</p>
-                <p>Number: {responseData.number}</p>
-            </div>
-        }
+            {responseData &&
+                <div className='response'>
+                    <p>Name: {responseData.name}</p>
+                    <p>Number: {responseData.number}</p>
+                </div>
+            }
         </div>
     )
 }
