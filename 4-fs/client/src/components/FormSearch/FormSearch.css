@@ -1,0 +1,42 @@
+.form-search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.form-search label{
+    font-size: 20px;
+    margin-right: 10px;
+    font-weight: bold;
+    display: block;
+}
+
+.form-search input{
+    width: 250px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    padding: 5px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.form-search button{
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    background-color: #000;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    
+    /* Center the button horizontally */
+    margin: 0 auto;
+    display: block;
+}
