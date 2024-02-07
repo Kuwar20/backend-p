@@ -44,7 +44,7 @@ const FormSearch = () => {
                     />
                 </label>
                 <br />
-                <button>Search</button>
+                <button type='submit'>Search</button>
             </form>
         </div>
     )
