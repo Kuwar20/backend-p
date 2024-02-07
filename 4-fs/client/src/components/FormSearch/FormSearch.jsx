@@ -8,7 +8,12 @@ const FormSearch = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const isNumber = !isNaN(parseFloat(inputValue)) && isFinite(inputValue);
-        
+
+        if (!inputValue.trim()) {
+            alert('Please enter a value to search');
+            return;
+        }
+
         if(isNumber){
             //call api for number search
             fetchNumberAPI(inputValue);
