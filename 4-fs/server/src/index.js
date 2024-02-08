@@ -2,6 +2,9 @@ import express from 'express';
 const app = express();
 import { connectDB } from './utils/conn.js';
 import userRoutes from './routes/userRoutes.js';
+import cors from 'cors';
+
+app.use(cors());
 
 connectDB();
 
