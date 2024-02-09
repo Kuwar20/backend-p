@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: aliceblue;
+}
+
+.header nav {
+    flex-grow: 1; /* Allow the navigation to take up remaining space */
+}
+
+nav a{
+    text-decoration: none;
+    color: black;
+}
+nav a:hover{
+    color: gray;
+}
+
+.header .option {
+    display: flex;
+    list-style: none;
+}
+
+.header .option li {
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.header .option .right {
+    display: flex;
+    margin-right: 70rem;
+}
