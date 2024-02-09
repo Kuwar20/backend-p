@@ -15,15 +15,15 @@ const FormSearch = () => {
             return;
         }
 
-        if(isNumber){
+        if (isNumber) {
             //call api for number search
             fetchNumberAPI(inputValue);
         }
-        else if(isEmail){
+        else if (isEmail) {
             //call api for email search
             fetchEmailAPI(inputValue);
         }
-        else{
+        else {
             //call api for number search
             fetchNameAPI(inputValue);
         }
@@ -45,11 +45,11 @@ const FormSearch = () => {
             const response = await fetch(`http://localhost:3000/api/user/by-name/${name}`);
             const data = await response.json();
             setSearchResponse(data);
-            } catch (error) {
+        } catch (error) {
             console.error(error);
         }
     }
-    
+
     const fetchEmailAPI = async (email) => {
         try {
             const response = await fetch(`http://localhost:3000/api/user/by-email/${email}`);
@@ -79,7 +79,7 @@ const FormSearch = () => {
                 <br />
                 <button type='submit'>Search</button>
                 <button type='button' onClick={handleReset}>Reset</button>
-                {searchResponse && (Array.isArray(searchResponse) ? searchResponse:[searchResponse]).map((item, index) => (
+                {searchResponse && (Array.isArray(searchResponse) ? searchResponse : [searchResponse]).map((item, index) => (
                     <div key={index} style={{ borderBottom: '1px solid black' }}>
                         <p>Name: {item.name}</p>
                         <p>Number: {item.number}</p>
