@@ -40,3 +40,6 @@
     margin: 0 auto;
     display: block;
 }
+.form-search button + button {
+    margin-top: 10px;
+}

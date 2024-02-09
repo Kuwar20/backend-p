@@ -4,6 +4,7 @@ import "./FormSearch.css"
 const FormSearch = () => {
 
     const [inputValue, setInputValue] = useState('');
+    const [searchResponse, setSearchResponse] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -23,12 +24,22 @@ const FormSearch = () => {
             fetchNameAPI(inputValue);
         }
     }
-    
     const fetchNumberAPI = (number) => {
         console.log(`Fetching number API for: ${number}`);
     }
-    const fetchNameAPI = (name) => {
+    const fetchNameAPI = async (name) => {
         console.log(`Fetching name API for: ${name}`);
+        try {
+            const response = await fetch(`http://localhost:3000/api/user/by-name/${name}`);
+            const data = await response.json();
+            setSearchResponse(data);
+            } catch (error) {
+            console.error(error);
+        }
+    }
+    const handleReset = () => {
+        setInputValue('');
+        setSearchResponse(null);
     }
 
     return (
@@ -45,6 +56,14 @@ const FormSearch = () => {
                 </label>
                 <br />
                 <button type='submit'>Search</button>
+                <button type='button' onClick={handleReset}>Reset</button>
+                {searchResponse && (Array.isArray(searchResponse) ? searchResponse:[searchResponse]).map((item, index) => (
+                    <div key={index}>
+                        <p>Name: {item.name}</p>
+                        <p>Number: {item.number}</p>
+                        <p>Email: {item.email}</p>
+                    </div>
+                ))}
             </form>
         </div>
     )

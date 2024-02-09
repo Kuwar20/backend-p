@@ -27,4 +27,21 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// http://localhost:3000/api/user/by-name/:name
+router.get('/by-name/:name', async(req,res)=>{
+    try {
+        const userName = req.params.name;
+        const name = await User.find({name:{$regex: new RegExp(userName, "i")}});
+
+        if(!name){
+            return res.status(404).send('No user found');
+        }
+        res.status(200).json(name);
+        //res.status(200).send(name);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+})
+
 export default router;
