@@ -1,8 +1,21 @@
+import {BrowserRouter , Routes, Route } from 'react-router-dom';
+import Main from './pages/Main/Main'
+import Signup from './pages/Signup/Signup'
+import Login from './pages/Login/Login'
+import Header from './components/Header/Header'
+
 function App() {
 
   return (
     <>
-      <h1>Hello World</h1>
+      <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path='/' element={<Main/>} />
+        <Route path='/signup' element={<Signup/>} />
+        <Route path='/login' element={<Login/>}/>
+      </Routes>
+      </BrowserRouter>
     </>
   )
 }
