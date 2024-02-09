@@ -5,7 +5,7 @@ import "./FormSearch2.css"
 const FormSearch2 = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleSubmit = (e, searchType) => {
     e.preventDefault();
@@ -18,18 +18,39 @@ const FormSearch2 = () => {
       fetchEmailAPI(email);
     }
     else {
-      fetchPasswordAPI(password)
+      fetchNumberAPI(number)
     }
   }
 
-  const fetchNameAPI = (name) => {
+  const fetchNameAPI = async (name) => {
     console.log(`fetching API for name: ${name}`);
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/by-name/${name}`)
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
-  const fetchEmailAPI = (email) => {
+  const fetchEmailAPI = async (email) => {
     console.log(`fetching API for email: ${email}`);
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/by-email/${email}`);
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error)
+    }
   }
-  const fetchPasswordAPI = (password) => {
-    console.log(`fetching API for password`);
+  const fetchNumberAPI = async (number) => {
+    console.log(`fetching API for number: ${number}`);
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/by-number/${number}`);
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -58,14 +79,14 @@ const FormSearch2 = () => {
         </label>
         <br />
         <label>
-          Remember Password ?
+          Remember Number ?
           <input
-            type="password"
-            placeholder='Enter Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            type="text"
+            placeholder='Enter Number'
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
           />
-          <button onClick={(e) => handleSubmit(e, 'password')}>Search</button>
+          <button onClick={(e) => handleSubmit(e, 'number')}>Search</button>
         </label>
       </form>
     </div>
