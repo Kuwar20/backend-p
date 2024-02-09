@@ -9,7 +9,7 @@ const FormSearch = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const isNumber = !isNaN(parseFloat(inputValue)) && isFinite(inputValue);
-
+        const isEmail = inputValue.includes('@');
         if (!inputValue.trim()) {
             alert('Please enter a value to search');
             return;
@@ -18,6 +18,10 @@ const FormSearch = () => {
         if(isNumber){
             //call api for number search
             fetchNumberAPI(inputValue);
+        }
+        else if(isEmail){
+            //call api for email search
+            fetchEmailAPI(inputValue);
         }
         else{
             //call api for number search
@@ -42,6 +46,16 @@ const FormSearch = () => {
             const data = await response.json();
             setSearchResponse(data);
             } catch (error) {
+            console.error(error);
+        }
+    }
+    
+    const fetchEmailAPI = async (email) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/user/by-email/${email}`);
+            const data = await response.json();
+            setSearchResponse(data);
+        } catch (error) {
             console.error(error);
         }
     }

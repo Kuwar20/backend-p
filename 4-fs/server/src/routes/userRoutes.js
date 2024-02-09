@@ -40,7 +40,7 @@ router.get('/by-name/:name', async(req,res)=>{
         //res.status(200).send(name);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        res.status(500).send('Something went wrong: name search failed');
     }
 })
 
@@ -56,7 +56,22 @@ router.get('/by-number/:number', async(req,res)=>{
         //res.status(200).send(number);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        res.status(500).send('Something went wrong: number search failed');
+    }
+});
+
+// http://localhost:3000/api/user/by-email/:email
+router.get('/by-email/:email', async(req,res)=>{
+    try {
+        const userEmail = req.params.email;
+        const email = await User.find({email:{$regex: new RegExp(userEmail, "i")}});
+        if(!email){
+            return res.status(404).send('No user found');
+        }
+        res.status(200).json(email);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong: email search failed');
     }
 });
 
