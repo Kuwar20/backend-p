@@ -44,4 +44,20 @@ router.get('/by-name/:name', async(req,res)=>{
     }
 })
 
+// http://localhost:3000/api/user/by-number/:number
+router.get('/by-number/:number', async(req,res)=>{
+    try {
+        const userNumber = req.params.number;
+        const number = await User.find({number:{$regex: new RegExp(userNumber, "i")}});
+        if(!number){
+            return res.status(404).send('No user found');
+        }
+        res.status(200).json(number);
+        //res.status(200).send(number);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
 export default router;

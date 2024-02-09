@@ -24,9 +24,17 @@ const FormSearch = () => {
             fetchNameAPI(inputValue);
         }
     }
-    const fetchNumberAPI = (number) => {
+    const fetchNumberAPI = async (number) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/user/by-number/${number}`);
+            const data = await response.json();
+            setSearchResponse(data);
+        } catch (error) {
+            console.error(error);
+        }
         console.log(`Fetching number API for: ${number}`);
     }
+
     const fetchNameAPI = async (name) => {
         console.log(`Fetching name API for: ${name}`);
         try {
@@ -58,7 +66,7 @@ const FormSearch = () => {
                 <button type='submit'>Search</button>
                 <button type='button' onClick={handleReset}>Reset</button>
                 {searchResponse && (Array.isArray(searchResponse) ? searchResponse:[searchResponse]).map((item, index) => (
-                    <div key={index}>
+                    <div key={index} style={{ borderBottom: '1px solid black' }}>
                         <p>Name: {item.name}</p>
                         <p>Number: {item.number}</p>
                         <p>Email: {item.email}</p>
