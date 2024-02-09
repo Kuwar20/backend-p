@@ -1,0 +1,52 @@
+.login-form {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    margin-top: 40px;
+    /* Add this line */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.login-form label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.login-form input {
+    width: 90%;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px 0 20px 0;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 20px 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+.login-form p {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.login-form a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-form a:hover {
+    color: #333;
+}
