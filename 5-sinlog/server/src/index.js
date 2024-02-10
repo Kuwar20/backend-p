@@ -1,5 +1,6 @@
 import express from 'express';
 import { connectDB } from './utils/conn.js';
+import userRoutes from './routes/userRoutes.js';
 const app = express();
 
 /* 
@@ -9,6 +10,8 @@ import userSchema from './models/user.js';
 */
 
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
 
 connectDB();
 
@@ -33,6 +36,8 @@ app.get('/', (req, res) => {
     */
 
 });
+
+app.use('/api/user', userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
