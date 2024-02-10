@@ -32,7 +32,18 @@ const userSchema = new mongoose.Schema({
     }
 });
 
+/* 
+    This line defines a Mongoose schema for a User. A schema maps to a MongoDB collection and defines the shape of the documents within that collection.
+    It's like a translator that helps MongoDB understand what a User should look like in the database.
+*/
+
 const User = mongoose.model('User', userSchema);
+
+/* 
+    This line creates a Mongoose model from the User schema.
+    Note that Mongoose will lowercase the name and pluralize it. So in our MongoDB database, 
+    the collection will actually be named "users", not "User". 
+*/
 
 /*
 // checking how this schema works in the db (PART 2/3)
