@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // way 1 : connection to the database
 
 export const connectDB = () => {
-    mongoose.connect('mongodb://localhost:27017/sinlog', {
+    mongoose.connect(process.env.MONGODB_URI, {
     });
     // will create "test" database in mongoDB if no db name is provided in the URL
     const db = mongoose.connection;

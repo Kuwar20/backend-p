@@ -4,6 +4,11 @@ import userRoutes from './routes/userRoutes.js';
 import cors from 'cors';
 const app = express();
 
+// to use the .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 /* 
 // PART 3 - importing the userSchema from the user.js file, PART 1 & 2 are in the user.js file in the models folder
 // so that we can see how the schema works in the db
