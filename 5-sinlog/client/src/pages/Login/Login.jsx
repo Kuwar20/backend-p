@@ -60,7 +60,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <label>Email:
           <input
-            type="text"
+            type="email"
             placeholder='Enter your email'
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
@@ -69,7 +69,7 @@ const Login = () => {
         <br />
         <label>Password:
           <input
-            type="text"
+            type="password"
             placeholder='Enter your password'
             value={password}
             onChange={(e)=>setPassword(e.target.value)}
