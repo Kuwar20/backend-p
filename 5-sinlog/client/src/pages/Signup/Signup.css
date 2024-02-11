@@ -51,5 +51,11 @@
 }
 
 .signup a:hover{
-    color: #0056b3;
+    color: black;
+}
+.signup .response-op p{
+    text-align: center;
+    margin-top: 20px;
+    color: black;
+    font-weight: bold;
 }

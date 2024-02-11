@@ -7,39 +7,58 @@ then after we click the login button it will set the Login key in local storage 
 */
 const Login = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [responseMessage, setResponseMessage] = useState('')
 
   const navigate = useNavigate();
-  const loginpr = () => {
-    localStorage.setItem('Login', true)
-    navigate('/')
-  }
-  useEffect(() => {
-    // here we have naming conflict with 'login', so we are using 'Login instead with capital L', as a key to check if user is logged in or not
-    let Login = localStorage.getItem('Login')
-    // if user is not logged in, redirect to login page
-    if (Login) {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    // Reset response message
+    setResponseMessage('');
+
+    if (!email) {
+      setResponseMessage('Please enter a email to Login')
+      return
+    }
+    if (!password) {
+      setResponseMessage('Please enter a password to Login')
+      return
+    }
+    try {
+      const response = await fetch(`http://localhost:3000/api/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await response.json()
+      if (response.ok) {
+        // Handle successful login
+        setResponseMessage('Login successful!');
+        // Optionally, redirect the user to a new page or do something else
+        localStorage.setItem('Login', true)
         navigate('/')
+      } else {
+        // Handle failed login
+        setResponseMessage(data.error || 'Login failed. Please try again.');
+      }
+    } catch (error) {
+      setResponseMessage('Login failed. Please try again.');
     }
-    else {
-      setIsLoading(false);
-    }
-},[navigate]);
-if (isLoading) {
-  return (
-      <div>Loading...</div>
-  )
-}
-/* 
-now after
-*/
+  }
   return (
     <div className='login-form'>
       <h2>Login</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label>Email:
           <input
             type="text"
             placeholder='Enter your email'
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
           />
         </label>
         <br />
@@ -47,10 +66,13 @@ now after
           <input
             type="text"
             placeholder='Enter your password'
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
           />
         </label>
         <br />
-        <button onClick={loginpr}>Login</button>
+        <button>Login</button>
+        {responseMessage && <p>{responseMessage}</p>}
         <Link to='/signup'><p>Create Account?</p></Link>
       </form>
     </div>

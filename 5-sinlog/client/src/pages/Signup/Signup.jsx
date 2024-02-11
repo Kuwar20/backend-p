@@ -97,7 +97,9 @@ const Signup = () => {
         <br />
         <button>Signup</button>
         <Link to='/login'><p>Already have account?</p></Link>
-        {responseMessage && <p>{responseMessage}</p>}
+        <div className='response-op'>
+          {responseMessage && <p>{responseMessage}</p>}
+        </div>
       </form>
     </div>
   )
