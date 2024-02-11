@@ -38,6 +38,11 @@ const Login = () => {
       if (response.ok) {
         // Handle successful login
         setResponseMessage('Login successful!');
+        // when we login, it gives jwt token we store it in localstorage and use it to delete the user in main page
+        localStorage.setItem('email', email);
+        // Save token to localStorage upon successful login ( this is jwt token we will use it to delete the user in main page, because to delete a user we need two things email and token which we sent from backend code)
+        localStorage.setItem('token', data.token);
+        //console.log(data.token)
         // Optionally, redirect the user to a new page or do something else
         localStorage.setItem('Login', true)
         navigate('/')

@@ -30,6 +30,7 @@ router.post('/login', loginUser);
 
 /* 
 http://localhost:3000/api/user/delete
+
 body = {"email": "email1@gmail.com"}
 response/output = 
 {
