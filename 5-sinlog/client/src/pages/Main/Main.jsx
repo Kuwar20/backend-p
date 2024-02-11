@@ -49,11 +49,16 @@ const Main = () => {
         console.log(err)
       })
   }
+  const name = localStorage.getItem('email')
+  // take gmail and delete everything after @
+  const username = name.substring(0, name.indexOf('@'))
   return (
     <div className='main'>
       <div className='content'>
         <h3>So long partner, you took time but is finally here</h3>
-        <p>Welcome</p>
+        {/* we added span here because  we want to style only username, and ".main .username" this does the job or else if we use 
+        ".main p" it gives styling to eveything */}
+        <p>Welcome <span className='username'>{username}</span></p>
         <div>
         </div>
         <button className='button' onClick={logoutpr}>Logout</button>
