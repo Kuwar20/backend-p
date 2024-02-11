@@ -19,3 +19,18 @@
     border-radius: 10px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
+
+.main button {
+    width: 20%;
+    padding: 10px;
+    margin: 5px 0 20px 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.main button:hover {
+    background-color: #0056b3;
+}
