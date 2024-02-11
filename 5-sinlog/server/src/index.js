@@ -21,6 +21,19 @@ app.use(express.json());
 app.use(cors());
 connectDB();
 
+// connect the frontend dist (build file) here statically on backend, so that we can see the frontend on the backend without having to run the frontend separately
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, "../../client/dist")));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
+});
+
+
 app.get('/', (req, res) => {
 
     res.status(201).send('Hello World'); // sends a string
