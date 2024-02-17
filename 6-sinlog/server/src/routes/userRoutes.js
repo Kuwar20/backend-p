@@ -38,4 +38,27 @@ router.post('/register', async (req, res) => {
     }
 })
 
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    // validate input fields
+    if (!email || !password) {
+        return res.status(400).send('All input is required');
+    }
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).send('Invalid credentials');
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).send('Invalid credentials');
+        }
+
+        res.send('User logged in successfully');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
 export default router;
