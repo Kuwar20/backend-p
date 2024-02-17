@@ -19,7 +19,6 @@
 
 .navbar-left a:hover {
     color: rgb(191, 191, 234);
-    text-decoration: underline;
 }
 
 .navbar-right {
@@ -36,5 +35,4 @@
 
 .navbar-right a:hover {
     color: rgb(191, 191, 234);
-    text-decoration: underline;
 }
