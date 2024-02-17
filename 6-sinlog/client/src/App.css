@@ -1,0 +1,12 @@
+
+/* 
+    this is the main css file for the app
+    without this , starting from the navbar, everything will be in default style, that is not good
+    here in this project , the navbar will not start from the top of the page
+  */
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
