@@ -1,0 +1,57 @@
+.register{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center the form */
+    justify-content: center; /* center the form */
+    padding: 1rem;
+    position: absolute;
+    top: 25%;
+    left: 40%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.register label{
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.register input{
+    font: inherit;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 90%;
+    max-width: 400px;
+}
+.register .options{
+    margin-left: 10px;
+}
+
+.register select{
+    font: inherit;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 30%;
+    max-width: 400px;
+}
+
+.register button{
+    font: inherit;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin: 5px 0 0px 30%;
+}
+
+.register button:hover{
+    background-color: #45a049;
+}
+
