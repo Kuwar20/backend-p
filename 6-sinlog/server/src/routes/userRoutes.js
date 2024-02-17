@@ -53,8 +53,26 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(400).send('Invalid credentials');
         }
-
+        
         res.send('User logged in successfully');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+router.delete('/delete', async (req, res) => {
+    const { email } = req.body;
+    // validate input fields
+    if (!email) {
+        return res.status(400).send('All input is required');
+    }
+    try {
+        const deletedUser = await User.findOneAndDelete({ email });
+        if (!deletedUser) {
+            return res.status(400).send('User does not exist');
+        }
+        res.status(404).send('User deleted successfully');
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
