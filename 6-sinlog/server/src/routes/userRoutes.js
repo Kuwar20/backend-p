@@ -1,7 +1,11 @@
 import express from 'express';
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import authenticateToken from '../middleware/auth.js';
 const router = express.Router();
+
+const JWT_SECRET = 'your_secret_key';
 
 // this creates db and make empty "users" collection
 router.post('/register', async (req, res) => {
@@ -86,14 +90,20 @@ router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).send('Invalid credentials');
-        }
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).send('Invalid credentials');
+            return res.status(400).send('Invalid email or password');
         }
 
-        res.send('User logged in successfully');
+        // Compare password from the request and the password from the database
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(400).send('Invalid email or password');
+        }
+
+        const token = jwt.sign({email:user.email}, JWT_SECRET, {expiresIn: '1h'});
+
+        // it will return the token which will be used to verify the user to make some specific requests such as delete user, update user, etc
+        res.status(200).json({ message: "User logged in successfully", token  });
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
