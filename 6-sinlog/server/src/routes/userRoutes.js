@@ -100,28 +100,36 @@ router.post('/login', async (req, res) => {
             return res.status(400).send('Invalid email or password');
         }
 
-        const token = jwt.sign({email:user.email}, JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
         // it will return the token which will be used to verify the user to make some specific requests such as delete user, update user, etc
-        res.status(200).json({ message: "User logged in successfully", token  });
+        res.status(200).json({ message: "User logged in successfully", token });
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
     }
 });
 
-router.delete('/delete', async (req, res) => {
+
+router.delete('/delete', authenticateToken, async (req, res) => {
     const { email } = req.body;
+
+    const authenticatedUserEmail = req.user.email;
+
     // validate input fields
     if (!email) {
         return res.status(400).send('All input is required');
+    }
+    if (email !== authenticatedUserEmail) {
+        return res.status(403).json({ error: "Unauthorized access" });
     }
     try {
         const deletedUser = await User.findOneAndDelete({ email });
         if (!deletedUser) {
             return res.status(400).send('User does not exist');
         }
-        res.status(404).send('User deleted successfully');
+        // If user is found and deleted, send success response
+        res.status(200).json({ message: "User deleted successfully", user: deletedUser });
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
