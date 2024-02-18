@@ -7,6 +7,15 @@ const router = express.Router();
 
 const JWT_SECRET = 'your_secret_key';
 
+/* 
+http request type: POST
+URL: http://localhost:3000/api/user/register
+body (JSON) = {"name":"test1","email":"email1@gmail.com","password":"password1","gender":"male"}
+response/output = {User created successfully} 
+// and if somebody try to register with same email again then it will give error
+{"error": "User with this email already exists"}
+*/
+
 // this creates db and make empty "users" collection
 router.post('/register', async (req, res) => {
 
@@ -21,7 +30,7 @@ router.post('/register', async (req, res) => {
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send('User already exists');
+            return res.status(400).send('User with this email already exists');
         }
 
         // hash the password
@@ -47,6 +56,25 @@ router.post('/register', async (req, res) => {
     then it returns a message "User logged in successfully" if everything is fine
     this does not actually login the user, it just checks if the user exists in the db and if the password is correct
  */
+
+
+/* 
+way 1:
+http request type: POST
+URL: http://localhost:3000/api/user/login
+body = {"email":"email1","password":"abc132"}
+response/output = {"message": "User logged in successfully","token" "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsMUBnbWFpbC5jb20iLCJpYXQiOjE3MDc1NzgwMDAsImV4cCI6MTcwNzU4MTYwMH0.qmnPkbBS-JWlA5goU6Rnc7IkJD140YnsHL85DdgtxrY"}
+// and if somebody try to login with wrong email or password then it will give error 
+{"error": "Invalid email or password"}
+*/
+/*
+way 2:
+http request type: POST
+URL: localhost:3000/api/user/login?email=email1&password=abc132
+body = {} // empty
+response/output = same as way 1
+*/
+
 router.post('/login', async (req, res) => {
 
     // for 'login' we use body because we are sending sensitive data like password, and same for the 'register api'
@@ -110,6 +138,38 @@ router.post('/login', async (req, res) => {
     }
 });
 
+/*
+http request type: DELETE
+URL: http://localhost:3000/api/user/delete
+body = {"email":"email1"}
+response/output = 
+{
+    "message": "User deleted successfully",
+    "user": {
+        "_id": "65c7918dbb9ef834d2cedd36",
+        "name": "pil",
+        "email": "email1",
+        "gender": "male",
+        "password": "$2a$10$ofbFBi8cW/uWcGYVyQ/RcewSxF1GnbgogT3Fz/rKD3lazCsmYyx3i",
+        "createdAt": "2024-02-10T15:09:01.999Z",
+        "updatedAt": "2024-02-17T19:11:26.629Z",
+        "__v": 0
+    }
+}
+
+//to ensure that only the user with the same email can delete only their account
+
+we send Authorization in header with token,
+this token is generated when user login with and it is valid for 1 hour 
+now we can use that token to ensure that user only delete their account
+
+ex - Key: Authorization , Value: Bearer <JWT Token>
+live ex - Key: Authorization, Value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsMkBnbWFpbC5jb20iLCJpYXQiOjE3MDc1Nzc2MDAsImV4cCI6MTcwNzU4MTIwMH0.ZYNU6Ksx96dMGOv2koocnuiiRLaLFC5QyrQ4jAHpEvo
+
+// and if somebody try to delete user with wrong email or delete the deleted user then it will give error
+{"error": "Unauthorized access"} 
+
+*/
 
 router.delete('/delete', authenticateToken, async (req, res) => {
     const { email } = req.body;
