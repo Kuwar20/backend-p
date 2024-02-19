@@ -3,6 +3,7 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home/Home';
 import Login from './pages/login/Login';
 import SignIn from './pages/signin/SignIn';
+import ProtectedRoute from './components/ProtectedRoute';
 import './App.css'
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<ProtectedRoute Component={Home}/>} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<SignIn />} />
         </Routes>
