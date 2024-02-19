@@ -51,6 +51,74 @@ router.post('/register', async (req, res) => {
     }
 })
 
+/*
+http request type: POST
+URL: http://localhost:3000/api/user/update
+there are 1 things to keep in mind ,
+that we are using authenticateToken middleware to verify the user using email
+so if we update the users email we will have to login again to get the new token
+
+body (JSON) = 
+{
+	"name":"kuwar-updated2",
+	"email":"kuwar@updated",
+	"password":"123456",
+	"gender":"male"
+}
+
+response/output = 
+{
+	"message": "User updated successfully",
+	"user": {
+		"_id": "65d2efb0566e87b52af338b6",
+		"name": "kuwar-updated2",
+		"email": "kuwar@updated",
+		"gender": "male",
+		"password": "$2a$12$6XmWAQZO/FG7fOSoET/l.eg4SCfjHHWWLZ11WUp8OcHBQhUBQh2M.",
+		"createdAt": "2024-02-19T06:05:36.317Z",
+		"updatedAt": "2024-02-19T06:05:36.317Z",
+		"__v": 0
+	}
+}
+*/
+
+router.put('/update', authenticateToken, async (req, res) => {
+    const { name, email, password, gender } = req.body;
+    const authenticatedUserEmail = req.user.email;
+
+    // validate input fields
+    if (!name && !email && !password && !gender) {
+        return res.status(400).send('At least one input is required');
+    }
+
+    try {
+        const user = await User.findOne({ email: authenticatedUserEmail });
+        if (!user) {
+            return res.status(400).send('User does not exist');
+        }
+
+        if (name) {
+            user.name = name;
+        }
+        if (email) {
+            user.email = email;
+        }
+        if (password) {
+            user.password = await bcrypt.hash(password, 12);
+        }
+        if(gender){
+            user.gender = gender;
+        }
+
+        await user.save();
+        res.status(200).json({ message: "User updated successfully", user });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+
 /* 
     this is not actually login, it does somethings in the backend when we hit this api with email and password,
     then it returns a message "User logged in successfully" if everything is fine
@@ -190,6 +258,122 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         }
         // If user is found and deleted, send success response
         res.status(200).json({ message: "User deleted successfully", user: deletedUser });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+/*
+http request type: GET
+URL: http://localhost:3000/api/user/all
+response/output = 
+
+{
+	"users": [
+		{
+			"_id": "65d1af81975201fda0d57970",
+			"name": "pil",
+			"email": "email2",
+			"gender": "male",
+			"password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
+			"createdAt": "2024-02-18T07:19:29.555Z",
+			"updatedAt": "2024-02-18T07:19:29.555Z",
+			"__v": 0
+		},
+		{
+			"_id": "65d1b44f8f8669f8f87b46a5",
+			"name": "pil",
+			"email": "email3",
+			"gender": "male",
+			"password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
+			"createdAt": "2024-02-18T07:39:59.503Z",
+			"updatedAt": "2024-02-18T07:39:59.503Z",
+			"__v": 0
+		}
+	],
+	"totalUsers": 4,
+	"usersShown": 2,
+	"totalPages": 2,
+	"pagesLeft": 1,
+	"usersLeft": 2
+}
+
+*/
+// added pagination in this api
+router.get('/all', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // page is 1
+    const limit = parseInt(req.query.limit) || 2; // limit on the page to show value is 2
+    const skip = (page - 1) * limit;
+    try {
+        const totalUsers = await User.countDocuments();
+        const users = await User.find().skip(skip).limit(limit);
+        const usersShown = users.length;
+        const totalPages = Math.ceil(totalUsers / limit);
+        const pagesLeft = totalPages - page;
+        const usersLeft = totalUsers - (page * limit);
+        res.status(200).json({
+            users,
+            totalUsers,
+            usersShown,
+            totalPages,
+            pagesLeft,
+            usersLeft
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Something went wrong');
+    }
+});
+
+/*
+http request type: GET
+URL: http://localhost:3000/api/user/search/em
+
+response/output = 
+[
+	{
+		"_id": "65d1af81975201fda0d57970",
+		"name": "pil",
+		"email": "email2",
+		"gender": "male",
+		"password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
+		"createdAt": "2024-02-18T07:19:29.555Z",
+		"updatedAt": "2024-02-18T07:19:29.555Z",
+		"__v": 0
+	},
+	{
+		"_id": "65d1b44f8f8669f8f87b46a5",
+		"name": "pil",
+		"email": "email3",
+		"gender": "male",
+		"password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
+		"createdAt": "2024-02-18T07:39:59.503Z",
+		"updatedAt": "2024-02-18T07:39:59.503Z",
+		"__v": 0
+	},
+	{
+		"_id": "65d1b4558f8669f8f87b46a8",
+		"name": "pil",
+		"email": "email4",
+		"gender": "male",
+		"password": "$2a$12$bA2y0UpmHN6DHxSob2FFi.qxCcmz8y5CLxIdg6l8/SWIzze1LBjiy",
+		"createdAt": "2024-02-18T07:40:05.022Z",
+		"updatedAt": "2024-02-18T07:40:05.022Z",
+		"__v": 0
+	}
+]
+*/
+
+router.get('/search/:search', async (req, res) => {
+    const email = req.params.search;
+
+    if (!email) {
+        return res.status(400).send('Email is required');
+    }
+    try {
+        const users = await User.find({ email: { $regex: email, $options: 'i' } });
+        res.status(200).json(users);
     } catch (error) {
         console.log(error);
         res.status(500).send('Something went wrong');
