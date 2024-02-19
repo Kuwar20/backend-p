@@ -252,7 +252,7 @@ router.delete('/delete', authenticateToken, async (req, res) => {
 
     // validate input fields
     if (!email) {
-        return res.status(400).send('All input is required');
+        return res.status(400).json({error:'All input is required'});
     }
     if (email !== authenticatedUserEmail) {
         return res.status(403).json({ error: "Unauthorized access" });
@@ -260,13 +260,13 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     try {
         const deletedUser = await User.findOneAndDelete({ email });
         if (!deletedUser) {
-            return res.status(400).send('User does not exist');
+            return res.status(400).json({error:'User does not exist'});
         }
         // If user is found and deleted, send success response
         res.status(200).json({ message: "User deleted successfully", user: deletedUser });
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        res.status(500).json({error:'Something went wrong'});
     }
 });
 

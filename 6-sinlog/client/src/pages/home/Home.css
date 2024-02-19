@@ -21,3 +21,22 @@
     background-color:white;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
+
+.button-delete{
+    font: inherit;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+}
+.button-logout{
+    font: inherit;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+}
