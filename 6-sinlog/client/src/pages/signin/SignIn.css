@@ -56,3 +56,34 @@
     background-color: #45a049;
 }
 
+.register .error{
+    color: red;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+.register .red{
+    color: red;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+.register .success{
+    color: green;
+    margin: 0.5rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.navigate a{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    text-decoration: none;
+    font-weight: bold;
+    color: green;
+}
+
+.navigate a:hover{
+    color: #4CAF50;
+}

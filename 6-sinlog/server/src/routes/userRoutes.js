@@ -22,15 +22,21 @@ router.post('/register', async (req, res) => {
     const { name, email, password, gender } = req.body;
     // validate input fields
     if (!name || !email || !password || !gender) {
-        return res.status(400).send('All input is required');
+        // if we simply send the res like this without json
+        // return res.status(400).send('All input is required');
+        // then we will get the error in the frontend like this
+        //  SyntaxError: Unexpected token 'U', "User creat"... is not valid JSON in the code
+        // when we try to parse the response in the frontend using - const data = await response.json();
+
+        return res.status(400).json({ error: 'All input is required' });
     }
     if (password.length < 6) {
-        return res.status(400).send('Password must be at least 6 characters');
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
     }
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send('User with this email already exists');
+            return res.status(400).json({error:'User with this email already exists'});
         }
 
         // hash the password
@@ -44,10 +50,10 @@ router.post('/register', async (req, res) => {
         })
 
         await newUser.save();
-        res.status(201).send('User created successfully');
+        res.status(201).json({message:'User created successfully'});
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        res.status(500).json({error:'Something went wrong'});
     }
 })
 
@@ -60,25 +66,25 @@ so if we update the users email we will have to login again to get the new token
 
 body (JSON) = 
 {
-	"name":"kuwar-updated2",
-	"email":"kuwar@updated",
-	"password":"123456",
-	"gender":"male"
+    "name":"kuwar-updated2",
+    "email":"kuwar@updated",
+    "password":"123456",
+    "gender":"male"
 }
 
 response/output = 
 {
-	"message": "User updated successfully",
-	"user": {
-		"_id": "65d2efb0566e87b52af338b6",
-		"name": "kuwar-updated2",
-		"email": "kuwar@updated",
-		"gender": "male",
-		"password": "$2a$12$6XmWAQZO/FG7fOSoET/l.eg4SCfjHHWWLZ11WUp8OcHBQhUBQh2M.",
-		"createdAt": "2024-02-19T06:05:36.317Z",
-		"updatedAt": "2024-02-19T06:05:36.317Z",
-		"__v": 0
-	}
+    "message": "User updated successfully",
+    "user": {
+        "_id": "65d2efb0566e87b52af338b6",
+        "name": "kuwar-updated2",
+        "email": "kuwar@updated",
+        "gender": "male",
+        "password": "$2a$12$6XmWAQZO/FG7fOSoET/l.eg4SCfjHHWWLZ11WUp8OcHBQhUBQh2M.",
+        "createdAt": "2024-02-19T06:05:36.317Z",
+        "updatedAt": "2024-02-19T06:05:36.317Z",
+        "__v": 0
+    }
 }
 */
 
@@ -106,7 +112,7 @@ router.put('/update', authenticateToken, async (req, res) => {
         if (password) {
             user.password = await bcrypt.hash(password, 12);
         }
-        if(gender){
+        if (gender) {
             user.gender = gender;
         }
 
@@ -270,36 +276,37 @@ URL: http://localhost:3000/api/user/all
 response/output = 
 
 {
-	"users": [
-		{
-			"_id": "65d1af81975201fda0d57970",
-			"name": "pil",
-			"email": "email2",
-			"gender": "male",
-			"password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
-			"createdAt": "2024-02-18T07:19:29.555Z",
-			"updatedAt": "2024-02-18T07:19:29.555Z",
-			"__v": 0
-		},
-		{
-			"_id": "65d1b44f8f8669f8f87b46a5",
-			"name": "pil",
-			"email": "email3",
-			"gender": "male",
-			"password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
-			"createdAt": "2024-02-18T07:39:59.503Z",
-			"updatedAt": "2024-02-18T07:39:59.503Z",
-			"__v": 0
-		}
-	],
-	"totalUsers": 4,
-	"usersShown": 2,
-	"totalPages": 2,
-	"pagesLeft": 1,
-	"usersLeft": 2
+    "users": [
+        {
+            "_id": "65d1af81975201fda0d57970",
+            "name": "pil",
+            "email": "email2",
+            "gender": "male",
+            "password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
+            "createdAt": "2024-02-18T07:19:29.555Z",
+            "updatedAt": "2024-02-18T07:19:29.555Z",
+            "__v": 0
+        },
+        {
+            "_id": "65d1b44f8f8669f8f87b46a5",
+            "name": "pil",
+            "email": "email3",
+            "gender": "male",
+            "password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
+            "createdAt": "2024-02-18T07:39:59.503Z",
+            "updatedAt": "2024-02-18T07:39:59.503Z",
+            "__v": 0
+        }
+    ],
+    "totalUsers": 4,
+    "usersShown": 2,
+    "totalPages": 2,
+    "pagesLeft": 1,
+    "usersLeft": 2
 }
 
 */
+
 // added pagination in this api
 router.get('/all', async (req, res) => {
     const page = parseInt(req.query.page) || 1; // page is 1
@@ -332,36 +339,36 @@ URL: http://localhost:3000/api/user/search/em
 
 response/output = 
 [
-	{
-		"_id": "65d1af81975201fda0d57970",
-		"name": "pil",
-		"email": "email2",
-		"gender": "male",
-		"password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
-		"createdAt": "2024-02-18T07:19:29.555Z",
-		"updatedAt": "2024-02-18T07:19:29.555Z",
-		"__v": 0
-	},
-	{
-		"_id": "65d1b44f8f8669f8f87b46a5",
-		"name": "pil",
-		"email": "email3",
-		"gender": "male",
-		"password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
-		"createdAt": "2024-02-18T07:39:59.503Z",
-		"updatedAt": "2024-02-18T07:39:59.503Z",
-		"__v": 0
-	},
-	{
-		"_id": "65d1b4558f8669f8f87b46a8",
-		"name": "pil",
-		"email": "email4",
-		"gender": "male",
-		"password": "$2a$12$bA2y0UpmHN6DHxSob2FFi.qxCcmz8y5CLxIdg6l8/SWIzze1LBjiy",
-		"createdAt": "2024-02-18T07:40:05.022Z",
-		"updatedAt": "2024-02-18T07:40:05.022Z",
-		"__v": 0
-	}
+    {
+        "_id": "65d1af81975201fda0d57970",
+        "name": "pil",
+        "email": "email2",
+        "gender": "male",
+        "password": "$2a$12$5Dcr7fn.OtQ9MfYzsqwej.sXn.VOCLzI4XZ3gUwt5SOzhkvHubEOi",
+        "createdAt": "2024-02-18T07:19:29.555Z",
+        "updatedAt": "2024-02-18T07:19:29.555Z",
+        "__v": 0
+    },
+    {
+        "_id": "65d1b44f8f8669f8f87b46a5",
+        "name": "pil",
+        "email": "email3",
+        "gender": "male",
+        "password": "$2a$12$iisQ0gzL3qY.rd8UIWGwwOwmK5JjKLTM9J4jDZdlxDAY3mRb2Cbj6",
+        "createdAt": "2024-02-18T07:39:59.503Z",
+        "updatedAt": "2024-02-18T07:39:59.503Z",
+        "__v": 0
+    },
+    {
+        "_id": "65d1b4558f8669f8f87b46a8",
+        "name": "pil",
+        "email": "email4",
+        "gender": "male",
+        "password": "$2a$12$bA2y0UpmHN6DHxSob2FFi.qxCcmz8y5CLxIdg6l8/SWIzze1LBjiy",
+        "createdAt": "2024-02-18T07:40:05.022Z",
+        "updatedAt": "2024-02-18T07:40:05.022Z",
+        "__v": 0
+    }
 ]
 */
 
