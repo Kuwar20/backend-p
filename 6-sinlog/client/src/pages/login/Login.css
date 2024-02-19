@@ -42,3 +42,9 @@
 .login button:hover{
     background-color: #45a049;
 }
+.login .response{
+    margin-top: 1rem;
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
