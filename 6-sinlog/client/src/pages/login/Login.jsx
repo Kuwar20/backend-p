@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link , useNavigate} from 'react-router-dom'
 import './Login.css'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [responseMessage, setResponseMessage] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +38,7 @@ const Login = () => {
         //console.log(data.token)
         // Optionally, redirect the user to a new page or do something else
         localStorage.setItem('Login', true)
+        navigate('/')
       } else {
         // Handle failed login
         setResponseMessage(data.error || 'Login failed. Please try again.');
@@ -73,6 +75,9 @@ const Login = () => {
       </form>
       <div className='response'>
         {responseMessage && <p>{responseMessage}</p>}
+      </div>
+      <div className='navigate'>
+        <Link to='/register'>Don't have an account? Register here</Link>
       </div>
     </div>
   )
