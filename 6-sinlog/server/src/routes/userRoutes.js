@@ -187,19 +187,19 @@ router.post('/login', async (req, res) => {
     }
 
     if (!email || !password) {
-        return res.status(400).send('All input is required');
+        return res.status(400).json({error:'All input is required'});
     }
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(400).json({error:'Invalid email or password'});
         }
 
         // Compare password from the request and the password from the database
 
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(400).json({error:'Invalid email or password'});
         }
 
         const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
@@ -208,7 +208,7 @@ router.post('/login', async (req, res) => {
         res.status(200).json({ message: "User logged in successfully", token });
     } catch (error) {
         console.log(error);
-        res.status(500).send('Something went wrong');
+        res.status(500).json({error:'Something went wrong'});
     }
 });
 
