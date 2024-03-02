@@ -1,7 +1,6 @@
 nav{
     display: flex; /* make everything in straight line */
     justify-content: space-between;  /* space between the items */
-    max-width: 1280px; /* max width of the nav */
     margin: 0 auto; /* center the nav */
     height: 72px;
     align-items: center; /* align the items in the center */
@@ -26,4 +25,9 @@ button{
     height: 32px;
     font-weight: 500;
     cursor: pointer;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1280px;
 }

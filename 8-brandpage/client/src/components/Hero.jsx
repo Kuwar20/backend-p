@@ -2,10 +2,11 @@ import React from 'react'
 import amazon from '../assets/amazon.png'
 import flipkart from '../assets/flipkart.png'
 import HeroImage from '../assets/shoe_image.png'
+import './Hero.css'
 
 const Hero = () => {
   return (
-    <div className='hero'>
+    <div className='hero container'>
       <div className='hero-content'>
         <h1>YOUR FEET
           DESERVE
@@ -14,7 +15,7 @@ const Hero = () => {
 
         <div className='hero-buttons'>
           <button>Shop Now</button>
-          <button>Catefory</button>
+          <button className='secondary-btn'>Category</button>
         </div>
         <div className='shopping'>
           <p>Also Available On</p>

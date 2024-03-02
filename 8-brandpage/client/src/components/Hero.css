@@ -1,0 +1,40 @@
+.hero{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 72px);
+}
+
+.hero h1{
+    font-weight: 800;
+    font-size: 100px;
+    line-height: 102px;
+    margin-block-start: 10px;
+    margin-block-end: 30px;
+}
+
+.hero p{
+    color: gray;
+    font-size: 13px;
+    max-width: 400px;
+}
+
+.hero-buttons{
+    display: flex;
+    gap: 20px;
+}
+
+.secondary-btn{
+    background: transparent;
+    color: gray;
+    border: 1px solid gray;
+}
+
+.shopping p{
+    font-size: 14px;
+}
+
+.brand-icon{
+    display: flex;
+    gap: 36px;
+}
