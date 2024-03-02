@@ -1,0 +1,29 @@
+nav{
+    display: flex; /* make everything in straight line */
+    justify-content: space-between;  /* space between the items */
+    max-width: 1280px; /* max width of the nav */
+    margin: 0 auto; /* center the nav */
+    height: 72px;
+    align-items: center; /* align the items in the center */
+}
+
+nav ul{
+    display: flex;
+    list-style: none;
+    gap: 24px;
+}
+
+:root {
+    --red: #D01C28;
+    --gray: #2e2e2e;
+}
+
+button{
+    all: unset;
+    padding: 6px 16px;
+    background: var(--red);
+    color: white;
+    height: 32px;
+    font-weight: 500;
+    cursor: pointer;
+}
