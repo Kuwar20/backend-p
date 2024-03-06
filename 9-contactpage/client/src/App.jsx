@@ -1,12 +1,15 @@
 import './App.css'
+import Form from './components/Form'
 import Navbar from './components/Navbar'
+import ContactPage from './components/contactPage'
 
 function App() {
 
   return (
     <>
       <Navbar />
-      <h1>Hello World</h1>
+      <ContactPage />
+      <Form />
     </>
   )
 }

@@ -11,3 +11,7 @@ body{
     --red: #FF0000;
     --gray: #333333;
 }
+
+.container {
+    max-width: 1280px;
+}
