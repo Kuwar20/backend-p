@@ -3,3 +3,7 @@
     max-width: 1000px;
     margin: 0 auto;
 }
+.top-button{
+    display: flex;
+    gap: 32px;
+}

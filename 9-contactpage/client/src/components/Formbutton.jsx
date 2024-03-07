@@ -1,11 +1,14 @@
 import React from 'react'
 import './Formbutton.css'
-import { MdMessage } from 'react-icons/md'
+import { MdEmail, MdMessage } from 'react-icons/md'
 
-const Formbutton = () => {
+const Formbutton = (props) => {
+    console.log(props);
     return (
         <div>
-            <MdMessage />
+            <div className='primary-button'>
+                {props.icon}{props.text}
+            </div>
         </div>
     )
 }

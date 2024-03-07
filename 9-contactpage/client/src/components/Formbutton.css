@@ -1,0 +1,12 @@
+.primary-button{
+    padding: 12px 8px;
+    background-color: black;
+    color: white;
+    min-width: 180px;
+    font-size: 13px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}

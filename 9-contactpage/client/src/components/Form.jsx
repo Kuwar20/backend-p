@@ -1,20 +1,28 @@
 import React from 'react'
 import './Form.css'
 import Formbutton from './Formbutton'
+import { MdEmail, MdMessage } from 'react-icons/md'
+import { FaPhoneAlt } from 'react-icons/fa';
 
 const Form = () => {
     return (
         <div className='form'>
             <div className='button'>
-                <button>
-                    <Formbutton/>
-                    VIA SUPPORT CHAT</button>
-                <button>VIA CALL</button>
+                <div className='top-button'>
+                    <Formbutton
+                        text="VIA SUPPORT CHAT"
+                        color="blue"
+                        icon={<MdMessage />}
+                    />
+                    <Formbutton
+                        text="VIA EMAIL FORM"
+                        color="green"
+                        icon={<MdEmail />}
+                    />
+                </div>
             </div>
-            
-            <div>
-                <button>VIA EMAIL FORM</button>
-            </div>
+            <br />
+
         </div>
     )
 }
