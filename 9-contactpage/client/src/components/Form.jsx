@@ -21,8 +21,13 @@ const Form = () => {
                     />
                 </div>
             </div>
-            <br />
-
+                <div className='outline-button'>
+                    <Formbutton
+                        text="CALL US"
+                        color="blue"
+                        icon={<FaPhoneAlt />}
+                    />
+                </div>
         </div>
     )
 }
