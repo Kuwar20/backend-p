@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import image1 from '../../src/assets/dices 1.png'
 
-const StartGame = () => {
+const StartGame = ({toggle}) => {
   return (
     <Container>
       <div>
@@ -10,7 +10,7 @@ const StartGame = () => {
       </div>
       <div className='content'>
         <h1>DICE GAME</h1>
-        <Button>Play Now</Button>
+        <Button onClick={toggle}>Play Now</Button>
       </div>
     </Container>
   )
