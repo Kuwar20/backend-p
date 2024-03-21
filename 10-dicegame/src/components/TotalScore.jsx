@@ -15,7 +15,6 @@ export default TotalScore
 const ScoreContainer = styled.div`
 max-width: 100px;
 text-align: center;
-
 h1{
     font-size: 80px;
 }
