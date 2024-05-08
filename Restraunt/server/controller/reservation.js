@@ -9,7 +9,7 @@ export const sendReservation = async (req, res, next) => {
         return next(new ErrorHandler("Please fill in all fields", 400));
     }
 
-    try{
+    try {
         await Reservation.create({
             firstName,
             lastName,
@@ -18,11 +18,12 @@ export const sendReservation = async (req, res, next) => {
             date,
             time,
         });
-        res.status(201).json({"message": "Reservation sent successfully!"});
-    }catch(error){
-        if(error.name === "ValidationError"){
-            return next(new ErrorHandler(Object.values(error.errors).map((value) => value.message).join(", "), 400));
+        res.status(201).json({ "message": "Reservation sent successfully!" });
+    } catch (error) {
+        // Handle Mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            return next(new ErrorHandler(validationErrors.join(', '), 400));
         }
-        return next(new ErrorHandler(error.message, 400));
     }
 };
