@@ -1,4 +1,4 @@
-import e from "express";
+import express from "express";
 import ErrorHandler from "../error/error.js";
 import { Reservation } from "../models/reservationSchema.js";
 
@@ -26,6 +26,7 @@ export const sendReservation = async (req, res, next) => {
             const validationErrors = Object.values(error.errors).map(err => err.message);
             return next(new ErrorHandler(validationErrors.join(', '), 400));
         }
+
         return next(error);
     }
 };
