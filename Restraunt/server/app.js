@@ -8,7 +8,10 @@ import reservationRouter from './routes/reservationRoute.js';
 const app = express();
 dotenv.config({ path: './config/config.env' });
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true // Allow sending cookies
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

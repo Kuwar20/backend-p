@@ -15,7 +15,7 @@ const Home = () => {
       <Qualities />
       <Menu />
       <WhoAreWe />
-      <Team/>
+      <Team />
       <Reservation />
     </>
   )
