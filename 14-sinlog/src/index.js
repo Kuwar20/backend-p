@@ -14,6 +14,11 @@ import userSchema from './models/user.js';
 */
 const PORT = process.env.PORT || 3000;
 
+
+app.get("/", (req, res) => {
+    res.send("Test api");
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
