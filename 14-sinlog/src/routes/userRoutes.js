@@ -2,6 +2,7 @@ import express from "express";
 import User from '../models/user.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import authenticateToken from '../middleware/auth.js';
 
 const JWT_SECRET = 'SECRET_KEY';
 const router = express.Router();
@@ -76,5 +77,29 @@ router.post('/login', async (req, res) => {
     }
 })
 
+
+router.delete('/delete', authenticateToken, async (req, res) => {
+    const { email } = req.body;
+
+    const authenticatedUser = req.user.email;
+
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+
+    if(authenticatedUser !== email){
+        return res.status(400).json({ message: "You are not authorized to delete this user" });
+    }
+    try {
+        const deletedUser = await User.findOneAndDelete({ email });
+        if (!deletedUser) {
+            return res.status(400).json({ message: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+})
 
 export default router;
