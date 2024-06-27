@@ -36,12 +36,15 @@ function App() {
     setPassword('')
   }
 
+  // search user using name, email, createdAt or any combination of these or single field
   const handleSearch = async()=>{
+    // check if any of the field is filled
     if(!name && !email && !createdAt){
       alert('Please fill any of the field to search')
       return
     }
     try {
+      // add query params to the url and fetch the data
       const response = await fetch(`https://666fc0fe0900b5f872481dcc.mockapi.io/pagination?name=${name}&email=${email}&createdAt=${createdAt}`)
       const fetchedData = await response.json();
       console.log(fetchedData)
