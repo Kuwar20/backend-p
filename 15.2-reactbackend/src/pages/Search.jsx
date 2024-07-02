@@ -112,7 +112,7 @@ const Search = () => {
                             >
                                 <span className="pl-4">
                                     {query}
-                                    <span className="text-gray-300 cursor-pointer">
+                                    <span className="text-gray-400 cursor-pointer">
                                         {suggestion}
                                     </span>
                                 </span>
