@@ -13,6 +13,7 @@ const Navbar = () => {
                 <div className='hidden md:flex space-x-4'>
                     <Link to="/login" className='text-white'>Login</Link>
                     <Link to="/signup" className='text-white'>Signup</Link>
+                    <Link to="/search" className='text-white'>Search</Link>
                     <button className='text-white bg-red-500 px-4 py-2 rounded'>Signout</button>
                 </div>
                 <div className='md:hidden'>
