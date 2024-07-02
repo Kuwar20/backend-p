@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -6,10 +7,12 @@ const Navbar = () => {
     return (
         <nav className='bg-gray-800 p-4'>
             <div className='container mx-auto flex justify-between items-center'>
-                <div className='text-white text-xl font-bold'>Name</div>
+                <div className='text-white text-xl font-bold'>
+                    <Link to="/">Name</Link>
+                    </div>
                 <div className='hidden md:flex space-x-4'>
-                    <a href='#' className='text-white'>Login</a>
-                    <a href='#' className='text-white'>Signup</a>
+                    <Link to="/login" className='text-white'>Login</Link>
+                    <Link to="/signup" className='text-white'>Signup</Link>
                     <button className='text-white bg-red-500 px-4 py-2 rounded'>Signout</button>
                 </div>
                 <div className='md:hidden'>
