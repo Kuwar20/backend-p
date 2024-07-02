@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const Search = () => {
@@ -8,7 +7,8 @@ const Search = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestion, setSuggestion] = useState('');
+    const inputRef = useRef(null);
 
     useEffect(() => {
         if (query) {
@@ -20,27 +20,46 @@ const Search = () => {
         const value = event.target.value;
         setQuery(value);
 
-        if (value.length > 2) { // Adjust the threshold as needed
+        if (value.length > 2) {
             try {
                 const response = await axios.get(`https://666fc0fe0900b5f872481dcc.mockapi.io/crud`, {
                     params: {
                         name: value,
-                        limit: 5 // Limit the number of suggestions
+                        limit: 1
                     }
                 });
-                setSuggestions(response.data);
+                if (response.data.length > 0 && response.data[0].name.toLowerCase().startsWith(value.toLowerCase())) {
+                    setSuggestion(response.data[0].name.slice(value.length));
+                } else {
+                    setSuggestion('');
+                }
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
-                setSuggestions([]);
+                setSuggestion('');
             }
         } else {
-            setSuggestions([]);
+            setSuggestion('');
+        }
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowRight' && suggestion) {
+            setQuery(query + suggestion);
+            setSuggestion('');
+        }
+    };
+
+    const handleSuggestionClick = () => {
+        if (suggestion) {
+            setQuery(query + suggestion);
+            setSuggestion('');
+            inputRef.current.focus();
         }
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setCurrentPage(1); // Reset to the first page on new search
+        setCurrentPage(1);
         fetchResults(query, 1);
     };
 
@@ -71,37 +90,35 @@ const Search = () => {
         setCurrentPage((prevPage) => prevPage - 1);
     };
 
-    const handleSuggestionClick = (suggestion) => {
-        setQuery(suggestion.name);
-        setSuggestions([]);
-        fetchResults(suggestion.name, 1);
-    };
-
     return (
         <div className="max-w-4xl mx-auto mt-8">
             <h1 className="text-3xl font-bold text-center mb-6">Search Page</h1>
             <form onSubmit={handleSubmit} className="flex items-center justify-center">
                 <div className="relative w-full max-w-lg">
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={handleChange}
-                        placeholder="Enter search query..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                    {suggestions.length > 0 && (
-                        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
-                            {suggestions.map((suggestion) => (
-                                <li
-                                    key={suggestion.id}
-                                    onClick={() => handleSuggestionClick(suggestion)}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                >
-                                    {suggestion.name}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <div className="relative">
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={query}
+                            onChange={handleChange}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Enter search query..."
+                            className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                        {suggestion && (
+                            <div 
+                                className="absolute inset-y-0 left-0 flex items-center pointer-events-none"
+                                onClick={handleSuggestionClick}
+                            >
+                                <span className="pl-4">
+                                    {query}
+                                    <span className="text-gray-300 cursor-pointer">
+                                        {suggestion}
+                                    </span>
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <button
                     type="submit"
