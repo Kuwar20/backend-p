@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
+    "axios": "^1.7.2",
     "font-awesome": "^4.7.0",
     "react": "^18.3.1",
+    "react-autosuggest": "^10.1.0",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.0"
+    "react-router-dom": "^6.24.0",
+    "react-search-autocomplete": "^8.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
