@@ -7,14 +7,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 const PORT = process.env.PORT || 3001;
 
-// import { connectDB } from './utils/connMongoDB.js';
-// connectDB();
+import userRoutesMongo from './routes/userRoutesMongo.js';
+
+import { connectDB } from './utils/connMongoDB.js';
+connectDB();
 // import { User } from './model/userSchemaMongo.js'; // to check if the connection is working or not
 
 
+/*
 import createDBTable  from './model/userSchemaSQL.js';
 createDBTable();
-
+*/
 
 // app.get('/', (req, res) => {
 
@@ -70,6 +73,8 @@ createDBTable();
     // res.status(201).json({ message: `Hello ${name}!` });
 }); 
 */
+
+app.use('/api/user', userRoutesMongo);
 
 app.listen(PORT, () => {
     console.log('Server is running on port ' + PORT);
