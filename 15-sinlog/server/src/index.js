@@ -7,9 +7,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 const PORT = process.env.PORT || 3001;
 
-import { connectDB } from './utils/connMongoDB.js';
-connectDB();
+// import { connectDB } from './utils/connMongoDB.js';
+// connectDB();
 
+// import { User } from './model/userSchemaMongo.js'; // to use mongoDB
 
 // app.get('/', (req, res) => {
 
