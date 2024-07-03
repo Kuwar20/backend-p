@@ -9,8 +9,12 @@ const PORT = process.env.PORT || 3001;
 
 // import { connectDB } from './utils/connMongoDB.js';
 // connectDB();
+// import { User } from './model/userSchemaMongo.js'; // to check if the connection is working or not
 
-// import { User } from './model/userSchemaMongo.js'; // to use mongoDB
+
+import createDBTable  from './model/userSchemaSQL.js';
+createDBTable();
+
 
 // app.get('/', (req, res) => {
 
