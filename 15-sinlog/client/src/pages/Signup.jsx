@@ -1,14 +1,35 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast';
 
 const Signup = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     console.log(name, email, password)
+    try {
+      const response = await fetch('http://localhost:3000/api/user/signup',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, email, password })
+        })
+      const data = await response.json()
+      if(response.ok){
+        toast.success(data.message)
+      }else{
+        toast.error(data.error)
+      }
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+      toast.error(data.error)
+    }
   }
 
   return (
@@ -74,6 +95,7 @@ const Signup = () => {
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >Signup</button>
             </div>
+            <Toaster />
           </form>
           <div className='mt-6'>
             <div className='relative'>
@@ -120,7 +142,6 @@ const Signup = () => {
                     </a>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
