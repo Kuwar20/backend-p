@@ -64,6 +64,7 @@ const Search = () => {
                 params: { name: query, page, limit: itemsPerPage }
             });
             setSearchResults(response.data);
+            console.log('API response:', response.data);  // Add this line
         } catch (error) {
             console.error('Error fetching data:', error);
             setSearchResults([]);
@@ -105,11 +106,11 @@ const Search = () => {
                 {searchResults.length > 0 ? (
                     <ul className="divide-y divide-gray-200">
                         {searchResults.map(result => (
-                            <li key={result.id} className="py-4">
+                            <li key={result._id} className="py-4">
                                 <p className="text-lg font-medium">{result.name}</p>
                                 <p className="text-gray-500">{result.email}</p>
-                                <p className="text-gray-500">{result.age}</p>
-                                <p className="text-gray-500">{result.gender}</p>
+                                <p className="text-gray-500">Created: {new Date(result.date).toLocaleString()}</p>
+                                {/* <p className="text-gray-500">Created: {result.date}</p> */} {/* this will output Created: 2024-07-03T13:59:12.691Z */}
                             </li>
                         ))}
                     </ul>
