@@ -56,5 +56,26 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/search/:query', async (req, res) => {
+    const { query } = req.params;
+    const { page, limit } = req.query;
+    const currentPage = parseInt(page) || 1;
+    const itemsPerPage = parseInt(limit) || 5;
+
+    if (!query) {
+        return res.status(400).json({ error: "Please provide a search query" });
+    }
+
+    try {
+        const searchResults = await User.find({ name: { $regex: query, $options: 'i' } })
+            .skip((currentPage - 1) * itemsPerPage)
+            .limit(itemsPerPage);
+        res.status(200).json(searchResults);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong, please try again" });
+    }
+});
 
 export default router;
