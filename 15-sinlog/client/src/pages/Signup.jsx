@@ -30,8 +30,8 @@ const Signup = () => {
     } catch (error) {
       console.error(error)
       toast.error(data.error)
-    } finally{
-       setIssubmitted(false)
+    } finally {
+      setIssubmitted(false)
     }
   }
 
