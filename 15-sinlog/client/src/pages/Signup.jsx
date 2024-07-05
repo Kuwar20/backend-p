@@ -1,38 +1,32 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupUser } from '../store/slices/authSlice';
 
 const Signup = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [issubmitted, setIssubmitted] = useState(false)
+
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIssubmitted(true)
-    try {
-      const response = await fetch('http://localhost:3000/api/user/signup',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name, email, password })
-        })
-      const data = await response.json()
-      if (response.ok) {
-        toast.success(data.message)
-      } else {
-        toast.error(data.error)
+    dispatch(signupUser({ name, email, password })).then((result) => {
+      if (result.meta.requestStatus === 'fulfilled') {
+        toast.success('Signup successful');
+        setName('');
+        setEmail('');
+        setPassword('');
+      } else if (result.meta.requestStatus === 'rejected') {
+        toast.error(error);
       }
-      console.log(data)
-    } catch (error) {
-      console.error(error)
-      toast.error(data.error)
-    } finally {
-      setIssubmitted(false)
-    }
+      else {
+        toast.error(result.payload);
+      }
+    });
   }
 
   return (
@@ -95,9 +89,9 @@ const Signup = () => {
             </div>
             <div>
               <button type='submit'
-                disabled={issubmitted}
+                disabled={loading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >{issubmitted ? 'Loading...' : 'Submit'}</button>
+              >{loading ? 'Loading...' : 'Submit'}</button>
             </div>
             <Toaster />
           </form>
