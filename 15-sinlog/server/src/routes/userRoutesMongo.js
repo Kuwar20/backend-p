@@ -4,18 +4,24 @@ import { User } from '../model/userSchemaMongo.js';
 
 router.post('/signup', async (req, res) => {
 
-    const { name, email, password } = req.body;
+    const { name, email, password, ...additionalFields } = req.body;
 
+    // 1- to check name, email and password are passed in the body of the "signup" api
     if (!name || !email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });
     }
+    // 2- check if any additional fields (other than name, email and password) are passed in the body
+    if (Object.keys(additionalFields).length > 0) {
+        return res.status(400).json({ error: "Additional fields found in request body" });
+    }
+    // 1 and 2 together make sure that only name, email and password are passed in the body of the "signup" api
 
     if (password.length < 6) {
         return res.status(400).json({ error: "Password must be at least 6 characters long" });
     }
 
     try {
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: "User with this email already exists, try Login" });
         }
@@ -34,7 +40,7 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body; // This tells that we will be sending email and password in "login" api
+    const { email, password, ...additionalFields } = req.body; // This tells that we will be sending email and password in "login" api
     // in json in insomnia/postman and here we are storing those email and password in json format
     // to use it further in mongodb
 
@@ -46,14 +52,27 @@ router.post('/login', async (req, res) => {
 
     WE SEND MONGODB QUERY IN JSON FORMAT, SO WE NEED TO USE JSON FORMAT TO GET THE DATA FROM THE BODY
 */
-    
+    // 1- to check email and password are passed in the body of the "login" api
     if (!email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });
     }
 
     // the body should be only be email and password fields and nothing else should be passed
-    if (Object.keys(req.body).length > 2) {
-        return res.status(400).json({ error: "Please provide only email and password" });
+    // if (Object.keys(req.body).length > 2) {
+    //     return res.status(400).json({ error: "Please provide only email and password" });
+    // }
+
+    // better way to do this is to check if any additional fields are passed in the body
+    // const additionalFields = Object.keys(req.body).filter(key => !['email', 'password'].includes(key));
+    // if (additionalFields.length > 0) {
+    //     return res.status(400).json({ error: "Additional fields found in request body" });
+    // }
+
+    // that way can be not scalable. If we need to add more required fields in the future, we need to change the additionalFields array code too
+
+    // 2- Best way is to check if any additional fields are passed in the body
+    if (Object.keys(additionalFields).length > 0) {
+        return res.status(400).json({ error: "Additional fields found in request body" });
     }
 
     try {
