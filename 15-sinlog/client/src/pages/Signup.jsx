@@ -14,19 +14,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    dispatch(signupUser({ name, email, password })).then((result) => {
-      if (result.meta.requestStatus === 'fulfilled') {
-        toast.success('Signup successful');
-        setName('');
-        setEmail('');
-        setPassword('');
-      } else if (result.meta.requestStatus === 'rejected') {
-        toast.error(error);
-      }
-      else {
-        toast.error(result.payload);
-      }
-    });
+    dispatch(signupUser({ name, email, password }))
   }
 
   return (

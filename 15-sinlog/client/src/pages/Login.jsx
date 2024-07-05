@@ -12,18 +12,20 @@ const Login1 = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    dispatch(loginUser({ email, password })).then((result) => {
-      if (result.meta.requestStatus === 'fulfilled') {
-        toast.success('Login successful');
-        setEmail('');
-        setPassword('');
-      } else if (result.meta.requestStatus === 'rejected') {
-        toast.error(error);
-      } 
-      else {
-        toast.error(result.payload);
-      }
-    });
+    dispatch(loginUser({ email, password }))
+
+    // dispatch(loginUser({ email, password })).then((result) => {
+    //   if (result.meta.requestStatus === 'fulfilled') {
+    //     toast.success('Login successful');
+    //     setEmail('');
+    //     setPassword('');
+    //   } else if (result.meta.requestStatus === 'rejected') {
+    //     toast.error(error);
+    //   } 
+    //   else {
+    //     toast.error(result.payload);
+    //   }
+    // });
   }
 
   return (

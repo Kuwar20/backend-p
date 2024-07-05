@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 
 export const loginUser = createAsyncThunk(
@@ -52,10 +53,12 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
                 state.error = null;
+                toast.success('Login successful');
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.error || 'An error occurred during login';
+                toast.error(action.payload.error); // Display backend error message
             })
             .addCase(signupUser.pending, (state) => {
                 state.loading = true;
@@ -66,10 +69,12 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
                 state.error = null;
+                toast.success('Signup successful');
             })
             .addCase(signupUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload.error || 'An error occurred during signup';
+                toast.error(action.payload.error); // Display backend error message
             });
     },
 });
