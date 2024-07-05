@@ -156,7 +156,7 @@ import axios from 'axios';
 
 const Search = () => {
     const dispatch = useDispatch();
-    const { query, results, loading, currentPage, suggestion, error } = useSelector((state) => state.search);
+    const { query, results, loading, currentPage, suggestion } = useSelector((state) => state.search);
     const itemsPerPage = 5;
     const inputRef = useRef(null);
 

@@ -69,7 +69,6 @@ router.post('/login', async (req, res) => {
         // //     updatedAt: 2024-07-05T17:43:27.720Z,
         // //     __v: 0
         // //   }
-        console.log({email,user});
         if (!user) {
             return res.status(400).json({ error: "User not found, please signup" });
         }
@@ -99,7 +98,6 @@ router.get('/search/:query', async (req, res) => {
             .skip((currentPage - 1) * itemsPerPage)
             .limit(itemsPerPage);
         res.status(200).json(searchResults);
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Something went wrong, please try again" });
