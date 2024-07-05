@@ -6,7 +6,7 @@ const Search = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 5;
     const [suggestion, setSuggestion] = useState('');
     const inputRef = useRef(null);
 
