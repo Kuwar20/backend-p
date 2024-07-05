@@ -15,7 +15,7 @@ router.post('/signup', async (req, res) => {
     }
 
     try {
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
         if (existingUser) {
             return res.status(400).json({ error: "User with this email already exists, try Login" });
         }
@@ -34,14 +34,42 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body; // This tells that we will be sending email and password in "login" api
+    // in json in insomnia/postman and here we are storing those email and password in json format
+    // to use it further in mongodb
 
+    /*     
+    console.log({email, password}); // this is logging the email and password in JSON from the "login" api of insomnia/postman { email: 'hiii@gmail.com', password: '123456' }
+    console.log(req.body); // this is logging the body of the body of the "login" api of insomnia 
+    // which is : { name: 'names1', email: 'hiii@gmail.com', password: '123456' } 
+    console.log(email, password); // this is logging the email and password directly and not in JSON from the "login" api of insomnia/postman
+
+    WE SEND MONGODB QUERY IN JSON FORMAT, SO WE NEED TO USE JSON FORMAT TO GET THE DATA FROM THE BODY
+*/
+    
     if (!email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });
     }
 
+    // the body should be only be email and password fields and nothing else should be passed
+    if (Object.keys(req.body).length > 2) {
+        return res.status(400).json({ error: "Please provide only email and password" });
+    }
+
     try {
         const user = await User.findOne({ email });
+        // console.log({email}); // this is logging the email in JSON from the "login" api body of insomnia/postman { email: 'hiii@gmail.com' }
+        // console.log(user); // this is logging the user data in JSON format from the "login" api body of insomnia/postman {
+        // //     _id: new ObjectId('668830bf134969b8d0301581'),
+        // //     name: 'names1',
+        // //     email: 'hiii@gmail.com',
+        // //     password: '123456',
+        // //     date: 2024-07-05T17:43:27.720Z,
+        // //     createdAt: 2024-07-05T17:43:27.720Z,
+        // //     updatedAt: 2024-07-05T17:43:27.720Z,
+        // //     __v: 0
+        // //   }
+        console.log({email,user});
         if (!user) {
             return res.status(400).json({ error: "User not found, please signup" });
         }
