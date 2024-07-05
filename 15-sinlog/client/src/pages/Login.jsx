@@ -1,88 +1,126 @@
 import React, { useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 
-const Login = () => {
+const Login1 = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [issubmitted, setIssubmitted] = useState(false)
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
     setIssubmitted(true)
+    e.preventDefault()
     try {
-      const response = await fetch('http://localhost:3000/api/user/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        })
+      const response = await fetch('http://localhost:3000/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
       const data = await response.json()
       if (response.ok) {
-        console.log(data)
+        console.log("data", data)
         toast.success(data.message)
       } else {
-        console.log(data)
+        console.error(data.error)
         toast.error(data.error)
       }
     } catch (error) {
       console.error(error)
-      toast.error(data.error)
     } finally {
+      setEmail('')
+      setPassword('')
       setIssubmitted(false)
     }
+
   }
 
   return (
-    <div className='min-h-screen bg-slate-200 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
-          <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-            <p className='font-medium text-center text-blue-600 hover:text-blue-500'>Login</p>
+    <div className='min-h-screen bg-slate-300 flex flex-col justify-center py-12 sm:px-6 lg:px-4'>
+      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+        <div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
+          <div className='mb-6'>
+            <h1 className='text-3xl font-bold'>Login into your Account</h1>
           </div>
-          <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
-            <div className=' bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-              <form onSubmit={handleSubmit} className='space-y-4'>
-                <div className='block text-sm font-medium text-gray-700'>
-                  <label>Email</label>
-                </div>
-                <div className='mt-2'>
-                  <input
-                    type="email"
-                    placeholder='Enter your email address'
-                    required
-                    suggested="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                  />
-                </div>
-                <div className='block text-sm font-medium text-gray-700'>
-                  <label>Password</label>
-                </div>
-                <div className='mt-2'>
-                  <input
-                    type="password"
-                    placeholder='Enter your password'
-                    required
-                    suggested="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                  />
-                </div>
-                <div className='mt-1'>
-                  <button
-                    disabled={issubmitted}
-                    type='submit'
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >{issubmitted ? 'Loading...' : 'Submit'}</button>
-                </div>
-              </form>
-              <Toaster />
+          <form className='space-y-4' onSubmit={handleSubmit}>
+            <div className='block text-sm font-medium text-gray-700'>
+              <label>Email</label>
+            </div>
+            <div className='mt-1'>
+              <input
+                type="email"
+                placeholder='Enter your email address'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className='appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+              />
+            </div>
+            <div className='block text-sm font-medium text-gray-700'>
+              <label>Password</label>
+            </div>
+            <div className='mt-1'>
+              <input
+                type="password"
+                placeholder='Enter your password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className='appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+              />
+            </div>
+            <div className='text-sm text-right'>
+              <a href="" className='text-blue-600 hover:text-blue-700 '>Forgot Your Password ?</a>
+            </div>
+            <div className='mt-2'>
+              <button
+                type='submit'
+                disabled={issubmitted}
+                className='group relative w-full flex justify-center py-2 px-3 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+              >{issubmitted ? 'Loading...' : 'Login'}</button>
+            </div>
+          </form>
+          <Toaster />
+          <div className='mt-6'>
+            <div className='relative flex justify-center text-sm'>
+              <p className='px-2 bg-gray-50 text-gray-800'>or continue with</p>
+            </div>
+            <div className='mt-6 grid grid-cols-3 gap-3'>
+              <a
+                href="#"
+                className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <img
+                  className="h-5 w-5"
+                  src="https://www.svgrepo.com/show/512120/facebook-176.svg"
+                  alt="Facebook"
+                />
+              </a>
+              <a
+                href="#"
+                className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <img
+                  className="h-5 w-5"
+                  src="https://www.svgrepo.com/show/513008/twitter-154.svg"
+                  alt="Twitter"
+                />
+              </a>
+              <a
+                href="#"
+                className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <img
+                  className="h-6 w-6"
+                  src="https://www.svgrepo.com/show/506498/google.svg"
+                  alt="Google"
+                />
+              </a>
             </div>
           </div>
+        </div>
+      </div>
     </div>
   )
 }
 
-export default Login
+export default Login1
