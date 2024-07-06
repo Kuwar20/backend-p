@@ -6,11 +6,11 @@ router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
 
-    // 1- to check name, email and password are passed in the body of the "signup" api
+    // 1-Required Fields Check: to check name, email and password are passed in the body of the "signup" api
     if (!name || !email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });
     }
-    // 2- check if any additional fields (other than name, email and password) are passed in the body
+    // 2-Additional Fields Check: check if any additional fields (other than name, email and password) are passed in the body
     if (Object.keys(additionalFields).length > 0) {
         return res.status(400).json({ error: "Additional fields found in request body" });
     }
@@ -30,6 +30,12 @@ router.post('/signup', async (req, res) => {
             email,
             password
         });
+        // this is how newUser Looks like
+        // const newUser = new User({
+        //     name: "nameInReqBody",
+        //     email: "emailInReqBody@gmail.com",
+        //     password: "passwordInReqBody",
+        // });
         await newUser.save();
         res.status(201).json({ message: "User registered successfully" });
 
