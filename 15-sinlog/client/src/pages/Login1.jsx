@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 
-const Login = () => {
+const Login1 = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [issubmitted, setIssubmitted] = useState(false)
@@ -87,4 +87,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login1

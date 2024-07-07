@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../store/slices/authSlice';
 
-const Login1 = () => {
+const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -116,4 +116,4 @@ const Login1 = () => {
   )
 }
 
-export default Login1
+export default Login
