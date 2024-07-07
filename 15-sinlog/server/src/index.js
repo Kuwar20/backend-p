@@ -66,20 +66,20 @@ createDBTable();
 // });
 
 /*
-    app.post('/', (req, res) => {
+app.post('/', (req, res) => {
     // const { name } = req.body;
     // res.send(`Hello ${name}!`);
-
+    
     // this is the right way as it sends the status code 201 and the response in json format
     // const { name } = req.body;
     // res.status(201).json({ message: `Hello ${name}!` });
-
+    
     // const { name } = req.query;
     // //http://localhost:3000/?name=kuwar
     // // output: Hello kuwar!
     // res.status(201).json({ message: `Hello ${name}!` });
-}); 
-*/
+    }); 
+    */
 
 app.use('/api/user', limiter, userRoutesMongo);
 
