@@ -3,6 +3,7 @@ const router = express.Router();
 import { User } from '../model/userSchemaMongo.js';
 
 import cacheMiddleware from '../middlewares/cacheMiddleware.js';
+import bcrypt from 'bcryptjs';
 
 router.post('/signup', async (req, res) => {
 
@@ -27,10 +28,11 @@ router.post('/signup', async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ error: "User with this email already exists, try Login" });
         }
+        const hashedPassword = await bcrypt.hash(password, 12);
         const newUser = new User({
             name,
             email,
-            password
+            password: hashedPassword
         });
         // this is how newUser Looks like
         // const newUser = new User({
@@ -99,10 +101,11 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: "User not found, please signup" });
         }
-        if (user.password !== password) {
-            return res.status(400).json({ error: "Invalid credentials" });
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({ error: "Invalid credentials1" });
         }
-        res.status(200).json({ message: "User logged in successfully" });
+        res.status(200).json({ message: "User logged in successfully", user: { _id: user._id, email: user.email }});
 
     } catch (error) {
         console.error(error);
@@ -133,40 +136,86 @@ router.get('/search/:query', cacheMiddleware, async (req, res) => {
 
 // update name and password
 // also check if the password is same as the old password
-router.put('/update', async (req, res) => {
-    const { email, name, password, ...additionalFields } = req.body;
+// router.put('/update', async (req, res) => {
+//     const { email, name, password, ...additionalFields } = req.body;
 
-    if (!email) {
-        return res.status(400).json({ error: "Please provide email" });
+//     if (!email) {
+//         return res.status(400).json({ error: "Please provide email" });
+//     }
+
+//     if (!name && !password) {
+//         return res.status(400).json({ error: "Please provide something to update" });
+//     }
+
+//     if (Object.keys(additionalFields).length > 0) {
+//         return res.status(400).json({ error: "Additional fields found in request body" });
+//     }
+
+//     try {
+//         const user = await User.findOne({ email });
+
+//         if (!user) {
+//             return res.status(400).json({ error: "User not found" });
+//         }
+
+//         if (name) {
+//             if (user.name === name) {
+//                 return res.status(400).json({ error: "New name must be different from the old name" });
+//             }
+//             user.name = name;
+//         }
+
+//         if (password) {
+//             if (user.password === password) {
+//                 return res.status(400).json({ error: "New password must be different from the old password" });
+//             }
+//             user.password = password;
+//         }
+
+//         await user.save();
+//         res.status(200).json({ message: "User updated successfully" });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Something went wrong, please try again" });
+//     }
+// });
+
+router.put('/update/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { name, oldPassword, newPassword } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({ error: "Please provide user ID" });
     }
 
-    if (!name &&!password) {
+    if (!name && !oldPassword && !newPassword) {
         return res.status(400).json({ error: "Please provide something to update" });
     }
 
-    if (Object.keys(additionalFields).length > 0) {
-        return res.status(400).json({ error: "Additional fields found in request body" });
-    }
-
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findById(userId);
 
         if (!user) {
             return res.status(400).json({ error: "User not found" });
         }
 
         if (name) {
-            if(user.name === name) {
-                return res.status(400).json({ error: "New name must be different from the old name" });
-            }
             user.name = name;
         }
 
-        if (password) {
-            if (user.password === password) {
-                return res.status(400).json({ error: "New password must be different from the old password" });
+        if (oldPassword && newPassword) {
+            const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+            if(oldPassword === newPassword) {
+                return res.status(400).json({ error: "password cannot be same as old password" });
             }
-            user.password = password;
+
+            if (!isPasswordMatch) {
+                return res.status(400).json({ error: "password cannot be same as old password" });
+            }
+
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            user.password = hashedPassword;
         }
 
         await user.save();
@@ -178,20 +227,40 @@ router.put('/update', async (req, res) => {
     }
 });
 
-router.delete('/delete', async (req, res) => {
-    const { email } = req.body;
 
-    if (!email) {
-        return res.status(400).json({ error: "Please provide email" });
+// router.delete('/delete', async (req, res) => {
+//     const { email } = req.body;
+
+//     if (!email) {
+//         return res.status(400).json({ error: "Please provide email" });
+//     }
+
+//     try {
+//         const deletedUser = await User.findOneAndDelete({ email });
+//         if (!deletedUser) {
+//             return res.status(400).json({ error: "User not found" });
+//         }
+//         res.status(200).json({ message: "User deleted successfully" });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Something went wrong, please try again" });
+//     }
+// });
+router.delete('/delete/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+        return res.status(400).json({ error: "Please provide user ID" });
     }
 
     try {
-            const deletedUser = await User.findOneAndDelete({ email });
-            if (!deletedUser) {
-                return res.status(400).json({ error: "User not found" });
-            }
-            res.status(200).json({ message: "User deleted successfully" });
-            
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            return res.status(400).json({ error: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Something went wrong, please try again" });
