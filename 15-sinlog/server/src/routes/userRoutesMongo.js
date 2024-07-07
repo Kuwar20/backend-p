@@ -131,4 +131,71 @@ router.get('/search/:query', cacheMiddleware, async (req, res) => {
     }
 });
 
+// update name and password
+// also check if the password is same as the old password
+router.put('/update', async (req, res) => {
+    const { email, name, password, ...additionalFields } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: "Please provide email" });
+    }
+
+    if (!name &&!password) {
+        return res.status(400).json({ error: "Please provide something to update" });
+    }
+
+    if (Object.keys(additionalFields).length > 0) {
+        return res.status(400).json({ error: "Additional fields found in request body" });
+    }
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ error: "User not found" });
+        }
+
+        if (name) {
+            if(user.name === name) {
+                return res.status(400).json({ error: "New name must be different from the old name" });
+            }
+            user.name = name;
+        }
+
+        if (password) {
+            if (user.password === password) {
+                return res.status(400).json({ error: "New password must be different from the old password" });
+            }
+            user.password = password;
+        }
+
+        await user.save();
+        res.status(200).json({ message: "User updated successfully" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong, please try again" });
+    }
+});
+
+router.delete('/delete', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: "Please provide email" });
+    }
+
+    try {
+            const deletedUser = await User.findOneAndDelete({ email });
+            if (!deletedUser) {
+                return res.status(400).json({ error: "User not found" });
+            }
+            res.status(200).json({ message: "User deleted successfully" });
+            
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong, please try again" });
+    }
+});
+
 export default router;
