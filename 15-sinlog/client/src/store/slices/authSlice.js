@@ -1,13 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 export const loginUser = createAsyncThunk(
     'auth/login',
     async ({ email, password }, { rejectWithValue }) => {
         try {
             const response = await axios.post('http://localhost:3000/api/user/login', { email, password });
-            return response.data;
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            const decodedToken = jwtDecode(token);
+            return { user: decodedToken, token };   
+            // return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
@@ -40,6 +45,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.user = null;
             state.isAuthenticated = false;
+            localStorage.removeItem('token');
         },
     },
     extraReducers: (builder) => {
@@ -52,6 +58,7 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
+                state.token = action.payload.token;
                 state.error = null;
                 toast.success('Login successful');
             })

@@ -44,6 +44,7 @@ import { logout } from '../store/slices/authSlice';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -59,6 +60,7 @@ const Navbar = () => {
         <div className='hidden md:flex space-x-4 text-white'>
           {isAuthenticated ? (
             <>
+              <p>Hello {user.email}</p>
               <Link to='/search'>Search</Link>
               <button onClick={handleLogout} className='text-white'>Logout</button>
             </>
