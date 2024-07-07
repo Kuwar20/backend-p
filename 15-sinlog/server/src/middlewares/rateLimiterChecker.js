@@ -1,4 +1,6 @@
-// just install axios in your project and use this command to test without calling this file in index: 'node src/middlewares/rateLimiterChecker.js'
+// just install axios in your project and use this command to test without calling this file in index: 
+// run this file with : 'node src/middlewares/rateLimiterChecker.js'
+
 import axios from 'axios';
 
 const testRateLimit = async () => {

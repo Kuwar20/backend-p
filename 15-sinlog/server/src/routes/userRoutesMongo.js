@@ -249,7 +249,7 @@ router.put('/update/:id', async (req, res) => {
 // });
 router.delete('/delete/:id', async (req, res) => {
     const userId = req.params.id;
-
+    
     if (!userId) {
         return res.status(400).json({ error: "Please provide user ID" });
     }
