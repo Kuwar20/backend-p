@@ -48,7 +48,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
 router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
-
+    
     // 1-Required Fields Check: to check name, email and password are passed in the body of the "signup" api
     if (!name || !email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });

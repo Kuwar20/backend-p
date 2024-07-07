@@ -16,7 +16,7 @@ import { connectDB } from './utils/connMongoDB.js';
 connectDB();
 
 // Rate limiter middleware
-import limiter from './middlewares/rateLimiter.js';
+import rateLimiterMiddleware from './middlewares/rateLimiter.js';
 
 // import { User } from './model/userSchemaMongo.js'; // to check if the connection is working or not
 
@@ -81,7 +81,7 @@ app.post('/', (req, res) => {
     }); 
     */
 
-app.use('/api/user', limiter, userRoutesMongo);
+app.use('/api/user', rateLimiterMiddleware, userRoutesMongo);
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log('Server is running on port ' + PORT);

@@ -1,5 +1,5 @@
 // just install axios in your project and use this command to test without calling this file in index: 
-// run this file with : 'node src/middlewares/rateLimiterChecker.js'
+// run this file with : 'node src/middlewares/rateLimiterChecker.js' in server file
 
 import axios from 'axios';
 
@@ -21,6 +21,8 @@ const testRateLimit = async () => {
                 }
             })
         );
+        // Adding a slight delay between requests (optional but recommended)
+        //await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay
     }
 
     await Promise.all(requests);

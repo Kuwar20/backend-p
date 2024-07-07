@@ -1,9 +1,36 @@
-import rateLimit from 'express-rate-limit';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: "Too many requests from this IP, please try again after 15 minutes"
-});
+// Configuration options
+const opts = {
+    points: 100, // Number of points
+    duration: 15 * 60, // Per 15 minutes
+    blockDuration: 15 * 60, // Block for 15 minutes if consumed more than points
+};
 
-export default limiter;
+// Create a rate limiter instance
+const rateLimiter = new RateLimiterMemory(opts);
+
+// Middleware for rate limiting
+const rateLimiterMiddleware = (req, res, next) => {
+    rateLimiter.consume(req.ip)
+        .then((rateLimiterRes) => {
+            res.set({
+                'Retry-After': Math.ceil(rateLimiterRes.msBeforeNext / 1000),
+                'X-RateLimit-Limit': opts.points,
+                'X-RateLimit-Remaining': rateLimiterRes.remainingPoints,
+                'X-RateLimit-Reset': new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString(),
+            });
+            next();
+        })
+        .catch((rateLimiterRes) => {
+            res.set({
+                'Retry-After': Math.ceil(rateLimiterRes.msBeforeNext / 1000),
+                'X-RateLimit-Limit': opts.points,
+                'X-RateLimit-Remaining': rateLimiterRes.remainingPoints,
+                'X-RateLimit-Reset': new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString(),
+            });
+            res.status(429).send('Too many requests, please try again later.');
+        });
+};
+
+export default rateLimiterMiddleware;
