@@ -112,14 +112,13 @@ router.post('/login', async (req, res) => {
         // the token when decoded will have the email and _id of the user and will expire in 1 hour
         const token = jwt.sign({email: user.email, _id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         res.status(200).json({ message: "User logged in successfully", token });
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Something went wrong, please try again" });
     }
 });
 
-router.get('/search/:query', cacheMiddleware, async (req, res) => {
+router.get('/search/:query' ,cacheMiddleware, async (req, res) => {
     const { query } = req.params;
     const { page, limit } = req.query;
     const currentPage = parseInt(page) || 1;
@@ -144,6 +143,12 @@ router.get('/search/:query', cacheMiddleware, async (req, res) => {
 router.put('/update', authenticateToken, async (req, res) => {
     const { name, oldPassword, newPassword, ...additionalFields } = req.body;
     const authenticatedUserId = req.user._id;
+
+    // this req user is from auth file saved after jwt token is generated,
+    // to get output we must use auth middleware or else it will be undefined
+    // in the login we are saving the email and _id of the user in the token
+    // so it must show the email and _id of the user
+    console.log(req.user) 
 
     if (!name && !oldPassword && !newPassword) {
         return res.status(400).json({ error: "Please provide something to update" });
