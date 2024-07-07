@@ -5,6 +5,10 @@ import { User } from '../model/userSchemaMongo.js';
 import cacheMiddleware from '../middlewares/cacheMiddleware.js';
 import bcrypt from 'bcryptjs';
 
+import jwt from 'jsonwebtoken';
+
+import authenticateToken from '../middlewares/authMiddleware.js';
+
 router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
@@ -105,7 +109,9 @@ router.post('/login', async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(400).json({ error: "Invalid credentials1" });
         }
-        res.status(200).json({ message: "User logged in successfully", user: { _id: user._id, email: user.email }});
+        // the token when decoded will have the email and _id of the user and will expire in 1 hour
+        const token = jwt.sign({email: user.email, _id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        res.status(200).json({ message: "User logged in successfully", token });
 
     } catch (error) {
         console.error(error);
@@ -181,7 +187,7 @@ router.get('/search/:query', cacheMiddleware, async (req, res) => {
 //     }
 // });
 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id;
     const { name, oldPassword, newPassword } = req.body;
 
@@ -247,7 +253,7 @@ router.put('/update/:id', async (req, res) => {
 //         res.status(500).json({ error: "Something went wrong, please try again" });
 //     }
 // });
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id;
     
     if (!userId) {
