@@ -140,67 +140,21 @@ router.get('/search/:query', cacheMiddleware, async (req, res) => {
     }
 });
 
-// update name and password
-// also check if the password is same as the old password
-// router.put('/update', async (req, res) => {
-//     const { email, name, password, ...additionalFields } = req.body;
 
-//     if (!email) {
-//         return res.status(400).json({ error: "Please provide email" });
-//     }
-
-//     if (!name && !password) {
-//         return res.status(400).json({ error: "Please provide something to update" });
-//     }
-
-//     if (Object.keys(additionalFields).length > 0) {
-//         return res.status(400).json({ error: "Additional fields found in request body" });
-//     }
-
-//     try {
-//         const user = await User.findOne({ email });
-
-//         if (!user) {
-//             return res.status(400).json({ error: "User not found" });
-//         }
-
-//         if (name) {
-//             if (user.name === name) {
-//                 return res.status(400).json({ error: "New name must be different from the old name" });
-//             }
-//             user.name = name;
-//         }
-
-//         if (password) {
-//             if (user.password === password) {
-//                 return res.status(400).json({ error: "New password must be different from the old password" });
-//             }
-//             user.password = password;
-//         }
-
-//         await user.save();
-//         res.status(200).json({ message: "User updated successfully" });
-
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Something went wrong, please try again" });
-//     }
-// });
-
-router.put('/update/:id', authenticateToken, async (req, res) => {
-    const userId = req.params.id;
-    const { name, oldPassword, newPassword } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({ error: "Please provide user ID" });
-    }
+router.put('/update', authenticateToken, async (req, res) => {
+    const { name, oldPassword, newPassword, ...additionalFields } = req.body;
+    const authenticatedUserId = req.user._id;
 
     if (!name && !oldPassword && !newPassword) {
         return res.status(400).json({ error: "Please provide something to update" });
     }
 
+    if (Object.keys(additionalFields).length > 0) {
+        return res.status(400).json({ error: "Additional fields found in request body" });
+    }
+
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById(authenticatedUserId);
 
         if (!user) {
             return res.status(400).json({ error: "User not found" });
@@ -233,35 +187,61 @@ router.put('/update/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// router.put('/update/:id', authenticateToken, async (req, res) => {
+//     const userId = req.params.id;
+//     const { name, oldPassword, newPassword } = req.body;
 
-// router.delete('/delete', async (req, res) => {
-//     const { email } = req.body;
+//     if (!userId) {
+//         return res.status(400).json({ error: "Please provide user ID" });
+//     }
 
-//     if (!email) {
-//         return res.status(400).json({ error: "Please provide email" });
+//     if (!name && !oldPassword && !newPassword) {
+//         return res.status(400).json({ error: "Please provide something to update" });
 //     }
 
 //     try {
-//         const deletedUser = await User.findOneAndDelete({ email });
-//         if (!deletedUser) {
+//         const user = await User.findById(userId);
+
+//         if (!user) {
 //             return res.status(400).json({ error: "User not found" });
 //         }
-//         res.status(200).json({ message: "User deleted successfully" });
+
+//         if (name) {
+//             user.name = name;
+//         }
+
+//         if (oldPassword && newPassword) {
+//             const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+//             if(oldPassword === newPassword) {
+//                 return res.status(400).json({ error: "password cannot be same as old password" });
+//             }
+
+//             if (!isPasswordMatch) {
+//                 return res.status(400).json({ error: "password cannot be same as old password" });
+//             }
+
+//             const hashedPassword = await bcrypt.hash(newPassword, 10);
+//             user.password = hashedPassword;
+//         }
+
+//         await user.save();
+//         res.status(200).json({ message: "User updated successfully" });
 
 //     } catch (error) {
 //         console.error(error);
 //         res.status(500).json({ error: "Something went wrong, please try again" });
 //     }
 // });
-router.delete('/delete/:id', authenticateToken, async (req, res) => {
-    const userId = req.params.id;
-    
-    if (!userId) {
-        return res.status(400).json({ error: "Please provide user ID" });
-    }
 
+
+router.delete('/delete', authenticateToken, async (req, res) => {
+    const authenticatedUserId = req.user._id;
+
+    if (!authenticatedUserId) {
+        return res.status(400).json({ error: "You are not allowed to delete" });
+    }
     try {
-        const deletedUser = await User.findByIdAndDelete(userId);
+        const deletedUser = await User.findByIdAndDelete( authenticatedUserId );
         if (!deletedUser) {
             return res.status(400).json({ error: "User not found" });
         }
@@ -272,5 +252,25 @@ router.delete('/delete/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Something went wrong, please try again" });
     }
 });
+
+// router.delete('/delete/:id', authenticateToken, async (req, res) => {
+//     const userId = req.params.id;
+    
+//     if (!userId) {
+//         return res.status(400).json({ error: "Please provide user ID" });
+//     }
+
+//     try {
+//         const deletedUser = await User.findByIdAndDelete(userId);
+//         if (!deletedUser) {
+//             return res.status(400).json({ error: "User not found" });
+//         }
+//         res.status(200).json({ message: "User deleted successfully" });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Something went wrong, please try again" });
+//     }
+// });
 
 export default router;
