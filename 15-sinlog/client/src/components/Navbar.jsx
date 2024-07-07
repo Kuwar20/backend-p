@@ -61,6 +61,7 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               <p>Hello {user.email}</p>
+              <p>id{user._id}</p>
               <Link to='/search'>Search</Link>
               <button onClick={handleLogout} className='text-white'>Logout</button>
             </>
