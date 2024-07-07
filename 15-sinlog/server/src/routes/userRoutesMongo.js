@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { User } from '../model/userSchemaMongo.js';
 
+import cacheMiddleware from '../middlewares/cacheMiddleware.js';
+
 router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
@@ -108,7 +110,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/search/:query', async (req, res) => {
+router.get('/search/:query', cacheMiddleware, async (req, res) => {
     const { query } = req.params;
     const { page, limit } = req.query;
     const currentPage = parseInt(page) || 1;
