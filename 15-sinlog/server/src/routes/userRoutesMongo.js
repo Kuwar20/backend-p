@@ -9,6 +9,42 @@ import jwt from 'jsonwebtoken';
 
 import authenticateToken from '../middlewares/authMiddleware.js';
 
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = './uploads';
+        fs.mkdirSync(uploadDir, { recursive: true });
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname);
+        cb(null, `${file.fieldname}-${Date.now()}${ext}`);
+    }
+});
+
+// Multer upload configuration
+const upload = multer({ storage });
+
+router.post('/upload', upload.single('file'), (req, res) => {
+    /* in body of the postman/insomnia we need to pass the file in form-data
+    and in key is 'file' and in value we need to pass the file by clicking on the down arrow,
+
+     */
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'Please upload a file' });
+        }
+        console.log(req.file); // Check the uploaded file details in console
+        res.status(200).json({ message: 'File uploaded successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to upload file' });
+    }
+});
+
 router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
