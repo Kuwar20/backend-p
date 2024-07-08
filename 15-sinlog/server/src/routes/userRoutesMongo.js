@@ -167,6 +167,10 @@ router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
     }
 });
 
+// to check if the "cacheMiddleware" is working or not we can run this api 
+// without "cacheMiddleware" and check the time difference in the response
+// and then run this api with "cacheMiddleware" and check the time difference 
+
 router.get('/search/:query', cacheMiddleware, async (req, res) => {
     const { query } = req.params;
     const { page, limit } = req.query;
