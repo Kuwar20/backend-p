@@ -3,6 +3,7 @@ const router = express.Router();
 import { User } from '../model/userSchemaMongo.js';
 
 import cacheMiddleware from '../middlewares/cacheMiddleware.js';
+import { loginRateLimiterMiddleware, loginRateLimiter } from '../middlewares/rateLimiter.js'
 import bcrypt from 'bcryptjs';
 
 import jwt from 'jsonwebtoken';
@@ -48,7 +49,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
 router.post('/signup', async (req, res) => {
 
     const { name, email, password, ...additionalFields } = req.body;
-    
+
     // 1-Required Fields Check: to check name, email and password are passed in the body of the "signup" api
     if (!name || !email || !password) {
         return res.status(400).json({ error: "Please provide all required fields" });
@@ -89,7 +90,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
     const { email, password, ...additionalFields } = req.body; // This tells that we will be sending email and password in "login" api
     // in json in insomnia/postman and here we are storing those email and password in json format
     // to use it further in mongodb
@@ -138,15 +139,27 @@ router.post('/login', async (req, res) => {
         // //     updatedAt: 2024-07-05T17:43:27.720Z,
         // //     __v: 0
         // //   }
+
+        // if (!user) {
+        //     return res.status(400).json({ error: "User not found, please signup" });
+        // }
         if (!user) {
+            // User not found, consume an additional point
+            await loginRateLimiter.consume(req.ip);
             return res.status(400).json({ error: "User not found, please signup" });
         }
         const isPasswordMatch = await bcrypt.compare(password, user.password);
+        // if (!isPasswordMatch) {
+        //     return res.status(400).json({ error: "Invalid credentials1" });
+        // }
         if (!isPasswordMatch) {
-            return res.status(400).json({ error: "Invalid credentials1" });
+            // Wrong password, consume an additional point
+            await loginRateLimiter.consume(req.ip);
+            return res.status(400).json({ error: "Invalid credentials" });
         }
+
         // the token when decoded will have the email and _id of the user and will expire in 1 hour
-        const token = jwt.sign({email: user.email, _id: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign({ email: user.email, _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ message: "User logged in successfully", token });
     } catch (error) {
         console.error(error);
@@ -154,7 +167,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/search/:query' ,cacheMiddleware, async (req, res) => {
+router.get('/search/:query', cacheMiddleware, async (req, res) => {
     const { query } = req.params;
     const { page, limit } = req.query;
     const currentPage = parseInt(page) || 1;
@@ -184,7 +197,7 @@ router.put('/update', authenticateToken, async (req, res) => {
     // to get output we must use auth middleware or else it will be undefined
     // in the login we are saving the email and _id of the user in the token
     // so it must show the email and _id of the user
-    console.log(req.user) 
+    console.log(req.user)
 
     if (!name && !oldPassword && !newPassword) {
         return res.status(400).json({ error: "Please provide something to update" });
@@ -207,7 +220,7 @@ router.put('/update', authenticateToken, async (req, res) => {
 
         if (oldPassword && newPassword) {
             const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
-            if(oldPassword === newPassword) {
+            if (oldPassword === newPassword) {
                 return res.status(400).json({ error: "password cannot be same as old password" });
             }
 
@@ -282,7 +295,7 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: "You are not allowed to delete" });
     }
     try {
-        const deletedUser = await User.findByIdAndDelete( authenticatedUserId );
+        const deletedUser = await User.findByIdAndDelete(authenticatedUserId);
         if (!deletedUser) {
             return res.status(400).json({ error: "User not found" });
         }
@@ -296,7 +309,7 @@ router.delete('/delete', authenticateToken, async (req, res) => {
 
 // router.delete('/delete/:id', authenticateToken, async (req, res) => {
 //     const userId = req.params.id;
-    
+
 //     if (!userId) {
 //         return res.status(400).json({ error: "Please provide user ID" });
 //     }

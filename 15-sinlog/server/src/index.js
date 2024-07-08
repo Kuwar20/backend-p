@@ -16,7 +16,7 @@ import { connectDB } from './utils/connMongoDB.js';
 connectDB();
 
 // Rate limiter middleware
-import rateLimiterMiddleware from './middlewares/rateLimiter.js';
+import { rateLimiterMiddleware } from './middlewares/rateLimiter.js';
 
 // import { User } from './model/userSchemaMongo.js'; // to check if the connection is working or not
 
