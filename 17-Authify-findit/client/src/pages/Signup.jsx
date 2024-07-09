@@ -24,17 +24,23 @@ const Signup = () => {
         body: JSON.stringify({ firstName, lastName, email, password }),
       })
       const data = await response.json()
+      // the response from the server is stored in the data variable
+      // and we know that regiter route will return either "error" or "message" as json response
       if (response.ok) {
         toast.success(data.message)
       } else {
         toast.error(data.error)
       }
-      console.log(data)
+      console.log("data", data)
     } catch (error) {
       console.error('Error:', error)
       toast.error(data.error)
     } finally {
       setIsSubmitted(false)
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setPassword('')
     }
     // 1- output the form data to the console
     // const formData = new FormData(e.target)

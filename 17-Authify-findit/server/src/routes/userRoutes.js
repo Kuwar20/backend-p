@@ -6,6 +6,9 @@ import { User } from '../model/userSchema.js';
 router.post('/register', async (req, res) => {
     const { firstName, lastName, email, password, ...additionalItems } = req.body;
 
+    // we will be sending either "error" or "message" as json response
+    // so that in frontend we only need to check only "error" or "message" key in response
+
     if (!firstName || !lastName || !email || !password) {
         return res.status(422).json({ error: "Please fill all the fields" });
     }
