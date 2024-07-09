@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast';
 
 const Signup = () => {
 
@@ -12,6 +13,7 @@ const Signup = () => {
     e.preventDefault()
     
     console.log(firstName, lastName, email, password)
+    toast.success('Signup successful')
     // 1- output the form data to the console
     // const formData = new FormData(e.target)
     // const data = Object.fromEntries(formData)
@@ -108,6 +110,7 @@ const Signup = () => {
             <button className='bg-green-500 hover:bg-green-700 text-white w-full p-2 rounded-md'>Signup</button>
           </div>
         </form>
+        <Toaster />
         <div className='mt-6'>
           <div className='flex justify-center text-sm mb-3'>
             <p className='px-2 text-gray-800 bg-slate-300 rounded-md'>or continue with</p>
