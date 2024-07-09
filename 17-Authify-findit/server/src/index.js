@@ -13,6 +13,8 @@ connectDB();
 
 //import { User } from './model/userSchema.js'; // to check if the connection is working or not
 
+import { rateLimiterMiddleware } from './middlewares/rateLimiter.js';
+
 import userRoutes from './routes/userRoutes.js';
 
 import logger from '../logger.js';
@@ -34,7 +36,7 @@ app.use(morgan(morganFormat, {
     }
 }));
 
-app.use('/api/user', userRoutes);
+app.use('/api/user', rateLimiterMiddleware, userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

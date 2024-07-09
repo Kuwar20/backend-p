@@ -27,32 +27,6 @@ router.post('/register', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });
     }
-})
-
-
-// to send data to register endpoint using bruteforce
-// import axios from 'axios';
-
-// const dataForRegisterCheck = async () => {
-//     const url = `http://localhost:3000/api/user/register`
-//     const request = [];
-//     try {
-//         for(let i = 0; i < 50; i++) {
-//             request.push(axios.post(url, {
-//                 firstName: `firstName${i}`,
-//                 lastName: `lastName${i}`,
-//                 email: `email${i}@gmail.com`,
-//                 password: `password`
-//             }));
-//             console.log(`User ${i} registered successfully`);
-//         }
-//     } catch (error) {
-//         console.error("error signingup using bruteforce",error);
-//         return;
-//     }
-//     await Promise.all(request);
-// }
-
-// dataForRegisterCheck();
+});
 
 export default router;
