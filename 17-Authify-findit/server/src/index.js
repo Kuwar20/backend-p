@@ -6,6 +6,9 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
+import { connectDB } from './utils/connDB.js';
+connectDB();
+
 import logger from '../logger.js';
 import morgan from 'morgan';
 
