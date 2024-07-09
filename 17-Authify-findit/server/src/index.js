@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 import { connectDB } from './utils/connDB.js';
 connectDB();
 
+//import { User } from './model/userSchema.js'; // to check if the connection is working or not
+
 import logger from '../logger.js';
 import morgan from 'morgan';
 
