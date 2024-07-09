@@ -8,10 +8,12 @@ const Signup = () => {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const handleLogin = (e) => {
+    setIsSubmitted(true)
     e.preventDefault()
-    
+
     console.log(firstName, lastName, email, password)
     toast.success('Signup successful')
     // 1- output the form data to the console
@@ -48,7 +50,8 @@ const Signup = () => {
               //name='first_name'
               required
               value={firstName}
-              onChange={(e)=>{setFirstName(e.target.value);
+              onChange={(e) => {
+                setFirstName(e.target.value);
                 console.log('first name:', e.target.value)
               }}
               placeholder='First Name'
@@ -63,7 +66,8 @@ const Signup = () => {
               type='text'
               required
               value={lastName}
-              onChange={(e)=>{setLastName(e.target.value);
+              onChange={(e) => {
+                setLastName(e.target.value);
                 console.log('last name:', e.target.value)
               }}
               //name='last_name'
@@ -80,8 +84,9 @@ const Signup = () => {
               //name='email'
               required
               value={email}
-              onChange={(e)=>{setEmail(e.target.value);
-              console.log('email:', e.target.value)
+              onChange={(e) => {
+                setEmail(e.target.value);
+                console.log('email:', e.target.value)
               }}
               placeholder='Email'
               className='w-full border rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-900'
@@ -95,7 +100,8 @@ const Signup = () => {
               type='password'
               required
               value={password}
-              onChange={(e)=>{setPassword(e.target.value);
+              onChange={(e) => {
+                setPassword(e.target.value);
                 console.log('password:', e.target.value)
               }}
               //name='password'
@@ -107,7 +113,10 @@ const Signup = () => {
             <Link to='/login' className='text-sm hover:underline cursor-pointer'>Already a user? Login here</Link>
           </div>
           <div className='mt-2'>
-            <button className='bg-green-500 hover:bg-green-700 text-white w-full p-2 rounded-md'>Signup</button>
+            <button
+              disabled={isSubmitted}
+              className='bg-green-500 hover:bg-green-700 text-white w-full p-2 rounded-md'
+            >{isSubmitted ? 'Loading...' : 'Signup'}</button>
           </div>
         </form>
         <Toaster />
