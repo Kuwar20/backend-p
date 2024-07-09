@@ -2,7 +2,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 // General rate limiter configuration (if needed)
 const generalOpts = {
-    points: 10, // Number of points
+    points: 5, // Number of points
     duration: 15 * 60, // Per 15 minutes
     blockDuration: 15 * 60, // Block for 15 minutes if consumed more than points
 };
@@ -32,7 +32,8 @@ const rateLimiterMiddleware = (req, res, next) => {
                 'X-RateLimit-Remaining': rateLimiterRes.remainingPoints,
                 'X-RateLimit-Reset': new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString(),
             });
-            res.status(429).send(`Too many requests from ${req.ip}, please try again later.`);
+            // so that frontend gets this as error in json format and can display it
+            res.status(429).json({error:`Too many requests from ${req.ip}, please try after ${Math.ceil(rateLimiterRes.msBeforeNext / 1000)} seconds`});
         });
 };
 

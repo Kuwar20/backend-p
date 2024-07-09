@@ -10,12 +10,32 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     setIsSubmitted(true)
     e.preventDefault()
 
-    console.log(firstName, lastName, email, password)
-    toast.success('Signup successful')
+    console.log("user typed:", firstName, lastName, email, password)
+    try {
+      const response = await fetch('http://localhost:3000/api/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        toast.success(data.message)
+      } else {
+        toast.error(data.error)
+      }
+      console.log(data)
+    } catch (error) {
+      console.error('Error:', error)
+      toast.error(data.error)
+    } finally {
+      setIsSubmitted(false)
+    }
     // 1- output the form data to the console
     // const formData = new FormData(e.target)
     // const data = Object.fromEntries(formData)

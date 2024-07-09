@@ -17,6 +17,9 @@ import { rateLimiterMiddleware } from './middlewares/rateLimiter.js';
 
 import userRoutes from './routes/userRoutes.js';
 
+import cors from 'cors';
+app.use(cors());
+
 import logger from '../logger.js';
 import morgan from 'morgan';
 
