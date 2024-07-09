@@ -5,11 +5,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+app.use(express.json());
+
 
 import { connectDB } from './utils/connDB.js';
 connectDB();
 
 //import { User } from './model/userSchema.js'; // to check if the connection is working or not
+
+import userRoutes from './routes/userRoutes.js';
 
 import logger from '../logger.js';
 import morgan from 'morgan';
@@ -29,6 +33,8 @@ app.use(morgan(morganFormat, {
         }
     }
 }));
+
+app.use('/api/user', userRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
