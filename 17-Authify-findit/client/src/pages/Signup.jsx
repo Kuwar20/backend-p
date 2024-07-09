@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Signup = () => {
   return (
@@ -48,12 +49,15 @@ const Signup = () => {
               className='mb-3 w-full border rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-900'
             />
           </div>
+          <div className='text-right'>
+            <Link to='/login' className='text-sm hover:underline cursor-pointer'>Already a user? Login here</Link>
+          </div>
           <div className='mt-2'>
             <button className='bg-green-500 hover:bg-green-700 text-white w-full p-2 rounded-md'>Signup</button>
           </div>
         </form>
         <div className='mt-6'>
-          <div className='flex justify-center text-sm mb-2'>
+          <div className='flex justify-center text-sm mb-3'>
             <p className='px-2 text-gray-800 bg-slate-300 rounded-md'>or continue with</p>
           </div>
           <div className='grid grid-cols-3 gap-3'>
