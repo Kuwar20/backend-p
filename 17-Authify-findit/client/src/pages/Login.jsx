@@ -1,7 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log('login:', {email}, {password})
+    console.log('login:', {email, password})
+    console.log('login', email, password)
+  }
+
   return (
     // substract the height of the navbar from the viewport height
     <div className='bg-slate-200 min-h-[calc(100vh-3.5rem)] flex flex-col justify-center'>
@@ -10,7 +23,7 @@ const Login = () => {
           <h1 className='font-bold text-3xl text-center'>Login</h1>
         </div>
         <div>
-          <form className='space-y-4'>
+          <form onSubmit={handleLogin} className='space-y-4'>
             <div className='text-sm font-medium text-gray-700'>
               <label>Email</label>
             </div>
@@ -18,24 +31,41 @@ const Login = () => {
               <input type="email"
                 placeholder='Enter your email'
                 required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  console.log("email", e.target.value)
+                }}
                 className='border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500'
               />
             </div>
             <div className='text-sm font-medium text-gray-700'>
               <label>Password</label>
             </div>
-            <div>
-              <input type="password"
+            <div className='relative'>
+              <input
+                type={showPassword ? 'text' : 'password'}
                 placeholder='Enter your password'
                 required
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  console.log("password", e.target.value)
+                }}
                 className='mb-2 border w-full p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500'
               />
+              <div
+                className='absolute inset-y-0 right-0 px-3 flex items-center cursor-pointer'
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash className='h-6 w-5 text-gray-700' /> : <FaEye className='h-5 w-5 text-gray-700' />}
+              </div>
             </div>
             <div className='hover:underline text-sm flex flex-row-reverse'>
-              <Link className='' to='/signup'>New here? Signup here</Link>
+              <Link className='hover:underline' to='/signup'>New here? Signup here</Link>
             </div>
             <div>
-              <button className='w-full rounded-md p-2.5 bg-blue-700 hover:bg-blue-800 text-white'>Login</button>
+              <button className='w-full rounded-md p-2.5 bg-blue-700 hover:bg-blue-800 text-white transition-colors duration-200'>Login</button>
             </div>
           </form>
           <div className='mt-4'>
