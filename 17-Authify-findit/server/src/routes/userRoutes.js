@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import bcrypt from 'bcryptjs';
 import { User } from '../model/userSchema.js';
+import { loginRateLimiterMiddleware, loginRateLimiter } from '../middlewares/rateLimiter.js'
 
 router.post('/register', async (req, res) => {
     const { firstName, lastName, email, password, ...additionalItems } = req.body;
@@ -32,7 +33,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
     const { email, password, ...additionalItems } = req.body;
 
     if (!email || !password) {
@@ -45,12 +46,22 @@ router.post('/login', async (req, res) => {
 
     try {
         const user = await User.findOne({ email });
+        // if (!user) {
+        //     return res.status(422).json({ error: "Invalid credentials" });
+        // }
         if (!user) {
-            return res.status(422).json({ error: "Invalid credentials" });
+            // User not found, consume an additional point
+            await loginRateLimiter.consume(req.ip);
+            return res.status(400).json({ error: "User not found, please signup" });
         }
         const isPasswordMatch = await bcrypt.compare(password, user.password);
+        // if (!isPasswordMatch) {
+        //     return res.status(422).json({ error: "Invalid credentials" });
+        // }
         if (!isPasswordMatch) {
-            return res.status(422).json({ error: "Invalid credentials" });
+            // Wrong password, consume an additional point
+            await loginRateLimiter.consume(req.ip);
+            return res.status(400).json({ error: "Invalid credentials" });
         }
         res.status(200).json({ message: "User logged in successfully" });
     } catch (error) {
