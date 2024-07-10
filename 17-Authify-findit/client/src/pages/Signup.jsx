@@ -7,32 +7,52 @@ const Signup = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordStrength, setPasswordStrength] = useState("");
+  // const [passwordStrength, setPasswordStrength] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState({
+    strength: 0,
+    label: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [fadeClass, setFadeClass] = useState("");
 
+  // const checkPasswordStrength = (password) => {
+  //   let strength = 0;
+  //   if (password.length >= 8) strength += 2;
+  //   if (password.match(/[a-z]+/)) strength += 1;
+  //   if (password.match(/[A-Z]+/)) strength += 1;
+  //   if (password.match(/[0-9]+/)) strength += 1;
+  //   if (password.match(/[$@#&!]+/)) strength += 1;
+
+  //   switch (strength) {
+  //     case 0:
+  //     case 1:
+  //     case 2:
+  //       return "Weak";
+  //     case 3:
+  //     case 4:
+  //       return "Moderate";
+  //     case 5:
+  //       return "Strong";
+  //     default:
+  //       return "Weak";
+  //   }
+  // };
+
   const checkPasswordStrength = (password) => {
     let strength = 0;
     if (password.length >= 8) strength += 2;
+    if (password.length > 12) strength += 1;
     if (password.match(/[a-z]+/)) strength += 1;
     if (password.match(/[A-Z]+/)) strength += 1;
     if (password.match(/[0-9]+/)) strength += 1;
     if (password.match(/[$@#&!]+/)) strength += 1;
 
-    switch (strength) {
-      case 0:
-      case 1:
-      case 2:
-        return "Weak";
-      case 3:
-      case 4:
-        return "Moderate";
-      case 5:
-        return "Strong";
-      default:
-        return "Weak";
-    }
+    let strengthLabel = "Weak";
+    if (strength > 3) strengthLabel = "Moderate";
+    if (strength > 5) strengthLabel = "Strong";
+
+    return { strength, label: strengthLabel };
   };
 
   const handleLogin = async (e) => {
@@ -176,12 +196,33 @@ const Signup = () => {
                   placeholder="Password"
                   className="mb-3 w-full border rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-900"
                 />
-                {password && (
+                {/* {password && (
                   <div className={`text-sm mt-1 ${passwordStrength === "Weak" ? "text-red-500" :
                     passwordStrength === "Moderate" ? "text-yellow-500" :
                       "text-green-500"
                     }`}>
                     Password strength: {passwordStrength}
+                  </div>
+                )} */}
+                {password && (
+                  <div className="mt-1">
+                    <div className="w-1/2 bg-gray-200 rounded-full h-1">
+                      <div
+                        className={`h-1 rounded-full ${passwordStrength.label === "Weak"
+                            ? "bg-red-500"
+                            : passwordStrength.label === "Moderate"
+                              ? "bg-yellow-500"
+                              : "bg-green-500"
+                          }`}
+                        style={{
+                          width: `${(passwordStrength.strength / 7) * 100}%`,
+                        }}
+                      ></div>
+                    </div>
+                    <div className="w-1/2 flex justify-between mt-1">
+                      <span className="text-xs text-gray-500">Weak</span>
+                      <span className="text-xs text-gray-500">Strong</span>
+                    </div>
                   </div>
                 )}
               </div>
@@ -194,7 +235,7 @@ const Signup = () => {
                 </Link>
               </div>
               <div className="mt-2">
-                <button
+                {/* <button
                   disabled={isLoading || passwordStrength === "Weak"}
                   className={`
                           ${isLoading || passwordStrength === "Weak"
@@ -205,6 +246,22 @@ const Signup = () => {
                   `}
                 >
                   {isLoading ? "Loading..." : "Signup"}
+                </button> */}
+                <button
+                  disabled={isLoading || passwordStrength.label === "Weak"}
+                  className={`
+                      ${isLoading || passwordStrength.label === "Weak"
+                      ? "bg-gray-300"
+                      : "bg-green-500 hover:bg-green-700"
+                    }
+                      text-white w-full p-2 rounded-md transition-colors duration-200
+                    `}
+                >
+                  {isLoading
+                    ? "Loading..."
+                    : passwordStrength.label === "Weak"
+                      ? "Password too weak"
+                      : "Signup"}
                 </button>
               </div>
             </form>
