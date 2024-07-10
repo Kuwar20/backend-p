@@ -64,7 +64,7 @@ const loginRateLimiterMiddleware = (req, res, next) => {
                 'X-RateLimit-Remaining': rateLimiterRes.remainingPoints,
                 'X-RateLimit-Reset': new Date(Date.now() + rateLimiterRes.msBeforeNext).toISOString(),
             });
-            res.status(429).send('Too many login attempts, please try again later.');
+            res.status(429).json({error:`Too many requests from ${req.ip}, please try after ${Math.ceil(rateLimiterRes.msBeforeNext / 1000)} seconds`});
         });
 };
 
