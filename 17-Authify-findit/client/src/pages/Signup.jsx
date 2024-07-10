@@ -7,9 +7,33 @@ const Signup = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [fadeClass, setFadeClass] = useState("");
+
+  const checkPasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength += 2;
+    if (password.match(/[a-z]+/)) strength += 1;
+    if (password.match(/[A-Z]+/)) strength += 1;
+    if (password.match(/[0-9]+/)) strength += 1;
+    if (password.match(/[$@#&!]+/)) strength += 1;
+
+    switch (strength) {
+      case 0:
+      case 1:
+      case 2:
+        return "Weak";
+      case 3:
+      case 4:
+        return "Moderate";
+      case 5:
+        return "Strong";
+      default:
+        return "Weak";
+    }
+  };
 
   const handleLogin = async (e) => {
     setIsLoading(true);
@@ -71,7 +95,7 @@ const Signup = () => {
           <p className="text-3xl font-bold text-center">Register Page</p>
         </div>
         {isFormSubmitted ? (
-            <div className={`fade-in text-center`}>
+          <div className={`fade-in text-center`}>
             <p className="text-2xl font-bold">Account created successfully</p>
             <Link to="/login" className="text-blue-500 hover:underline">
               Login here
@@ -144,6 +168,7 @@ const Signup = () => {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
+                    setPasswordStrength(checkPasswordStrength(e.target.value));
                     console.log("password:", e.target.value);
                   }}
                   disabled={isLoading}
@@ -151,6 +176,14 @@ const Signup = () => {
                   placeholder="Password"
                   className="mb-3 w-full border rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-900"
                 />
+                {password && (
+                  <div className={`text-sm mt-1 ${passwordStrength === "Weak" ? "text-red-500" :
+                    passwordStrength === "Moderate" ? "text-yellow-500" :
+                      "text-green-500"
+                    }`}>
+                    Password strength: {passwordStrength}
+                  </div>
+                )}
               </div>
               <div className="text-right">
                 <Link
@@ -162,8 +195,14 @@ const Signup = () => {
               </div>
               <div className="mt-2">
                 <button
-                  disabled={isLoading}
-                  className="bg-green-500 hover:bg-green-700 text-white w-full p-2 rounded-md"
+                  disabled={isLoading || passwordStrength === "Weak"}
+                  className={`
+                          ${isLoading || passwordStrength === "Weak"
+                      ? "bg-gray-300"
+                      : "bg-green-500 hover:bg-green-700"
+                    }
+                    text-white w-full p-2 rounded-md transition-colors duration-200
+                  `}
                 >
                   {isLoading ? "Loading..." : "Signup"}
                 </button>
