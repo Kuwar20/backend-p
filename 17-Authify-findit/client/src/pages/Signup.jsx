@@ -109,7 +109,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="bg-slate-200 min-h-screen flex flex-col justify-center">
+    <div className="bg-slate-200 min-h-[calc(100vh-3.5rem)] flex flex-col justify-center">
       <div className="bg-white sm:mx-auto sm:w-full sm:max-w-md py-8 px-4 sm:px-10 sm:rounded-lg shadow">
         <div className="mb-6">
           <p className="text-3xl font-bold text-center">Register Page</p>
