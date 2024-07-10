@@ -9,6 +9,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [fadeClass, setFadeClass] = useState("");
 
   const handleLogin = async (e) => {
     setIsLoading(true);
@@ -29,7 +30,8 @@ const Signup = () => {
       if (response.ok) {
         toast.success(data.message);
         //setIsFormSubmitted(true);
-        setTimeout(() => setIsFormSubmitted(true), 400); // 0.4 seconds
+        setFadeClass("fade-out");
+        setTimeout(() => setIsFormSubmitted(true), 600); // 0.5 seconds
       } else {
         toast.error(data.error);
       }
@@ -69,14 +71,14 @@ const Signup = () => {
           <p className="text-3xl font-bold text-center">Register Page</p>
         </div>
         {isFormSubmitted ? (
-          <div className="text-center">
+            <div className={`fade-in text-center`}>
             <p className="text-2xl font-bold">Account created successfully</p>
             <Link to="/login" className="text-blue-500 hover:underline">
               Login here
             </Link>
           </div>
         ) : (
-          <>
+          <div className={fadeClass}>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="text-sm font-medium text-gray-700">
                 <label>First Name</label>
@@ -209,7 +211,7 @@ const Signup = () => {
                 </a>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
