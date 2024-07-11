@@ -73,20 +73,46 @@ router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
 // search route
 router.get('/search/:query', async (req, res) => {
     const { query } = req.params;
+    const { page, limit } = req.query;
+    const currentPage = parseInt(page) || 1;
+    const itemsPerPage = parseInt(limit) || 5;
 
     if (!query) {
         return res.status(422).json({ error: "Please provide a search query" });
     }
 
     try {
-        const searchResults = await User.find({
+        const totalDocs = await User.countDocuments({
             $or: [
                 { firstName: { $regex: query, $options: 'i' } },
                 { lastName: { $regex: query, $options: 'i' } },
                 { email: { $regex: query, $options: 'i' } },
             ]
         });
-        res.status(200).json({ searchResults });
+        if (totalDocs === 0) {
+            return res.status(404).json({ error: "No results found" });
+        }
+
+        const searchResults = await User.find({
+            $or: [
+                { firstName: { $regex: query, $options: 'i' } },
+                { lastName: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } },
+            ]
+        }).skip((currentPage - 1) * itemsPerPage).limit(itemsPerPage).select('-password')
+
+        const totalPages = Math.ceil(totalDocs / itemsPerPage);
+        
+        res.status(200).json({
+            pagination: {
+                totalDocs,
+                totalPages,
+                currentPage,
+                itemsPerPage
+            },
+            searchResults
+        });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });
