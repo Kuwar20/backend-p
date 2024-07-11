@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { User } from '../model/userSchema.js';
 import { Log } from '../model/logSchema.js';
 import { loginRateLimiterMiddleware, loginRateLimiter } from '../middlewares/rateLimiter.js'
+import cacheMiddleware from '../middlewares/cacheMiddleware.js';
 
 router.post('/register', async (req, res) => {
     const { firstName, lastName, email, password, ...additionalItems } = req.body;
@@ -80,7 +81,7 @@ router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
 });
 
 // search route
-router.get('/search/:query', async (req, res) => {
+router.get('/search/:query', cacheMiddleware, async (req, res) => {
     const { query } = req.params;
     const { page, limit } = req.query;
     const currentPage = parseInt(page) || 1;
