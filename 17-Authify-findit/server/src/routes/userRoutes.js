@@ -70,4 +70,28 @@ router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
     }
 });
 
+// search route
+router.get('/search/:query', async (req, res) => {
+    const { query } = req.params;
+
+    if (!query) {
+        return res.status(422).json({ error: "Please provide a search query" });
+    }
+
+    try {
+        const searchResults = await User.find({
+            $or: [
+                { firstName: { $regex: query, $options: 'i' } },
+                { lastName: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } },
+            ]
+        });
+        res.status(200).json({ searchResults });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 export default router;
