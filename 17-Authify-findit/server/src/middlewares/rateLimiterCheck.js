@@ -1,5 +1,7 @@
 //to send data to register endpoint using bruteforce
 // run this file with : 'node src/middlewares/rateLimiterCheck.js' in server file
+// we can also check login here by just changing url to 'http://localhost:3000/api/user/login'
+// and changing the data to be sent to login endpoint to only email and password
 
 import axios from 'axios';
 

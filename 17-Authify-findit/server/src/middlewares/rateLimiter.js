@@ -8,7 +8,7 @@ const generalOpts = {
 };
 
 const loginOpts = {
-    points: 3, // Number of points
+    points: 50, // Number of points
     duration: 10 * 60, // Per 10 minutes
     blockDuration: 10 * 60, // Block for 10 minutes if consumed more than points
 };

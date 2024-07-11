@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import bcrypt from 'bcryptjs';
 import { User } from '../model/userSchema.js';
+import { Log } from '../model/logSchema.js';
 import { loginRateLimiterMiddleware, loginRateLimiter } from '../middlewares/rateLimiter.js'
 
 router.post('/register', async (req, res) => {
@@ -26,6 +27,10 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
         const newUser = new User({ firstName, lastName, email, password: hashedPassword });
         await newUser.save();
+
+        const log = new Log({ userId: newUser._id, activity: 'signup' });
+        await log.save();
+
         res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
         console.error(error);
@@ -63,6 +68,10 @@ router.post('/login', loginRateLimiterMiddleware, async (req, res) => {
             await loginRateLimiter.consume(req.ip);
             return res.status(400).json({ error: "Invalid credentials" });
         }
+
+        const log = new Log({ userId: user._id, activity: 'login' });
+        await log.save();
+
         res.status(200).json({ message: "User logged in successfully" });
     } catch (error) {
         console.error(error);
@@ -101,8 +110,35 @@ router.get('/search/:query', async (req, res) => {
             ]
         }).skip((currentPage - 1) * itemsPerPage).limit(itemsPerPage).select('-password')
 
+        const UserFromsearchResults = await Promise.all(searchResults.map(async user => {
+            const logs = await Log.find({ userId: user._id }).sort('timestamp');
+            const signupLog = logs.find(log => log.activity === 'signup');
+            const loginLogs = logs.filter(log => log.activity === 'login');
+            const allLoginDates = loginLogs.map(log => log.timestamp.toLocaleString());
+
+            return {
+                user: {
+                    _id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    createdAt: user.createdAt.toLocaleString(),
+                    updatedAt: user.updatedAt.toLocaleString(),
+                    __v: user.__v
+                },
+                log: {
+                    signupDate: signupLog ? signupLog.timestamp.toLocaleString() : null,
+                    firstLogin: loginLogs.length > 0 ? loginLogs[0].timestamp.toLocaleString() : null,
+                    lastLogin: loginLogs.length > 0 ? loginLogs[loginLogs.length - 1].timestamp.toLocaleString() : null,
+                    numberOfLogins: loginLogs.length,
+                    allLoginDates: allLoginDates,
+                    __v: logs.__v
+                }
+            };
+        }));
+
         const totalPages = Math.ceil(totalDocs / itemsPerPage);
-        
+
         res.status(200).json({
             pagination: {
                 totalDocs,
@@ -110,7 +146,7 @@ router.get('/search/:query', async (req, res) => {
                 currentPage,
                 itemsPerPage
             },
-            searchResults
+            UserFromsearchResults
         });
 
     } catch (error) {
