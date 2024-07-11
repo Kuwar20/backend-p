@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import toast, { Toaster } from "react-hot-toast";
 
@@ -10,12 +10,6 @@ const Search = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [suggestion, setSuggestion] = useState('');
     const inputRef = useRef(null);
-
-    useEffect(() => {
-        if (query) {
-            fetchResults(query, currentPage);
-        }
-    }, [currentPage, query]);
 
     const handleChange = async (event) => {
         const value = event.target.value;
@@ -70,6 +64,10 @@ const Search = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (query.trim() === '') {
+            toast.error('Please enter Something to search');
+            return;
+        }
         setCurrentPage(1);
         fetchResults(query, 1);
     };
@@ -99,6 +97,11 @@ const Search = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        fetchResults(query, newPage);
     };
 
     return (
@@ -152,14 +155,14 @@ const Search = () => {
             {searchResults.length > 0 && (
                 <div className="flex justify-center mt-4">
                     <button
-                        onClick={() => setCurrentPage(prevPage => prevPage - 1)}
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="bg-indigo-500 text-white px-4 py-2 rounded-l-md hover:bg-indigo-600 focus:outline-none disabled:bg-gray-400"
                     >
                         Previous
                     </button>
                     <button
-                        onClick={() => setCurrentPage(prevPage => prevPage + 1)}
+                        onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="bg-indigo-500 text-white px-4 py-2 rounded-r-md hover:bg-indigo-600 focus:outline-none disabled:bg-gray-400"
                     >
