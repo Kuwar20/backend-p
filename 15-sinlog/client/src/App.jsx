@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Search from "./pages/Search";
 import Login1 from "./pages/Login1";
 import Login2 from "./pages/Login2";
+import Fetch from "./pages/Fetch";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login2" element={<Login2 />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/fetch" element={<Fetch />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </BrowserRouter>
