@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const Fetch = () => {
     const [search, setSearch] = useState('')
+    const [data, setData] = useState([])
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -15,6 +16,7 @@ const Fetch = () => {
         const data = await response.json()
         if (response.ok) {
             console.log(data);
+            setData(data)
         }
     }
 
@@ -39,8 +41,23 @@ const Fetch = () => {
                     </button>
                 </div>
             </form>
+            {
+                data.length > 0 && (
+                    <div>
+                        <h2>Result all</h2>
+                        <ul>
+                            {
+                                data.map((item, index) => (
+                                    <li key={index} className="bg-gray-200 p-2 rounded-md mb-2">
+                                        <p>Email:{item.email}</p>
+                                        <p>password:{item.password}</p>
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
+                )
+            }
         </div>
-
     )
 }
 
