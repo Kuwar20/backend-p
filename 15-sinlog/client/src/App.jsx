@@ -8,6 +8,7 @@ import Login1 from "./pages/Login1";
 import Login2 from "./pages/Login2";
 import Fetch from "./pages/Fetch";
 import LandingPage from "./pages/LandingPage";
+import Counter from './pages/lrender';
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/search" element={<Search />} />
           <Route path="/fetch" element={<Fetch />} />
-          <Route path="lpage" element={<LandingPage />} />
+          <Route path="/lpage" element={<LandingPage />} />
+          <Route path="/lrender" element={<Counter />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </BrowserRouter>
