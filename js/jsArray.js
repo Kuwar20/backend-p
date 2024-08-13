@@ -103,24 +103,25 @@ apps.forEach(function (app, index) {
 // 1 "Messaging"
 // 2 "Clock"
 
-const number = [1, 2, 3, 4, 5];
-const incrementedNumber = number.map((num, index) => num + index);
 
-// Get the container element
-const container = document.getElementById('incrementedNumbersContainer');
+// const number = [1, 2, 3, 4, 5];
+// const incrementedNumber = number.map((num, index) => num + index);
+// // Get the container element
+// const container = document.getElementById('incrementedNumbersContainer');
+// // Create a string to hold the HTML
+// let htmlContent = '<ul>';
 
-// Create a string to hold the HTML
-let htmlContent = '<ul>';
+// // Add each incremented number to the HTML string
+// incrementedNumber.forEach(num => {
+//     htmlContent += `<li>${num}</li>`;
+// });
 
-// Add each incremented number to the HTML string
-incrementedNumber.forEach(num => {
-    htmlContent += `<li>${num}</li>`;
-});
+// htmlContent += '</ul>';
 
-htmlContent += '</ul>';
+// // Set the HTML content of the container
+// container.innerHTML = htmlContent;
 
-// Set the HTML content of the container
-container.innerHTML = htmlContent;
+
 
 // memoize ex (it will take a long time to execute)
 // function fibonacci(n) {
@@ -166,30 +167,65 @@ container.innerHTML = htmlContent;
 
 // memoize ex2
 
-function memoize(fn) {
-    const cache = {};
+// function memoize(fn) {
+//     const cache = {};
 
-    return function (...args) {
-        const key = JSON.stringify(args);
-        if (cache[key]) {
-            return cache[key];
-        }
-        const result = fn.apply(this, args);
-        cache[key] = result;
-        return result;
-    };
+//     return function (...args) {
+//         const key = JSON.stringify(args);
+//         if (cache[key]) {
+//             return cache[key];
+//         }
+//         const result = fn.apply(this, args);
+//         cache[key] = result;
+//         return result;
+//     };
+// }
+
+// const memoizedFactorial = memoize(function (n) {
+//     if (n === 0 || n === 1) {
+//         return 1;
+//     }
+//     return n * memoizedFactorial(n - 1);
+// });
+
+// // Measure memoized factorial execution time
+// const startMemoized = performance.now();
+// console.log(memoizedFactorial(100)); // Fast calculation
+// const endMemoized = performance.now();
+// const memoizedTime = Math.floor(endMemoized - startMemoized);
+// console.log(`Memoized Factorial execution time: ${memoizedTime} milliseconds`);
+
+
+// promise
+// Function that returns a promise
+function orderPizza() {
+    return new Promise((resolve, reject) => {
+        console.log("Ordering pizza...");
+
+        // Simulate pizza delivery with a timeout
+        setTimeout(() => {
+            const isDelivered = true; // Simulate a successful pizza delivery
+
+            if (isDelivered) {
+                resolve("Pizza is delivered!"); // Resolve the promise
+            } else {
+                reject("Pizza delivery failed."); // Reject the promise
+            }
+        }, 3000); // Wait for 3 seconds
+    });
 }
 
-const memoizedFactorial = memoize(function (n) {
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * memoizedFactorial(n - 1);
-});
+// Use the promise
+const pizzaPromise = orderPizza();
 
-// Measure memoized factorial execution time
-const startMemoized = performance.now();
-console.log(memoizedFactorial(100)); // Fast calculation
-const endMemoized = performance.now();
-const memoizedTime = Math.floor(endMemoized - startMemoized);
-console.log(`Memoized Factorial execution time: ${memoizedTime} milliseconds`);
+console.log("Pizza order is pending...");
+
+pizzaPromise
+    .then((message) => {
+        console.log(message); // This runs if the promise is resolved
+    })
+    .catch((error) => {
+        console.error(error); // This runs if the promise is rejected
+    });
+
+console.log("Waiting for the pizza...");
