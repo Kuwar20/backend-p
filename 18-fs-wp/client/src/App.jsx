@@ -1,12 +1,14 @@
-
+import React from 'react';
+import Navbar from './components/Navbar';
+import HomePage from './components/HomePage';
 
 function App() {
-
   return (
-    <>
-      <h1 className='text-center text-bold text-2xl'>Hello React</h1>
-    </>
-  )
+    <div className="App">
+      <Navbar />
+      <HomePage />
+    </div>
+  );
 }
 
-export default App
+export default App;
