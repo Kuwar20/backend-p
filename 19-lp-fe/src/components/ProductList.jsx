@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../app/slices/productsSlice';
+import { addToCart } from '../app/slices/cartSlice';
 
 const ProductList = () => {
     const dispatch = useDispatch();
@@ -14,6 +15,10 @@ const ProductList = () => {
         }
     }, [productStatus, dispatch]);
 
+    const handleAddToCart = (product) => {
+        dispatch(addToCart(product));
+    };
+
     let content;
 
     if (productStatus === 'loading') {
@@ -24,7 +29,10 @@ const ProductList = () => {
                 <img src={product.image} alt={product.title} className="h-40 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">{product.title}</h3>
                 <p className="text-gray-500">${product.price}</p>
-                <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+                <button
+                    onClick={() => handleAddToCart(product)}
+                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+                >
                     Add to Cart
                 </button>
             </div>
