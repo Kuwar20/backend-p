@@ -1,10 +1,16 @@
-function App() {
+import React from 'react';
+import HeroSection from './components/HeroSection';
+import ProductList from './components/ProductList';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
+const App = () => {
   return (
-    <>
-      <h1>Landing Page</h1>
-    </>
-  )
-}
+    <div className="font-sans">
+      <HeroSection />
+      <ProductList />
+      <ScrollToTopButton />
+    </div>
+  );
+};
 
-export default App
+export default App;
