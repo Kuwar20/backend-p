@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:5000/api', // Adjust this according to your backend URL
+  baseURL: 'https://fakestoreapi.com', // Fake Store API URL
 });
 
 export default instance;
