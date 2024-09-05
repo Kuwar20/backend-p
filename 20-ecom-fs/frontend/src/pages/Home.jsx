@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../app/slice/productSlice';
 import ProductCard from '../components/ProductCard';
+import Navbar from '../components/Navbar';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Home = () => {
 
     return (
         <div className="container mx-auto p-4">
+            <Navbar/>
             <h1 className="text-3xl font-bold mb-6">Products</h1>
             {loading ? (
                 <p>Loading...</p>
