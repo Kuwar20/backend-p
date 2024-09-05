@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../app/slice/productSlice';
 import ProductCard from '../components/ProductCard';
 import Navbar from '../components/Navbar';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const Home = () => {
                     ))}
                 </div>
             )}
+            <ScrollToTopButton />
         </div>
     );
 };
