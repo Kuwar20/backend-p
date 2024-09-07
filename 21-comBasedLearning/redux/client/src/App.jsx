@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import { addItem } from './app/slices/cartSlice';
+import { createPaymentIntent } from './app/slices/paymentSlice';
+import CheckoutForm from './components/CheckoutForm';
 
-function App() {
-  const [count, setCount] = useState(0)
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+const App = () => {
+    const dispatch = useDispatch();
+    const { totalAmount } = useSelector((state) => state.cart);
 
-export default App
+    useEffect(() => {
+        if (totalAmount > 0) {
+            dispatch(createPaymentIntent(totalAmount * 100)); // Amount in cents for Stripe
+        }
+    }, [totalAmount, dispatch]);
+
+    const handleAddItem = () => {
+        dispatch(addItem({ name: 'Product 1', price: 20 }));
+    };
+
+    return (
+        <div className="min-h-screen p-8 bg-gray-100">
+            <h1 className="text-2xl mb-4">Shopping Cart</h1>
+            <button onClick={handleAddItem} className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                Add Item
+            </button>
+            <Elements stripe={stripePromise}>
+                <CheckoutForm />
+            </Elements>
+        </div>
+    );
+};
+
+export default App;

@@ -5,6 +5,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 
+const app = express();
+app.use(cors());
+app.use(json());
+
 // import { config } from 'dotenv'; // or this, both works
 // config();
 
@@ -30,9 +34,6 @@ const orderSchema = new Schema({
 const Order = model('Order', orderSchema);
 
 // Initialize express app
-const app = express();
-app.use(cors());
-app.use(json());
 
 // Route to handle payment intent creation
 app.post('/api/payment/create-payment-intent', async (req, res) => {
@@ -44,7 +45,7 @@ app.post('/api/payment/create-payment-intent', async (req, res) => {
             amount: totalAmount,
             currency: 'usd',
         });
-
+        console.log('paymentIntent:', paymentIntent);
         // Save order to the database
         const order = new Order({
             items,
