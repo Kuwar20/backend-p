@@ -3,10 +3,11 @@ import Stripe from "stripe";
 import cors from "cors";
 
 const app = express();
-const stripe = Stripe("your-secret-key"); // Use your Stripe secret key
 
 import dotenv from "dotenv";
 dotenv.config();
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const PORT = process.env.PORT || 4001;
 app.use(cors());
