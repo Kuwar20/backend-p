@@ -14,9 +14,14 @@ const App = () => {
 
     useEffect(() => {
         if (totalAmount > 0) {
-            dispatch(createPaymentIntent(totalAmount * 100)); // Amount in cents for Stripe
+            console.log('Dispatching createPaymentIntent for total amount:', totalAmount); // Debugging log
+            dispatch(createPaymentIntent(totalAmount * 100));
         }
     }, [totalAmount, dispatch]);
+    
+    const { clientSecret } = useSelector((state) => state.payment);
+    console.log('Client Secret from Redux:', clientSecret); // Log to see if the state is updated
+    
 
     const handleAddItem = () => {
         dispatch(addItem({ name: 'Product 1', price: 20 }));

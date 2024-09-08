@@ -1,28 +1,33 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import { createPaymentIntent, clearClientSecret } from '../app/slices/paymentSlice';
 
 const CheckoutForm = () => {
     const stripe = useStripe();
     const elements = useElements();
+    const dispatch = useDispatch();
     const { clientSecret, loading } = useSelector((state) => state.payment);
 
-    console.log('Client Secret:', clientSecret); // Add this line
+    useEffect(() => {
+        // Fetch payment intent when the form is mounted (or totalAmount changes)
+        dispatch(createPaymentIntent(1000));  // Replace with actual amount logic
+        
+        // Cleanup: Clear the client secret when unmounting
+        return () => {
+            dispatch(clearClientSecret());
+        };
+    }, [dispatch]);
 
     const handlePayment = async (event) => {
         event.preventDefault();
-        console.log('Handle Payment Called');  // Debugging line
 
-        console.log('Stripe:', stripe);
-        console.log('Elements:', elements);
-        console.log('Client Secret:', clientSecret);
         if (!stripe || !elements || !clientSecret) {
             console.error('Stripe.js or Elements not loaded, or clientSecret is missing.');
             return;
         }
 
         const cardElement = elements.getElement(CardElement);
-
         try {
             const result = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
@@ -45,6 +50,7 @@ const CheckoutForm = () => {
             <CardElement className="p-2 border rounded mb-4" />
             <button
                 type="submit"
+                disabled={!clientSecret || loading}
                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             >
                 {loading ? 'Processing...' : 'Pay'}
@@ -54,5 +60,3 @@ const CheckoutForm = () => {
 };
 
 export default CheckoutForm;
-
-

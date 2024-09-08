@@ -38,22 +38,22 @@ const Order = model('Order', orderSchema);
 // Route to handle payment intent creation
 app.post('/api/payment/create-payment-intent', async (req, res) => {
     try {
-        const { items, totalAmount } = req.body;
+        const { amount } = req.body;
 
         // Create a payment intent
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalAmount,
+            amount: amount,
             currency: 'usd',
         });
-        console.log('paymentIntent:', paymentIntent);
-        // Save order to the database
-        const order = new Order({
-            items,
-            totalAmount,
-            paymentIntentId: paymentIntent.id,
-        });
 
-        await order.save();
+        // Save order to the database
+        // const order = new Order({
+        //     items,
+        //     totalAmount,
+        //     paymentIntentId: paymentIntent.id,
+        // });
+
+        // await order.save();
 
         // Send clientSecret to the frontend
         res.status(200).send({

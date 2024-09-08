@@ -1,10 +1,13 @@
+// In your Redux slice (paymentSlice.js)
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const createPaymentIntent = createAsyncThunk(
     'payment/createPaymentIntent',
     async (amount) => {
+        console.log('Creating payment intent with amount:', amount);
         const response = await axios.post('http://localhost:4000/api/payment/create-payment-intent', { amount });
+        console.log('Received client secret:', response.data.clientSecret);
         return response.data;
     }
 );
@@ -15,6 +18,11 @@ const paymentSlice = createSlice({
         clientSecret: '',
         loading: false,
         error: null,
+    },
+    reducers: {
+        clearClientSecret: (state) => {
+            state.clientSecret = '';
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -32,4 +40,5 @@ const paymentSlice = createSlice({
     },
 });
 
+export const { clearClientSecret } = paymentSlice.actions;
 export default paymentSlice.reducer;
