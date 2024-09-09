@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import mongoose from 'mongoose';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import logger from '../logger.js';
 import morgan from 'morgan';
 
 dotenv.config();
@@ -38,12 +39,19 @@ const paymentIntentLimiter = rateLimit({
     message: 'Too many payment requests from this IP, please try again after an hour.',
 });
 
-// Logger middleware using Morgan
 const morganFormat = ':method :url :status :response-time ms';
+
 app.use(morgan(morganFormat, {
     stream: {
         write: (message) => {
-            console.log(message.trim()); // log request details in the console
+            const logObject = {
+                method: message.split(' ')[0],
+                url: message.split(' ')[1],
+                status: message.split(' ')[2],
+                responseTime: message.split(' ')[3],
+
+            };
+            logger.info(JSON.stringify(logObject));
         }
     }
 }));
