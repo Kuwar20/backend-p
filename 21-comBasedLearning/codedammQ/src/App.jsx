@@ -1,4 +1,5 @@
 import Counter from "./components/Counter"
+import RandomNoGenerator from "./components/RandomNoGenerator"
 import Toggle from "./components/toggle"
 
 function App() {
@@ -9,8 +10,12 @@ function App() {
         <Toggle />
       </section>
 
-      <section className="flex items-center justify-center">
+      <section className="h-screen flex items-center justify-center">
         <Counter />
+      </section>
+
+      <section className="flex items-center justify-center">
+        <RandomNoGenerator />
       </section>
     </>
   )
