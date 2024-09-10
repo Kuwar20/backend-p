@@ -6,7 +6,10 @@ const RandomNoGenerator = () => {
     const [randomNo, setRandomNo] = useState(0);
 
     const GenerateRandomNumber = () => {
-        let randomNo = Math.floor(Math.random() * (upperLimit - lowerLimit) + lowerLimit);
+        const upper = Number(upperLimit);
+        const lower = Number(lowerLimit);
+        
+        let randomNo = Math.floor(Math.random() * (upper - lower +1 ) + lower);
         setRandomNo(randomNo);
     };
 
