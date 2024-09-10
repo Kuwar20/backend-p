@@ -8,7 +8,7 @@ function Toggle() {
     };
 
     const ToggleableParagraph = ({ position }) => (
-        <div className={`bg-gray-200 absolute ${position} flex flex-col items-center justify-center`}>
+        <div className={`bg-gray-200 absolute ${position} flex flex-col items-center justify-center font-semibold`}>
             {isVisible && (
                 <p className='mb-4'>This is the paragraph you can toggle.</p>
             )}
@@ -26,16 +26,18 @@ function Toggle() {
             <ToggleableParagraph position="top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
             {/* Top Left */}
-            <ToggleableParagraph position="top-0 left-0" />
+            {/* <ToggleableParagraph position="top-0 left-0" /> */}
 
             {/* Top Right */}
-            <ToggleableParagraph position="top-0 right-0" />
+            {/* <ToggleableParagraph position="top-0 right-0" /> */}
 
             {/* Bottom Left */}
-            <ToggleableParagraph position="bottom-0 left-0" />
+            {/* <ToggleableParagraph position="bottom-0 left-0" /> */}
 
             {/* Bottom Right */}
-            <ToggleableParagraph position="bottom-0 right-0" />
+            {/* <ToggleableParagraph position="bottom-0 right-0" /> */}
+            
+            
         </>
     );
 }
