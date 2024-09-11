@@ -1,5 +1,6 @@
 import Counter from "./components/Counter"
 import RandomNoGenerator from "./components/RandomNoGenerator"
+import SIcalc from "./components/SIcalc"
 import Toggle from "./components/toggle"
 
 function App() {
@@ -16,6 +17,10 @@ function App() {
 
       <section className="flex items-center justify-center">
         <RandomNoGenerator />
+      </section>
+
+      <section className="flex items-center justify-center">
+        <SIcalc />
       </section>
     </>
   )

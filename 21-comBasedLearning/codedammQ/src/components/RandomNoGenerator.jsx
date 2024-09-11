@@ -9,6 +9,11 @@ const RandomNoGenerator = () => {
         const upper = Number(upperLimit);
         const lower = Number(lowerLimit);
         
+        if(!upper || !lower) {
+            alert('Please enter both upper and lower limit');
+            return;
+        }
+        
         let randomNo = Math.floor(Math.random() * (upper - lower +1 ) + lower);
         setRandomNo(randomNo);
     };
