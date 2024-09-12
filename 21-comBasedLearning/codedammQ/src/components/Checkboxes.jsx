@@ -22,10 +22,8 @@ const Checkboxes = () => {
     };
 
     const selectAll = () => {
-        // Determine if all are already selected
         const allSelected = checkboxes.every(checkbox => checkbox.checked);
 
-        // Toggle select/deselect all based on previous state
         const updatedCheckboxes = checkboxes.map(checkbox => ({
             ...checkbox,
             checked: !allSelected
@@ -35,21 +33,28 @@ const Checkboxes = () => {
     };
 
     return (
-        <div>
-            <button onClick={selectAll}>
+        <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+            <h1 className="text-2xl font-bold mb-4">Select Your Pets</h1>
+            <button
+                onClick={selectAll}
+                className="bg-blue-500 text-white px-4 py-2 mb-4 rounded hover:bg-blue-700"
+            >
                 {checkboxes.every(checkbox => checkbox.checked) ? 'Deselect All' : 'Select All'}
             </button>
 
-            {checkboxes.map(checkbox => (
-                <div key={checkbox.id}>
-                    <input
-                        type="checkbox"
-                        checked={checkbox.checked}
-                        onChange={() => handleOptionSelect(checkbox.id)}
-                    />
-                    <label>{checkbox.label}</label>
-                </div>
-            ))}
+            <div className="space-y-2">
+                {checkboxes.map(checkbox => (
+                    <label key={checkbox.id} className="flex items-center space-x-2">
+                        <input
+                            type="checkbox"
+                            checked={checkbox.checked}
+                            onChange={() => handleOptionSelect(checkbox.id)}
+                            className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-400"
+                        />
+                        <span className="text-lg">{checkbox.label}</span>
+                    </label>
+                ))}
+            </div>
         </div>
     );
 };
