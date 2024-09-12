@@ -1,3 +1,4 @@
+import Checkboxes from "./components/Checkboxes"
 import Counter from "./components/Counter"
 import RandomNoGenerator from "./components/RandomNoGenerator"
 import SIcalc from "./components/SIcalc"
@@ -21,6 +22,10 @@ function App() {
 
       <section className="flex items-center justify-center">
         <SIcalc />
+      </section>
+
+      <section className="flex items-center justify-center">
+        <Checkboxes />
       </section>
     </>
   )
