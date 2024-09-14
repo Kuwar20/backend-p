@@ -29,7 +29,7 @@ function App() {
         <Checkboxes />
       </section>
 
-      <section className="flex items-center justify-center">
+      <section className="h-screen flex items-center justify-center">
         <Timer />
       </section>
     </>
