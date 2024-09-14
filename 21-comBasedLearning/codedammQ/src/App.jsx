@@ -3,6 +3,7 @@ import Counter from "./components/Counter"
 import RandomNoGenerator from "./components/RandomNoGenerator"
 import SIcalc from "./components/SIcalc"
 import Toggle from "./components/toggle"
+import Timer from "./components/Timer"
 
 function App() {
 
@@ -26,6 +27,10 @@ function App() {
 
       <section className="flex items-center justify-center">
         <Checkboxes />
+      </section>
+
+      <section className="flex items-center justify-center">
+        <Timer />
       </section>
     </>
   )
