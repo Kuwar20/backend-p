@@ -33,6 +33,13 @@ const SearchSort = () => {
 
     const handleClick = (pageNumber) => setCurrentPage(pageNumber);
 
+    const handleSort = () => {
+         const sortedNames = [...result].sort((a,b)=>a.localeCompare(b)); // for asc
+        // const sortedNames = [...result].sort((a,b)=>b.localeCompare(a)); // for desc order
+
+        setResult(sortedNames)
+    }
+
     return (
         <div className='flex justify-center items-center min-h-screen bg-gray-100 p-5'>
             <div className='flex flex-col bg-white p-6 rounded-lg shadow-lg w-full max-w-lg'>
@@ -45,6 +52,7 @@ const SearchSort = () => {
                         value={search}
                         onChange={handleSearch}
                     />
+                    <button onClick={handleSort}>Sort</button>
                 </div>
                 <h3 className='text-lg font-medium mb-2'>Result:</h3>
                 <div className='text-gray-700 mb-4'>
