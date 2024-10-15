@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SearchSort from './component/SearchSort';
+import SearchSort2 from './component/SearchSort2';
 
 function App() {
 
@@ -9,6 +9,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/ss" element={<SearchSort />} />
+          <Route path='/search' element={<SearchSort2 />}/>
         </Routes>
       </BrowserRouter>
     </>
