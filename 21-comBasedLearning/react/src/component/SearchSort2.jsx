@@ -10,12 +10,15 @@ const SearchSort2 = () => {
 
     const [sortOrder, setSortOrder] = useState('asc');
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
     // console.log(names.sort())
     // console.log(names.includes("sagar"))
     // console.log(...namesList.sort())
     const handleSearch = (e) => {
         setSearch(e.target.value)
         console.log(e.target.value)
+        setCurrentPage(1);  // Reset to first page on new search
     }
 
     const searchedName = () => {
@@ -24,7 +27,7 @@ const SearchSort2 = () => {
         ))
         return sortNames(filteredName)
     }
-
+    
     const sortNames = (namesToSort) => {
         return namesToSort.sort((a, b) => {
             if (sortOrder === 'asc') {
@@ -34,11 +37,19 @@ const SearchSort2 = () => {
             }
         })  
     }
-
+    
     const handleSort = () => {
         setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
     }
+    
+    const totalPages = Math.ceil(searchedName().length / itemsPerPage);
+    const pageNumbers = [...Array(totalPages).keys()].map(i => i + 1);
 
+    const currentItems = searchedName().slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+    
     return (
         <div className='flex flex-col justify-center items-center min-h-screen bg-gray-100 p-5'>
             <div className='flex'>
@@ -65,11 +76,22 @@ const SearchSort2 = () => {
 
                 <div>
                     <h3>Search Result</h3>
-                    <ol className='list-disc'>
-                        {searchedName().map((name, index) => (
+                    <ol className='list-decimal pl-5'>
+                        {currentItems.map((name, index) => (
                             <li key={index} className='mb-1'>{name}</li>
                         ))}
                     </ol>
+                    <div className='mt-4 flex justify-center'>
+                        {pageNumbers.map((number) => (
+                            <button
+                                key={number}
+                                onClick={() => setCurrentPage(number)}
+                                className={`mx-1 px-3 py-1 border ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                            >
+                                {number}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
