@@ -8,6 +8,8 @@ const SearchSort2 = () => {
 
     const [search, setSearch] = useState('')
 
+    const [sortOrder, setSortOrder] = useState('asc');
+
     // console.log(names.sort())
     // console.log(names.includes("sagar"))
     // console.log(...namesList.sort())
@@ -17,9 +19,24 @@ const SearchSort2 = () => {
     }
 
     const searchedName = () => {
-        return names.filter((name) => (
+        const filteredName= names.filter((name) => (
             name.toLowerCase().includes(search.toLowerCase())
         ))
+        return sortNames(filteredName)
+    }
+
+    const sortNames = (namesToSort) => {
+        return namesToSort.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.localeCompare(b);
+            } else {
+                return b.localeCompare(a);
+            }
+        })  
+    }
+
+    const handleSort = () => {
+        setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
     }
 
     return (
@@ -34,6 +51,7 @@ const SearchSort2 = () => {
                         className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition'
                     />
                 </label>
+                <button onClick={handleSort}>Sort {sortOrder === 'asc' ? '↑' : '↓'}</button>
             </div>
             <div className='flex'>
                 <div>
