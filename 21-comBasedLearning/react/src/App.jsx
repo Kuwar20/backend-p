@@ -3,6 +3,7 @@ import SearchSort from './component/SearchSort';
 import SearchSort2 from './component/SearchSort2';
 import SearchSort3 from './component/SearchSort3';
 import RsearchSort from './component/RsearchSort';
+import RsearchSort2 from './component/RsearchSort2';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
           <Route path='/search' element={<SearchSort2 />} />
           <Route path='/search1' element={<SearchSort3 />} />
           <Route path='/search2' element={<RsearchSort/>}/>
+          <Route path='/search3' element={<RsearchSort2/>}/>
         </Routes>
       </BrowserRouter>
     </>
