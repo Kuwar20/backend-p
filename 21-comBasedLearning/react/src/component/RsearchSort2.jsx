@@ -14,10 +14,6 @@ const RsearchSort2 = () => {
         fetchData();
     }, []);
 
-    const handleSearch = (e) => {
-        setSearch(e.target.value);
-    };
-
     const searchProduct = products.filter((product) =>
         product.title.toLowerCase().includes(search.toLowerCase())
     );
@@ -30,7 +26,7 @@ const RsearchSort2 = () => {
                     <input 
                         type="text"
                         value={search}
-                        onChange={handleSearch}
+                        onChange={(e)=>setSearch(e.target.value)}
                         placeholder='Search Products'
                         className='mt-1 p-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
                     />
