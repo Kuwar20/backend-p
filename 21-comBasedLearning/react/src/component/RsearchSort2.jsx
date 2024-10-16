@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 const RsearchSort2 = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -14,33 +15,50 @@ const RsearchSort2 = () => {
         fetchData();
     }, []);
 
-    const searchProduct = products.filter((product) =>
+    const searchedProduct = products.filter((product) =>
         product.title.toLowerCase().includes(search.toLowerCase())
     );
+
+    const handleSort = () => {
+        setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+    }
+
+    const sortProducts = (productsToSort) => {
+        return productsToSort.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.title.localeCompare(b.title); // Ascending order
+            } else {
+                return b.title.localeCompare(a.title); // Descending order
+            }
+        })
+    }
+
+    const sortedProducts = sortProducts([...searchedProduct])
 
     return (
         <div className='flex flex-col items-center min-h-screen bg-gray-100 p-5'>
             <div className='mb-4 w-full max-w-md'>
                 <label className='block text-lg font-medium mb-2'>
                     Search:
-                    <input 
+                    <input
                         type="text"
                         value={search}
-                        onChange={(e)=>setSearch(e.target.value)}
+                        onChange={(e) => setSearch(e.target.value)}
                         placeholder='Search Products'
                         className='mt-1 p-3 w-full border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
                     />
                 </label>
+                <button onClick={handleSort}>Sort{sortOrder === 'asc' ? '↑' : '↓'}</button>
             </div>
             <div className='w-full max-w-md'>
                 <ol className='list-decimal space-y-2'>
-                    {searchProduct.length > 0 ? (
-                        searchProduct.map((product) => (
+                    {sortedProducts.length > 0 ? (
+                        sortedProducts.map((product) => (
                             <li key={product.id} className='flex items-center bg-white p-4 border rounded-lg shadow hover:shadow-md transition-shadow'>
-                                <img 
-                                    src={product.image} 
+                                <img
+                                    src={product.image}
                                     alt={product.title}
-                                    className='w-16 h-16 object-contain mr-4' 
+                                    className='w-16 h-16 object-contain mr-4'
                                 />
                                 <div>
                                     <h2 className='font-semibold'>{product.title}</h2>
