@@ -24,8 +24,8 @@ const RsearchSort2 = () => {
     useEffect(() => {
         const fetchData = async () => {
             // Fetch data from the fake store API
-            // const response = await fetch(`https://fakestoreapi.com/products/`);
-            const response = await fetch(`http://localhost:5000/api/products`);
+            const response = await fetch(`https://fakestoreapi.com/products/`);
+            //const response = await fetch(`http://localhost:5000/api/products`);
             const data = await response.json(); // Convert the response to JSON
             setProducts(data); // Update state with the fetched products
             console.log(data); // Log the fetched data for debugging

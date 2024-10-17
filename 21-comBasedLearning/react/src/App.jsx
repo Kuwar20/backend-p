@@ -16,6 +16,7 @@ function App() {
           <Route path='/search1' element={<SearchSort3 />} />
           <Route path='/search2' element={<RsearchSort/>}/>
           <Route path='/search3' element={<RsearchSort2/>}/>
+          <Route path='/search4' element={<RsearchSort3/>}/>
         </Routes>
       </BrowserRouter>
     </>
