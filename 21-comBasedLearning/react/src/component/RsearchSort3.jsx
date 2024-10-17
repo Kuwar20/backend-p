@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 const RsearchSort3 = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
+    const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -16,8 +17,20 @@ const RsearchSort3 = () => {
     }, []);
 
     const handleSearch = products.filter((product) =>
-            product.title.toLowerCase().includes(search.toLowerCase())
-        );
+        product.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const sortProducts = (productToSort) => {
+        return productToSort.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.title.localeCompare(b.title)
+            } else {
+                return b.title.localeCompare(a.title)
+            }
+        })
+    }
+
+    const sortedProducts = sortProducts([...handleSearch])
 
     return (
         <div>
@@ -30,10 +43,13 @@ const RsearchSort3 = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
+                <button onClick={() => setSortOrder((prevOrder) => prevOrder === 'asc' ? "desc" : "asc")}>
+                    Sort {sortOrder === 'asc' ? "↑" : "↓"}</button>
             </div>
+
             <h1>
-                {handleSearch.length > 0 ? (
-                    handleSearch.map((product) => (
+                {sortedProducts.length > 0 ? (
+                    sortedProducts.map((product) => (
                         <li key={product.id}>
                             {product.title} : {product.price}
                         </li>
