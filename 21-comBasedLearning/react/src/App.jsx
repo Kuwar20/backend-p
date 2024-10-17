@@ -4,6 +4,7 @@ import SearchSort2 from './component/SearchSort2';
 import SearchSort3 from './component/SearchSort3';
 import RsearchSort from './component/RsearchSort';
 import RsearchSort2 from './component/RsearchSort2';
+import RsearchSort3 from './component/RsearchSort3';
 
 function App() {
 
