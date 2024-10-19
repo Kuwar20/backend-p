@@ -5,6 +5,9 @@ const RsearchSort3 = () => {
     const [search, setSearch] = useState("");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`https://fakestoreapi.com/products`);
@@ -32,6 +35,16 @@ const RsearchSort3 = () => {
 
     const sortedProducts = sortProducts([...searchedProduct]);
 
+    const indexOfLastProduct = currentPage * itemsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+    const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct)
+
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber)
+    }
+
     return (
         <div className="flex flex-col justify-center items-center">
             <div className="block">
@@ -54,8 +67,8 @@ const RsearchSort3 = () => {
 
             <div className="block">
                 <ol className="list-decimal">
-                    {sortedProducts.length > 0 ? (
-                        sortedProducts.map((product) => (
+                    {currentProducts.length > 0 ? (
+                        currentProducts.map((product) => (
                             <li key={product.id}>
                                 {product.title} : {product.price}
                             </li>
@@ -64,6 +77,19 @@ const RsearchSort3 = () => {
                         <div>Loading</div>
                     )}
                 </ol>
+            </div>
+            <div className="mt-4">
+                {
+                    Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={`mx-1 p-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-black'}`} // Style the active page button
+                        >
+                            {index + 1}
+                        </button>
+                    ))
+                }
             </div>
         </div>
     );
