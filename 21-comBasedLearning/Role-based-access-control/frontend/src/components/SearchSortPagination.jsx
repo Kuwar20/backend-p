@@ -68,15 +68,17 @@ const SearchSortPagination = () => {
         </button>
       </div>
       <h1>
+        <ol className='list-decimal'>
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
             <li key={product.id}>
-              {product.title} : {product.price}
+              {product.title.split(" ").slice(0,4).join(" ")} : {product.price}
             </li>
           ))
         ) : (
           <div>Loading</div>
         )}
+        </ol> 
       </h1>
       <div>
         {Array.from({ length: totalPage }, (_, index) => (
