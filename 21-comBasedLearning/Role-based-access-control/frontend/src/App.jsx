@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import SearchSortPagination from './components/SearchSortPagination';
+import Ssp from './pages/Ssp';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
+          <Route path='/nigga' element={<Ssp />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </Router>
