@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
+const SkeletonLoader = () => {
+  return (
+    <div className="border shadow-md rounded-lg p-4 flex flex-col items-center animate-pulse">
+      <div className="w-full h-48 bg-gray-300 rounded mb-4"></div>
+      <div className="h-6 bg-gray-300 w-3/4 rounded mb-2"></div>
+      <div className="h-6 bg-gray-300 w-1/4 rounded"></div>
+    </div>
+  );
+};
+
 const SearchSortPagination = () => {
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // Display more items per page in a grid
+  const itemsPerPage = 8;
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`https://fakestoreapi.com/products`);
       const responseData = await response.json();
       setProducts(responseData);
+      setLoading(false);
     };
 
     fetchData();
@@ -24,7 +35,7 @@ const SearchSortPagination = () => {
 
   const sortProduct = (productToSort) => {
     return productToSort.sort((a, b) => {
-      if (sortOrder === "asc") {
+      if (sortOrder === 'asc') {
         return a.title.localeCompare(b.title);
       } else {
         return b.title.localeCompare(a.title);
@@ -60,37 +71,40 @@ const SearchSortPagination = () => {
         />
         <button
           onClick={() =>
-            setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
+            setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'))
           }
           className="ml-2 p-3 bg-blue-500 text-white rounded"
         >
-          Sort {sortOrder === "asc" ? "↑" : "↓"}
+          Sort {sortOrder === 'asc' ? '↑' : '↓'}
         </button>
       </div>
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
-        {currentProducts.length > 0 ? (
+        {loading ? (
+          // Show skeleton loaders while loading
+          Array.from({ length: itemsPerPage }).map((_, index) => (
+            <SkeletonLoader key={index} />
+          ))
+        ) : currentProducts.length > 0 ? (
           currentProducts.map((product) => (
             <div
               key={product.id}
-              className="border shadow-md rounded-lg p-4 flex flex-col items-center"
+              className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 transform hover:scale-105"
             >
               <img
                 src={product.image}
                 alt={product.title}
                 className="w-full h-48 object-contain rounded mb-4"
               />
-              {/* Display product title (truncate to first 4 words) */}
               <h3 className="text-lg font-semibold text-center">
-                {product.title.split(" ").slice(0, 4).join(" ")}
+                {product.title.split(' ').slice(0, 4).join(' ')}
               </h3>
-              {/* Product price */}
               <p className="text-xl font-bold text-blue-500">${product.price}</p>
             </div>
           ))
         ) : (
-          <div>Loading...</div>
+          <div>No products found</div>
         )}
       </div>
 
@@ -102,9 +116,9 @@ const SearchSortPagination = () => {
             onClick={() => handlePageChange(index + 1)}
             className={`mx-1 p-2 border rounded ${
               currentPage === index + 1
-                ? "bg-blue-500 text-white"
-                : "bg-white text-black"
-            }`} // Style the active page button
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-black'
+            }`} 
           >
             {index + 1}
           </button>
