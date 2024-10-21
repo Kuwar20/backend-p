@@ -15,7 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute />}>
             <Route index element={<Dashboard />} />
-            <Route path='ssp' element={<SearchSortPagination />} />
+            <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
