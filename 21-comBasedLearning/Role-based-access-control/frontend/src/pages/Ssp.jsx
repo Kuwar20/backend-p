@@ -15,16 +15,20 @@ const Ssp = () => {
   }, [])
 
   return (
-    <div>
-      <div>
-        <ol className='list-decimal'>
-          { products.length > 0 ? (
+    <div className='flex flex-col min-h-screen justify-center items-center p-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl'>
+        {products.length > 0 ? (
           products.map((product) => (
-            <li key={product.id}>{product.title}</li>
-          ))):(
-            <p>No product Found</p>
-          )}
-        </ol>
+            <div key={product.id}>
+              <h2>{product.title} :</h2>
+              <p>{product.price} Rs</p>
+              <img src={product.image} alt={product.title}
+                className='w-full h-48 object-contain rounded mb-4'
+              />
+            </div>
+          ))) : (
+          <p>No product Found</p>
+        )}
       </div>
     </div>
   )
