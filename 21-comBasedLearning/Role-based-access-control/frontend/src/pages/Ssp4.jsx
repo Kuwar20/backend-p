@@ -5,6 +5,7 @@ const Ssp4 = () => {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +36,16 @@ const Ssp4 = () => {
             behavior: 'smooth'
         });
     };
+    const sortProduct = (productToSort) => {
+        return productToSort.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.title.localeCompare(b.title);
+            } else {
+                return b.title.localeCompare(a.title);
+            }
+        });
+    }
+    const sortedProduct = sortProduct([...searchedProduct]);
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen p-6'>
@@ -49,14 +60,17 @@ const Ssp4 = () => {
                         className='border p-3 m-2 rounded'
                     />
                 </label>
+                <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                >Sort{sortOrder === 'asc' ? '↑' : '↓'}</button>
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl'>
                 {loading ? (
                     <h3>Loading...</h3>
                 ) :
-                searchedProduct.length > 0 ? (
-                    searchedProduct.map((product) => (
+                sortedProduct.length > 0 ? (
+                    sortedProduct.map((product) => (
                         <div key={product.id}
                             className='border rounded-lg shadow-md p-4 flex flex-col items-center transition-transform duration-300 transform hover:scale-105'
                         >
