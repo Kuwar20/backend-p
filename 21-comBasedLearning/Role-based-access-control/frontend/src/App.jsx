@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import SearchSortPagination from './components/SearchSortPagination';
 import Ssp from './pages/Ssp';
+import Ssp2 from './pages/Ssp2';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
           <Route path='/nigga' element={<Ssp />} />
+          <Route path='/ssp2' element={<Ssp2 />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </Router>
