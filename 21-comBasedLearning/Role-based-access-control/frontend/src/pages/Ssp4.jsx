@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react'
 
+const SkeletonLoader = () => {
+    return (
+    <div className='border rounded-lg shadow-md p-4 flex flex-col items-center animate-pulse'>
+        <div className='w-full h-48 bg-gray-300 rounded mb-4'></div>
+        <div className='h-6 bg-gray-300 w-3/4 rounded mb-2'></div>
+        <div className='h-6 bg-gray-300 w-1/4 rounded'></div>
+    </div>
+    )
+}
 const Ssp4 = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [sortOrder, setSortOrder] = useState('asc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +58,14 @@ const Ssp4 = () => {
     }
     const sortedProduct = sortProduct([...searchedProduct]);
 
+    const indexOfLastIndex = currentPage * itemsPerPage;
+    const indexOfFirstIndex = indexOfLastIndex - itemsPerPage;
+    const currentProducts = sortedProduct.slice(
+        indexOfFirstIndex,
+        indexOfLastIndex
+    );
+    const totalPage = Math.ceil(sortedProduct.length / itemsPerPage);
+
     return (
         <div className='flex flex-col items-center justify-center min-h-screen p-6'>
 
@@ -67,10 +86,12 @@ const Ssp4 = () => {
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl'>
                 {loading ? (
-                    <h3>Loading...</h3>
+                    Array.from({length:itemsPerPage}).map((_,index)=>(
+                        <SkeletonLoader key={index} />
+                    ))
                 ) :
-                sortedProduct.length > 0 ? (
-                    sortedProduct.map((product) => (
+                currentProducts.length > 0 ? (
+                    currentProducts.map((product) => (
                         <div key={product.id}
                             className='border rounded-lg shadow-md p-4 flex flex-col items-center transition-transform duration-300 transform hover:scale-105'
                         >
@@ -88,7 +109,17 @@ const Ssp4 = () => {
                 )}
             </div>
 
-            <div></div>
+            <div className='mt-8'>
+                {Array.from({length:totalPage},(_,index) => (
+                    <button
+                    key={index + 1}
+                    onClick={() => setCurrentPage(index + 1)}
+                    className={`mx-1 p-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : ''}`}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
             {
                 showScrollTop && (
                     <button
