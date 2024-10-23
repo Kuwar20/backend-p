@@ -10,6 +10,7 @@ import Ssp from './pages/Ssp';
 import Ssp2 from './pages/Ssp2';
 import Ssp3 from './pages/Ssp3';
 import Ssp4 from './pages/Ssp4';
+import Ssp5 from './pages/Ssp5';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
           <Route path='/nigga' element={<Ssp />} />
-          <Route path='/ssp2' element={<Ssp4 />} />
+          <Route path='/ssp2' element={<Ssp5 />} />
           <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
       </Router>
