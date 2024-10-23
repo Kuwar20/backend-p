@@ -61,9 +61,9 @@ const SearchSortPagination = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Show button when user scrolls down 300px
+            // Show button when user scrolls down 100px
             const scrolled = window.scrollY;
-            setShowScrollTop(scrolled > 300);
+            setShowScrollTop(scrolled > 100);
         };
 
         window.addEventListener('scroll', handleScroll);
