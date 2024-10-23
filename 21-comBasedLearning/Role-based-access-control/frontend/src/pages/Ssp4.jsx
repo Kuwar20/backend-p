@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 const Ssp4 = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     useEffect(() => {
@@ -10,6 +11,7 @@ const Ssp4 = () => {
             const response = await fetch(`https://fakestoreapi.com/products`);
             const responseData = await response.json();
             setProducts(responseData);
+            setLoading(false);
         }
         fetchData();
     })
@@ -50,7 +52,10 @@ const Ssp4 = () => {
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl'>
-                {searchedProduct.length > 0 ? (
+                {loading ? (
+                    <h3>Loading...</h3>
+                ) :
+                searchedProduct.length > 0 ? (
                     searchedProduct.map((product) => (
                         <div key={product.id}
                             className='border rounded-lg shadow-md p-4 flex flex-col items-center transition-transform duration-300 transform hover:scale-105'
