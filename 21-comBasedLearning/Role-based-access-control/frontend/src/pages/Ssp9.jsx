@@ -4,6 +4,7 @@ const Ssp9 = () => {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showScrollToTop, setShowScrollToTop] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,6 +20,25 @@ const Ssp9 = () => {
     const searchedProduct = products.filter((product) => (
         product.title.toLowerCase().includes(search.toLowerCase())
     ))
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowScrollToTop(true)
+            } else {
+                setShowScrollToTop(false)
+            }
+        }
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    })
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen p-6">
@@ -42,7 +62,8 @@ const Ssp9 = () => {
                                 <img src={product.image} alt={product.title}
                                     className="w-full h-48 object-contain rounded m-4"
                                 />
-                                <h3>{product.title}</h3>
+                                <h3>{product.title.split(" ").slice(0, 4).join(" ")}</h3>
+                                <p>${product.price}</p>
                             </div>
                         ))
                     ) : (
@@ -50,6 +71,14 @@ const Ssp9 = () => {
                     )}
             </div>
             <div></div>
+            {showScrollToTop && (
+                <button
+                    onClick={scrollToTop}
+                    className="fixed bottom-10 right-10 h-12 w-12 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                    >
+                    ↑
+                </button>
+            )}
         </div>
     );
 };
