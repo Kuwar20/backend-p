@@ -7,6 +7,8 @@ const Ssp9 = () => {
     const [showScrollToTop, setShowScrollToTop] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+    const [sortOrder, setSortOrder]= useState('asc');
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,14 +44,37 @@ const Ssp9 = () => {
         });
     };
 
+    const sortProduct = (productToSort) => {
+        return productToSort.sort((a,b)=>{
+            if(sortOrder === 'asc'){
+                return a.title.localeCompare(b.title);
+            }else{
+                return b.title.localeCompare(a.title);
+            }
+        })
+    }
+    const sortedProduct = sortProduct([...searchedProduct]);
+
     const indexOfLastIndex = currentPage * itemsPerPage;
     const indexOfFirstIndex = indexOfLastIndex - itemsPerPage;
-    const currentProducts = searchedProduct.slice(
+    const currentProducts = sortedProduct.slice(
         indexOfFirstIndex,
         indexOfLastIndex
     );
 
-    const totalPage = Math.ceil(searchedProduct.length / itemsPerPage);
+    const totalPage = Math.ceil(sortedProduct.length / itemsPerPage);
+
+    // // this will only sort the current products that is the products that are being displayed on the screen
+    // const sortProduct = (productToSort) => {
+    //     return productToSort.sort((a,b)=>{
+    //         if(sortOrder === 'asc'){
+    //             return a.title.localeCompare(b.title);
+    //         }else{
+    //             return b.title.localeCompare(a.title);
+    //         }
+    //     })
+    // }
+    // const sortedProduct = sortProduct([...currentProducts]);
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen p-6">
@@ -61,6 +86,9 @@ const Ssp9 = () => {
                     onChange={(e) => setSearch(e.target.value)}
                     className="m-2 p-3 border rounded"
                 />
+                <button
+                onClick={()=>setSortOrder(sortOrder==='asc'?'desc':'asc')}
+                >Sort {sortOrder === 'asc' ? '↑' : '↓'}</button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl">
                 {loading ? (
