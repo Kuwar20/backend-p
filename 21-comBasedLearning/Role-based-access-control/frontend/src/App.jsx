@@ -8,6 +8,7 @@ import PrivateRoute from './components/PrivateRoute';
 import SearchSortPagination from './components/SearchSortPagination';
 import Ssp9 from './pages/Ssp9';
 import Feature from './pages/Feature';
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/ssp2' element={<Ssp9 />} />
           <Route path='/feature' element={<Feature />} />
           <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
     </AuthProvider>
