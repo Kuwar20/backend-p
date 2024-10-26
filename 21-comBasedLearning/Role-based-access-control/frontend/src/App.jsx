@@ -10,11 +10,13 @@ import Feature from './pages/Feature';
 import Home from './pages/Home';
 import Ssp10 from './pages/Ssp10';
 import Localstorage from './pages/Localstorage';
+import Navbarlist from './components/Navbarlist';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <Navbarlist />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute />}>
