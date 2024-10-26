@@ -8,6 +8,15 @@ const SkeletonLoader = () => (
     </div>
 );
 
+const ErrorMessage = ({ message }) => (
+    <div className="w-full p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
+        <div className="flex items-center">
+            <span className="font-bold">Error:</span>
+            <p className="ml-2">{message}</p>
+        </div>
+    </div>
+);
+
 const Ssp10 = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -99,7 +108,7 @@ const Ssp10 = () => {
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50">
-            {error && <div className="text-red-500">{error}</div>}
+            {error && <ErrorMessage message={error} />}
 
             <div className="w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4">
                 <input
