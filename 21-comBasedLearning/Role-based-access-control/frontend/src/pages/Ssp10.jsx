@@ -5,6 +5,7 @@ const Ssp10 = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [showScrollToTop, setScrollToTop] = useState(false)
+    const [search, setSearch] = useState("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,20 +40,43 @@ const Ssp10 = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    const handleImageError = (e) => {
+        e.target.src = 'https://via.placeholder.com/150?text=Image+Not+Found';
+    }
+
+    const searchedProduct = products.filter((product) =>
+        product.title.toLowerCase().includes(search.toLowerCase()) ||
+        product.description.toLowerCase().includes(search.toLowerCase()) ||
+        product.price.toString().includes(search.toLowerCase())
+    )
+
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50'>
             {error && <div className='text-red-500'>{error}</div>}
-            <div></div>
+
+            <div className='w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4'>
+                <input 
+                    type="text" 
+                    placeholder='Search Product by Title, Description or Price'
+                    value={search}
+                    onChange={(e)=> setSearch(e.target.value)}
+                    className='flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none'
+                    />
+            </div>
+
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white'>
                 {loading ? (
                     <div>Loading...</div>
                 ) :
-                    products.length > 0 ? (
-                        products.map((product) => (
+                searchedProduct.length > 0 ? (
+                    searchedProduct.map((product) => (
                             <div key={product.id}
                                 className='border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
-                                <img src={product.image} alt={product.title}
+                                <img
+                                    src={product.image}
+                                    alt={product.title}
+                                    onError={handleImageError}
                                     className='w-full h-48 object-contain rounded mb-4'
                                 />
                                 <div>{product.title.split(" ").slice(0, 4).join(" ")}</div>
@@ -67,7 +91,9 @@ const Ssp10 = () => {
                     )
                 }
             </div>
+
             <div></div>
+
             {showScrollToTop && (
                 <button
                     onClick={scrollToTop}
