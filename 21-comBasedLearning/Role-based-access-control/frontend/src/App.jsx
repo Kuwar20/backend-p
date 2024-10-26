@@ -9,6 +9,7 @@ import SearchSortPagination from './components/SearchSortPagination';
 import Ssp9 from './pages/Ssp9';
 import Feature from './pages/Feature';
 import Home from './pages/Home';
+import Ssp10 from './pages/Ssp10';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
-          <Route path='/ssp2' element={<Ssp9 />} />
+          <Route path='/ssp2' element={<Ssp10 />} />
           <Route path='/feature' element={<Feature />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           <Route path="/home" element={<Home />} />
