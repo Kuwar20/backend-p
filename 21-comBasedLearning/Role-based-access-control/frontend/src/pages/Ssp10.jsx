@@ -6,6 +6,7 @@ const Ssp10 = () => {
     const [error, setError] = useState(null)
     const [showScrollToTop, setScrollToTop] = useState(false)
     const [search, setSearch] = useState("")
+    const [sortOrder, setSortOrder] = useState("asc")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +51,26 @@ const Ssp10 = () => {
         product.price?.toString().includes(search.toLowerCase())
     )
 
+/*     
+    const sortProduct = (productToSort) => {
+        return productToSort.sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return a.title.localeCompare(b.title);
+            } else {
+                return b.title.localeCompare(a.title);
+            }
+        })
+    }
+    const sortedProduct = sortProduct([...searchedProduct]);
+*/
+
+    const sortedProduct = searchedProduct.sort((a,b)=>{
+        if(!a.title || !b.title) return 0;
+        return sortOrder === 'asc'
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+    });
+
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50'>
             {error && <div className='text-red-500'>{error}</div>}
@@ -62,14 +83,20 @@ const Ssp10 = () => {
                     onChange={(e)=> setSearch(e.target.value)}
                     className='flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none'
                     />
+                    <button
+                        onClick={()=> setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                        className='px-2 py-2 bg-blue-500 text-white rounded-lg shadow-md transition-all hover:bg-blue-600'
+                    >
+                        Sort {sortOrder === 'asc' ? '(A-Z)' : '(Z-A)'}
+                    </button>
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white'>
                 {loading ? (
                     <div>Loading...</div>
                 ) :
-                searchedProduct.length > 0 ? (
-                    searchedProduct.map((product) => (
+                sortedProduct.length > 0 ? (
+                    sortedProduct.map((product) => (
                             <div key={product.id}
                                 className='border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
