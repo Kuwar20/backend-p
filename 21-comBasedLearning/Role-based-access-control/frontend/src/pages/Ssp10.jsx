@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 
+const SkeletonLoader = () => (
+    <div className="border rounded-lg shadow-md p-4 flex flex-col items-center animate-pulse">
+        <div className="w-full h-48 bg-gray-300 rounded mb-4"></div>
+        <div className="h-6 bg-gray-300 w-3/4 rounded mb-2"></div>
+        <div className="h-6 bg-gray-300 w-1/4 rounded"></div>
+    </div>
+);
+
 const Ssp10 = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -111,7 +119,9 @@ const Ssp10 = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
-                    <div>Loading...</div>
+                    Array.from({ length: itemsPerPage }, (_, index) => (
+                        <SkeletonLoader key={index} />
+                    ))
                 ) : currentProducts.length > 0 ? (
                     currentProducts.map((product) => (
                         <div
@@ -142,8 +152,8 @@ const Ssp10 = () => {
                         key={index + 1}
                         onClick={() => setCurrentPage(index + 1)}
                         className={`border rounded px-3 py-1 font-medium ${currentPage === index + 1
-                                ? "bg-blue-500 text-white"
-                                : "bg-gray-200 text-gray-700"
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-700"
                             }transition-colors hover:bg-blue-400 hover:text-white`}
                     >
                         {index + 1}
