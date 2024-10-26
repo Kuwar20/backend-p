@@ -4,6 +4,7 @@ const Ssp10 = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [showScrollToTop, setScrollToTop] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,9 +27,21 @@ const Ssp10 = () => {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrollToTop(window.scrollY > 100);
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50'>
-            { error && <div className='text-red-500'>{error}</div> }
+            {error && <div className='text-red-500'>{error}</div>}
             <div></div>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white'>
                 {loading ? (
@@ -55,6 +68,13 @@ const Ssp10 = () => {
                 }
             </div>
             <div></div>
+            {showScrollToTop && (
+                <button
+                    onClick={scrollToTop}
+                    className='fixed bottom-10 right-10 h-12 w-12 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md transition-all'>
+                    ↑
+                </button>
+            )}
         </div>
     )
 }
