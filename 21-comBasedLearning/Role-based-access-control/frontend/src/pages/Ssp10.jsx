@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 
 const Ssp10 = () => {
     const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`https://fakestoreapi.com/products`)
             const responseData = await response.json()
             setProducts(responseData);
+            setLoading(false)
             console.log(responseData)
         }
         fetchData()
@@ -17,7 +19,9 @@ const Ssp10 = () => {
         <div className='flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50'>
             <div></div>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white'>
-                {
+                { loading ? (
+                    <div>Loading...</div>
+                ) :
                     products.length > 0 ? (
                         products.map((product) => (
                             <div key={product.id}
