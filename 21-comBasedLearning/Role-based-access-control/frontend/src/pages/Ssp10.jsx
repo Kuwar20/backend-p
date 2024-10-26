@@ -45,9 +45,9 @@ const Ssp10 = () => {
     }
 
     const searchedProduct = products.filter((product) =>
-        product.title.toLowerCase().includes(search.toLowerCase()) ||
-        product.description.toLowerCase().includes(search.toLowerCase()) ||
-        product.price.toString().includes(search.toLowerCase())
+        product.title?.toLowerCase().includes(search.toLowerCase()) ||
+        product.description?.toLowerCase().includes(search.toLowerCase()) ||
+        product.price?.toString().includes(search.toLowerCase())
     )
 
     return (
