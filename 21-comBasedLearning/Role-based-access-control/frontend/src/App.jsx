@@ -6,10 +6,10 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import SearchSortPagination from './components/SearchSortPagination';
-import Ssp9 from './pages/Ssp9';
 import Feature from './pages/Feature';
 import Home from './pages/Home';
 import Ssp10 from './pages/Ssp10';
+import Localstorage from './pages/Localstorage';
 
 function App() {
   return (
@@ -25,6 +25,7 @@ function App() {
           <Route path='/feature' element={<Feature />} />
           <Route path="*" element={<h1>Not Found</h1>} />
           <Route path="/home" element={<Home />} />
+          <Route path="/localstorage" element={<Localstorage />} />
         </Routes>
       </Router>
     </AuthProvider>
