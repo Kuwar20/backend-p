@@ -3,23 +3,35 @@ import React, { useEffect, useState } from 'react'
 const Ssp10 = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`https://fakestoreapi.com/products`)
-            const responseData = await response.json()
-            setProducts(responseData);
-            setLoading(false)
-            console.log(responseData)
+            try {
+                const response = await fetch(`https://fakestoreapi.com/products`)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const responseData = await response.json()
+                setProducts(responseData);
+                setError(null);
+                console.log(responseData)
+            } catch (error) {
+                setError(error.message || 'Failed to fetch products')
+                setProducts([])
+            } finally {
+                setLoading(false)
+            }
         }
         fetchData()
     }, [])
 
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50'>
+            { error && <div className='text-red-500'>{error}</div> }
             <div></div>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white'>
-                { loading ? (
+                {loading ? (
                     <div>Loading...</div>
                 ) :
                     products.length > 0 ? (
