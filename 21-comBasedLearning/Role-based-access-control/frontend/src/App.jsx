@@ -19,10 +19,12 @@ function App() {
         <Navbarlist />
         <Routes>
           <Route path="/login" element={<Login />} />
+          
           <Route path="/" element={<PrivateRoute />}>
             <Route index element={<Dashboard />} />
             <Route path='/ssp' element={<SearchSortPagination />} />
           </Route>
+          
           <Route path='/ssp2' element={<Ssp10 />} />
           <Route path='/feature' element={<Feature />} />
           <Route path="*" element={<h1>Not Found</h1>} />
