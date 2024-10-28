@@ -4,6 +4,7 @@ const Ssp1 = () => {
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
     const [showScrollToTop, setScrollToTop] = useState(false)
+    const [search, setSearch] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,18 +34,30 @@ const Ssp1 = () => {
     }, [])
 
     const scrollToTop = () => {
-        window.scrollTo({top:0, behavior:'smooth'})
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+
+    const searchedPosts = posts.filter((post) => (
+        post.title.toLowerCase().includes(search.toLowerCase()) ||
+        post.body.toLowerCase().includes(search.toLowerCase())
+    ))
 
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-4'>
-            <div></div>
+            <div>
+                <input type="text"
+                    placeholder='Search posts'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className='border-2 border-gray-300 p-2 rounded-lg w-full max-w-6xl'
+                />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
                     <p>Loading posts..</p>
                 ) :
-                    posts.length > 0 ? (
-                        posts.map((post) => (
+                searchedPosts.length > 0 ? (
+                    searchedPosts.map((post) => (
                             <li key={post.id}
                                 className='border rounded-lg shadow-sm p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
@@ -62,8 +75,8 @@ const Ssp1 = () => {
             {
                 showScrollToTop && (
                     <button
-                    onClick={scrollToTop}
-                    className="fixed bottom-10 right-10 h-12 w-12 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md transition-all"
+                        onClick={scrollToTop}
+                        className="fixed bottom-10 right-10 h-12 w-12 rounded-full bg-blue-500 text-white hover:bg-blue-600 shadow-md transition-all"
                     >
                         ↑
                     </button>
