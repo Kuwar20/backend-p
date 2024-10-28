@@ -26,22 +26,23 @@ const Ssp1 = () => {
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-4'>
             <div></div>
-            <div>
-                <ol className='list-decimal'>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                     {loading ? (
                         <p>Loading posts..</p>
                     ) :
                         posts.length > 0 ? (
                             posts.map((post) => (
-                                <div key={post.id}>
+                                <li key={post.id}
+                                className='border rounded-lg shadow-sm p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
+                                >
                                     <h3>Title: {post.title}</h3>
-                                    <p>Body: {post.body}</p>
-                                </div>
+                                    <br />
+                                    <p>Body: {post.body.split(" ").slice(0,5).join(" ")}</p>
+                                </li>
                             ))) : (
                             <p>No posts found</p>
                         )
                     }
-                </ol>
             </div>
             <div></div>
         </div>
