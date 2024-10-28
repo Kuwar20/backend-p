@@ -1,8 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
+const SkeletonLoader = () => (
+    <div className="border rounded-lg shadow-md p-4 flex flex-col items-center animate-pulse">
+        <div className="w-full h-48 bg-gray-300 rounded mb-4"></div>
+        <div className="h-6 bg-gray-300 w-3/4 rounded mb-2"></div>
+        <div className="h-6 bg-gray-300 w-1/4 rounded"></div>
+    </div>
+);
+
+const ErrorMessage = ({ message }) => (
+    <div className="w-full p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
+        <div className="flex items-center">
+            <span className="font-bold">Error:</span>
+            <p className="ml-2">{message}</p>
+        </div>
+    </div>
+);
+
 const Ssp1 = () => {
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const [showScrollToTop, setScrollToTop] = useState(false)
     const [search, setSearch] = useState('')
     const [sortOrder, setSortOrder] = useState('asc')
@@ -14,12 +32,14 @@ const Ssp1 = () => {
             try {
                 const response = await fetch('https://jsonplaceholder.typicode.com/posts')
                 if (!response.ok) {
-                    throw new Error('HTTP error! status: ${response.status}')
+                    throw new Error(`HTTP error! status: ${response.status}`)
                 }
                 const responseData = await response.json()
                 setPosts(responseData)
+                setError(null)
                 console.log(responseData)
             } catch (error) {
+                setError(error.message || "Failed to load post")
                 setPosts([])
             } finally {
                 setLoading(false)
@@ -59,9 +79,16 @@ const Ssp1 = () => {
 
     const totalPage = Math.max(1, Math.ceil(sortedPosts.length / itemsPerPage));
 
+    useEffect(() => {
+        if (currentPage > totalPage) {
+            setCurrentpage(totalPage);
+        }
+    }, [currentPage, totalPage]);
+
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-4 bg-gray-50'>
 
+            {error && <ErrorMessage message={error}/>}
             <div className="w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4">
                 <input type="text"
                     placeholder='Search posts'
@@ -79,7 +106,9 @@ const Ssp1 = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
-                    <p>Loading posts..</p>
+                    Array.from({length:itemsPerPage}, (_,index)=>(
+                        <SkeletonLoader key={index} />
+                    ))
                 ) :
                     currentProducts.length > 0 ? (
                         currentProducts.map((post) => (
