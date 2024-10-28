@@ -5,6 +5,7 @@ const Ssp1 = () => {
     const [loading, setLoading] = useState(true)
     const [showScrollToTop, setScrollToTop] = useState(false)
     const [search, setSearch] = useState('')
+    const [sortOrder, setSortOrder] = useState('asc')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,22 +43,38 @@ const Ssp1 = () => {
         post.body.toLowerCase().includes(search.toLowerCase())
     ))
 
+    // we are sorting by title, because it is main field of the post
+    const sortedPosts = searchedPosts.sort((a, b) => {
+        if (!a.title || !b.title) return 0;
+        return sortOrder === 'asc'
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
+    })
+
     return (
-        <div className='flex flex-col justify-center items-center min-h-screen p-4'>
-            <div>
+        <div className='flex flex-col justify-center items-center min-h-screen p-4 bg-gray-50'>
+
+            <div className="w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4">
                 <input type="text"
                     placeholder='Search posts'
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className='border-2 border-gray-300 p-2 rounded-lg w-full max-w-6xl'
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
                 />
+                <button
+                    className="px-2 py-2 bg-blue-500 text-white rounded-lg shadow-md transition-all hover:bg-blue-600"
+                    onClick={(e) => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                >
+                    Sort {sortOrder === 'asc' ? '(A-Z)' : '(Z-A)'}
+                </button>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
                     <p>Loading posts..</p>
                 ) :
-                searchedPosts.length > 0 ? (
-                    searchedPosts.map((post) => (
+                    sortedPosts.length > 0 ? (
+                        sortedPosts.map((post) => (
                             <li key={post.id}
                                 className='border rounded-lg shadow-sm p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
@@ -70,6 +87,7 @@ const Ssp1 = () => {
                     )
                 }
             </div>
+
             <div></div>
 
             {
