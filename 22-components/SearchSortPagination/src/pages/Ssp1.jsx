@@ -6,6 +6,8 @@ const Ssp1 = () => {
     const [showScrollToTop, setScrollToTop] = useState(false)
     const [search, setSearch] = useState('')
     const [sortOrder, setSortOrder] = useState('asc')
+    const [currentPage, setCurrentpage] = useState(1);
+    const itemsPerPage = 8;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,6 +53,12 @@ const Ssp1 = () => {
             : b.title.localeCompare(a.title);
     })
 
+    const indexOfLastIndex = currentPage * itemsPerPage;
+    const indexOfFirstIndex = indexOfLastIndex - itemsPerPage;
+    const currentProducts = sortedPosts.slice(indexOfFirstIndex, indexOfLastIndex);
+
+    const totalPage = Math.max(1, Math.ceil(sortedPosts.length / itemsPerPage));
+
     return (
         <div className='flex flex-col justify-center items-center min-h-screen p-4 bg-gray-50'>
 
@@ -73,10 +81,10 @@ const Ssp1 = () => {
                 {loading ? (
                     <p>Loading posts..</p>
                 ) :
-                    sortedPosts.length > 0 ? (
-                        sortedPosts.map((post) => (
+                    currentProducts.length > 0 ? (
+                        currentProducts.map((post) => (
                             <li key={post.id}
-                                className='border rounded-lg shadow-sm p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
+                                className='border rounded-lg shadow-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
                                 <h3>Title: {post.title}</h3>
                                 <br />
@@ -88,7 +96,23 @@ const Ssp1 = () => {
                 }
             </div>
 
-            <div></div>
+            <div className='mt-4 space-x-2'>
+                {
+                    Array.from({ length: totalPage }, (_, index) => (
+                        <button
+                            onClick={() => setCurrentpage(index + 1)}
+                            className={`border rounded px-3 py-1 font-medium
+                                ${currentPage === index +1 
+                                ? "bg-blue-500 text-white"
+                                : " bg-gray-200 text-gray-700" 
+                                } hover:bg-blue-400
+                                `}
+                        >
+                            {index + 1}
+                        </button>
+                    ))
+                }
+            </div>
 
             {
                 showScrollToTop && (
