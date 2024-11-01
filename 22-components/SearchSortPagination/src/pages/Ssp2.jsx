@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 const ErrorMessage = ({ message }) => (
     <div className="w-full p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
@@ -18,136 +18,126 @@ const SkeletonLoader = () => (
 );
 
 const Ssp2 = () => {
-    const [posts, setPosts] = useState([])
-    const [showScrollToTop, setScrollToTop] = useState(false)
-    const [loading, setLoading] = useState(true)
-    const [search, setSearch] = useState('')
-    const [error, setError] = useState(null)
-    const [sortOrder, setSortOrder] = useState('asc')
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showScrollToTop, setScrollToTop] = useState(false);
+    const [search, setSearch] = useState("");
+    const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://jsonplaceholder.typicode.com/posts')
+                const response = await fetch("https://fakestoreapi.com/products");
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`)
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const responseData = await response.json();
-                console.log(responseData)
-                setPosts(responseData)
-                setError(null)
+                setProducts(responseData);
+                setError(null);
+                console.log(responseData);
             } catch (error) {
-                setError(error.message || 'Failed to fetch posts')
-                setPosts([])
+                setError(error.message || "Failed to fetch products");
+                setProducts([]);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
-
-        fetchData()
-    }, [])
+        };
+        fetchData();
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrollToTop(window.scrollY > 100)
-        }
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
-
+            setScrollToTop(window.scrollY > 100);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    });
     const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-    const searchedPosts = posts.filter((post) => (
-        post.title?.toLowerCase().includes(search.toLowerCase()) ||
-        post.body?.toLowerCase().includes(search.toLowerCase())
-    ))
+    const searchedProducts = products.filter(
+        (product) =>
+            product.title?.toLowerCase().includes(search.toLowerCase()) ||
+            product.description?.toLowerCase().includes(search.toLowerCase()) ||
+            product.price?.toString().includes(search.toLowerCase())
+    );
 
-    /*     
-      const sortProduct = (productToSort) => {
-          return productToSort.sort((a, b) => {
-              if (sortOrder === 'asc') {
-                  return a.title.localeCompare(b.title);
-              } else {
-                  return b.title.localeCompare(a.title);
-              }
-          })
-      }
-      const sortedProduct = sortProduct([...searchedProduct]);
-  */
-
-    const sortedPosts = searchedPosts.sort((a, b) => {
+    const sortedProducts = searchedProducts.sort((a, b) => {
         if (!a.title || !b.title) return 0;
         return sortOrder === 'asc'
             ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title);
+            : b.title.localeCompare(a.title)
     })
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentPosts = sortedPosts.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
 
-    const totalPages = Math.max(1, Math.ceil(sortedPosts.length / itemsPerPage));
-
-    useEffect(() => {
-        if (currentPage > totalPages) {
-            setCurrentPage(totalPages);
-        }
-    }, [currentPage, totalPages]);
+    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
     return (
-        <div className='flex flex-col items-center min-h-screen p-4'>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
             {error && <ErrorMessage message={error} />}
-            <div className="w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4">
+            <div className=''>
                 <input
                     type="text"
-                    placeholder='Search Post using Title or Body'
+                    placeholder="Search Products by Title, Description, Price"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
-                    required
+                    className="w-full p-2 mb-4 border border-gray-300 rounded"
                 />
                 <button
-                    className='bg-blue-500 text-white px-4 py-2 rounded-lg'
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                >Sort {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}</button>
+                    onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                    className="p-2 mb-4 bg-blue-500 text-white rounded"
+                >
+                    Sort {sortOrder === "asc" ? "(A-Z)" : "(Z-A)"}
+                </button>
             </div>
-            <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 w-full max-w-6xl'>
+
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 w-full max-w-6xl">
                 {loading ? (
-                    Array.from({ length: itemsPerPage }, (_, index) => (
+                    Array.from({length:itemsPerPage},(_,index)=>(
                         <SkeletonLoader key={index} />
                     ))
-                ) :
-                    currentPosts.length > 0 ? (
-                        currentPosts.map((post) => (
-                            <div key={post.id}
-                                className='border rounded-lg shadow-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
-                            >
-                                <h3>Title: {post.title.split(" ").slice(0, 4).join(" ")}</h3>
-                                <p>Body: {post.body.split(" ").slice(0, 4).join(" ")}</p>
-                            </div>
-                        ))) : (
-                        <div>No Post Found..</div>
-                    )
-                }
+                ) : currentItems.length > 0 ? (
+                    currentItems.map((product) => (
+                        <div key={product.id}
+                            className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105"
+                        >
+                            <img
+                                src={product.image}
+                                alt={product.title}
+                                className="w-full h-48 object-contain rounded mb-4"
+                            />
+                            <h3>{product.title.split(" ").slice(0, 5).join(" ")}</h3>
+                            <p>{product.description.split(" ").slice(0, 5).join(" ")}</p>
+                            <p>{product.price}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No Product Found</p>
+                )}
             </div>
-            <div className='mt-4'>
+
+            <div className="mt-4 space-x-2">
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
                         key={index + 1}
                         onClick={() => setCurrentPage(index + 1)}
-                        className={`px-3 py-1 mx-1 rounded-lg border ${currentPage === index + 1
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-white text-gray-500'
-                            }`}
+                        className={`border rounded px-3 py-1 font-medium ${currentPage === index + 1
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-700"
+                            }transition-colors hover:bg-blue-400 hover:text-white`}
                     >
                         {index + 1}
                     </button>
                 ))}
             </div>
+
             {showScrollToTop && (
                 <button
                     onClick={scrollToTop}
@@ -157,7 +147,7 @@ const Ssp2 = () => {
                 </button>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default Ssp2
+export default Ssp2;
