@@ -1,11 +1,11 @@
 import React from 'react';
-import Navbar from './components/navbar2/Navbar';
+import NavList from './components/navbar3/NavList';
 
 
 function App() {
   return (
     <div className="">
-      <Navbar />
+      <NavList />
       <main className="text-center">
         <p>This is the navbar component</p>
       </main>
