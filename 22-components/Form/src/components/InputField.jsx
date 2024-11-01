@@ -1,10 +1,10 @@
 import React from 'react';
 
 const InputField = ({ label, type, name, value, onChange, placeholder, required }) => {
-    
+
     return (
         <div>
-            
+
             <label htmlFor={name} className="block text-sm font-medium text-gray-700">
                 {label}
             </label>
