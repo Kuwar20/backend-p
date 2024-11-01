@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 
+const SkeletonLoader = () => (
+    <div className="border rounded-lg shadow-md p-4 flex flex-col items-center animate-pulse">
+        <div className="w-full h-48 bg-gray-300 rounded mb-4"></div>
+        <div className="h-6 bg-gray-300 w-3/4 rounded mb-2"></div>
+        <div className="h-6 bg-gray-300 w-1/4 rounded"></div>
+    </div>
+);
+
 const ErrorMessage = ({ message }) => (
     <div className="w-full p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
         <div className="flex items-center">
@@ -9,15 +17,7 @@ const ErrorMessage = ({ message }) => (
     </div>
 );
 
-const SkeletonLoader = () => (
-    <div className="border rounded-lg shadow-md p-4 flex flex-col items-center animate-pulse">
-        <div className="w-full h-48 bg-gray-300 rounded mb-4"></div>
-        <div className="h-6 bg-gray-300 w-3/4 rounded mb-2"></div>
-        <div className="h-6 bg-gray-300 w-1/4 rounded"></div>
-    </div>
-);
-
-const Ssp2 = () => {
+const Ssp = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,7 +30,7 @@ const Ssp2 = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("https://fakestoreapi.com/products");
+                const response = await fetch(`https://fakestoreapi.com/products`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -54,77 +54,109 @@ const Ssp2 = () => {
         };
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    });
+    }, []);
+
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    const searchedProducts = products.filter(
+    const handleImageError = (e) => {
+        e.target.src = "https://via.placeholder.com/150?text=Image+Not+Found";
+    };
+
+    const searchedProduct = products.filter(
         (product) =>
             product.title?.toLowerCase().includes(search.toLowerCase()) ||
             product.description?.toLowerCase().includes(search.toLowerCase()) ||
             product.price?.toString().includes(search.toLowerCase())
     );
 
-    const sortedProducts = searchedProducts.sort((a, b) => {
+    /*     
+          const sortProduct = (productToSort) => {
+              return productToSort.sort((a, b) => {
+                  if (sortOrder === 'asc') {
+                      return a.title.localeCompare(b.title);
+                  } else {
+                      return b.title.localeCompare(a.title);
+                  }
+              })
+          }
+          const sortedProduct = sortProduct([...searchedProduct]);
+      */
+
+    const sortedProduct = searchedProduct.sort((a, b) => {
         if (!a.title || !b.title) return 0;
-        return sortOrder === 'asc'
+        return sortOrder === "asc"
             ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title)
-    })
+            : b.title.localeCompare(a.title);
+    });
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
+    const indexOfLastIndex = currentPage * itemsPerPage;
+    const indexOfFirstIndex = indexOfLastIndex - itemsPerPage;
+    const currentProducts = sortedProduct.slice(
+        indexOfFirstIndex,
+        indexOfLastIndex
+    );
 
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+    const totalPage = Math.max(1, Math.ceil(sortedProduct.length / itemsPerPage));
+
+    useEffect(() => {
+        if (currentPage > totalPage) {
+            setCurrentPage(totalPage);
+        }
+    }, [currentPage, totalPage]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50">
             {error && <ErrorMessage message={error} />}
-            <div className=''>
+
+            <div className="w-full max-w-2xl bg-white p-4 mb-4 rounded-lg shadow-sm flex justify-between items-center space-x-4">
                 <input
                     type="text"
-                    placeholder="Search Products by Title, Description, Price"
+                    placeholder="Search Product by Title, Description or Price"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full p-2 mb-4 border border-gray-300 rounded"
+                    className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none"
                 />
                 <button
                     onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                    className="p-2 mb-4 bg-blue-500 text-white rounded"
+                    className="px-2 py-2 bg-blue-500 text-white rounded-lg shadow-md transition-all hover:bg-blue-600"
                 >
                     Sort {sortOrder === "asc" ? "(A-Z)" : "(Z-A)"}
                 </button>
             </div>
 
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 w-full max-w-6xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
-                    Array.from({length:itemsPerPage},(_,index)=>(
+                    Array.from({ length: itemsPerPage }, (_, index) => (
                         <SkeletonLoader key={index} />
                     ))
-                ) : currentItems.length > 0 ? (
-                    currentItems.map((product) => (
-                        <div key={product.id}
+                ) : currentProducts.length > 0 ? (
+                    currentProducts.map((product) => (
+                        <div
+                            key={product.id}
                             className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105"
                         >
                             <img
                                 src={product.image}
                                 alt={product.title}
+                                onError={handleImageError}
                                 className="w-full h-48 object-contain rounded mb-4"
                             />
-                            <h3>{product.title.split(" ").slice(0, 5).join(" ")}</h3>
-                            <p>{product.description.split(" ").slice(0, 5).join(" ")}</p>
-                            <p>{product.price}</p>
+                            <div>{product.title.split(" ").slice(0, 4).join(" ")}</div>
+                            <div>{product.description.split(" ").slice(0, 5).join(" ")}</div>
+                            <div>Rs: {product.price}</div>
                         </div>
                     ))
                 ) : (
-                    <p>No Product Found</p>
+                    <div className="col-span-full text-center py-8">
+                        <h1 className="text-xl text-gray-600">No Product Found</h1>
+                    </div>
                 )}
             </div>
 
-            <div className="mt-4 space-x-2">
-                {Array.from({ length: totalPages }, (_, index) => (
+            <div className="mt-8 flex space-x-2">
+                {Array.from({ length: totalPage }, (_, index) => (
                     <button
                         key={index + 1}
                         onClick={() => setCurrentPage(index + 1)}
@@ -150,4 +182,4 @@ const Ssp2 = () => {
     );
 };
 
-export default Ssp2;
+export default Ssp;
