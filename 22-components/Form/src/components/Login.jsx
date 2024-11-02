@@ -9,6 +9,7 @@ const Login = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,7 +34,7 @@ const Login = () => {
 
             if (response.ok) {
                 setMessage({ text: data.message, type: 'success' });
-                    // Redirect or perform any action after successful login here
+                // Redirect or perform any action after successful login here
             } else {
                 setMessage({ text: data.error || 'Login failed. Please try again.', type: 'error' });
             }
@@ -66,15 +67,24 @@ const Login = () => {
                             onChange={handleChange}
                             required
                         />
+                        <div className='relative'>
                         <InputField
                             label="Password"
-                            type="password"
+                            type={isPasswordVisible ? 'text' : 'password'}
                             name="password"
                             placeholder="Enter your password"
                             value={formData.password}
                             onChange={handleChange}
                             required
                         />
+                        <button
+                            type="button"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+                            onClick={() => setIsPasswordVisible((prev) => !prev)}
+                        >
+                            {isPasswordVisible ? '🙈' : '👁️'}
+                        </button>
+                        </div>
                         <div>
                             <button
                                 type="submit"
