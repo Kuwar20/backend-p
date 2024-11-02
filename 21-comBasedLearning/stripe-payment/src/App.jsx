@@ -5,13 +5,13 @@ import axios from 'axios';
 
 // Load Stripe public key
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
-  .then((stripe) => {
-    console.log("Stripe loaded successfully");
-    return stripe;
-  })
-  .catch((error) => {
-    console.error("Failed to load Stripe:", error);
-  });
+    .then((stripe) => {
+        console.log("Stripe loaded successfully");
+        return stripe;
+    })
+    .catch((error) => {
+        console.error("Failed to load Stripe:", error);
+    });
 
 const CheckoutForm = () => {
     const stripe = useStripe();
@@ -52,9 +52,9 @@ const CheckoutForm = () => {
         <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto bg-white p-6 shadow-md rounded-lg">
             <h2 className="text-xl font-semibold mb-4 text-center">Payment Form</h2>
             <CardElement className="border p-2 rounded-md" />
-            <button 
-                type="submit" 
-                disabled={!stripe || loading} 
+            <button
+                type="submit"
+                disabled={!stripe || loading}
                 className="w-full mt-4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
             >
                 {loading ? 'Processing...' : 'Pay $60'}

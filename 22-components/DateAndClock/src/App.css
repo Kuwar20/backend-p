@@ -1,0 +1,83 @@
+/* App.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f0f0f0;
+}
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+}
+
+/* Date and Time Section */
+.date-time-section {
+    background-color: #e6f3ff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+.date-time-section div {
+    margin: 10px 0;
+    padding: 5px;
+    background-color: white;
+}
+
+/* Current Time Display */
+.current-time {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0066cc;
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #0066cc;
+}
+
+/* Math Section */
+.math-section {
+    background-color: #fff3e6;
+    padding: 15px;
+    border: 1px solid #ccc;
+}
+
+.math-section div {
+    margin: 8px 0;
+    padding: 5px;
+    background-color: white;
+}
+
+/* Math Categories */
+.math-floor {
+    border-left: 4px solid #ff6b6b;
+}
+
+.math-ceil {
+    border-left: 4px solid #4ecdc4;
+}
+
+.math-round {
+    border-left: 4px solid #45b7d1;
+}
+
+.math-random {
+    border-left: 4px solid #96ceb4;
+}
+
+.math-max{
+    border-left: 4px solid #ffcc5c;
+}
+
+.string-concept{
+    border-left: 4px solid #ff6b6b;
+}
+/* Titles for sections */
+.section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
