@@ -1,4 +1,3 @@
-// client/src/components/Login.jsx
 import React, { useState } from 'react';
 import InputField from './InputField';
 
@@ -68,22 +67,22 @@ const Login = () => {
                             required
                         />
                         <div className='relative'>
-                        <InputField
-                            label="Password"
-                            type={isPasswordVisible ? 'text' : 'password'}
-                            name="password"
-                            placeholder="Enter your password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                        <button
-                            type="button"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
-                            onClick={() => setIsPasswordVisible((prev) => !prev)}
-                        >
-                            {isPasswordVisible ? '🙈' : '👁️'}
-                        </button>
+                            <InputField
+                                label="Password"
+                                type={isPasswordVisible ? 'text' : 'password'}
+                                name="password"
+                                placeholder="Enter your password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+                                onClick={() => setIsPasswordVisible((prev) => !prev)}
+                            >
+                                {isPasswordVisible ? '🙈' : '👁️'}
+                            </button>
                         </div>
                         <div>
                             <button
