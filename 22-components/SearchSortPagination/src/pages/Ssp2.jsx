@@ -50,6 +50,9 @@ const Ssp = () => {
 
     useEffect(() => {
         const handleScroll = () => {
+            //console.log(window.scrollY); // window.scrollY is the current vertical position of the scroll bar
+            // and when it is greater than 100, the condition will be true
+            // and the setScrollToTop(true) will be executed
             setScrollToTop(window.scrollY > 100);
         };
         window.addEventListener("scroll", handleScroll);
@@ -64,12 +67,43 @@ const Ssp = () => {
         e.target.src = "https://via.placeholder.com/150?text=Image+Not+Found";
     };
 
+    // .filter() doesn’t use an explicit if statement, but it does the same thing.
+    // it returns a new array with the elements that pass the condition inside the callback function.
+
     const searchedProduct = products.filter(
         (product) =>
             product.title?.toLowerCase().includes(search.toLowerCase()) ||
             product.description?.toLowerCase().includes(search.toLowerCase()) ||
             product.price?.toString().includes(search.toLowerCase())
     );
+
+    // const searchedProduct = products.filter(function(product) {
+    //     return (
+    //         product.title?.toLowerCase().includes(search.toLowerCase()) ||
+    //         product.description?.toLowerCase().includes(search.toLowerCase()) ||
+    //         product.price?.toString().includes(search.toLowerCase())
+    //     );
+    // });
+
+
+    // This is the same code as above without filter method
+
+    // const searchedProduct = [];
+    // for (let i = 0; i < products.length; i++) {
+    //     const product = products[i];
+
+    //     if (
+    //         product.title?.toLowerCase().includes(search.toLowerCase()) ||
+    //         product.description?.toLowerCase().includes(search.toLowerCase()) ||
+    //         product.price?.toString().includes(search.toLowerCase())
+    //     ) {
+    //         searchedProduct.push(product); // Add the matching product to the results array
+    //     }
+    // }
+
+    // // `searchedProduct` will contain the filtered list of products
+    // console.log(searchedProduct);
+
 
     /*     
           const sortProduct = (productToSort) => {
@@ -91,6 +125,14 @@ const Ssp = () => {
             : b.title.localeCompare(a.title);
     });
 
+    // const sortedProduct = searchedProduct.sort(function(a, b) {
+    //     if (!a.title || !b.title) return 0;
+    //     return sortOrder === "asc"
+    //         ? a.title.localeCompare(b.title)
+    //         : b.title.localeCompare(a.title);
+    // });
+
+
     const indexOfLastIndex = currentPage * itemsPerPage;
     const indexOfFirstIndex = indexOfLastIndex - itemsPerPage;
     const currentProducts = sortedProduct.slice(
@@ -98,7 +140,11 @@ const Ssp = () => {
         indexOfLastIndex
     );
 
+    // ceil rounds a number upward to the nearest integer
+    // max returns the max of two numbers
     const totalPage = Math.max(1, Math.ceil(sortedProduct.length / itemsPerPage));
+
+    // floor rounds a number downward to the nearest integer
 
     useEffect(() => {
         if (currentPage > totalPage) {
@@ -128,26 +174,56 @@ const Ssp = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl bg-white">
                 {loading ? (
-                    Array.from({ length: itemsPerPage }, (_, index) => (
-                        <SkeletonLoader key={index} />
-                    ))
+                    // Array.from({ length: itemsPerPage }, (_, index) => (
+                    //     <SkeletonLoader key={index} />
+                    // ))
+                    (() => {
+                        const skeletonLoaders = []; // Initialize an empty array
+                        for (let index = 0; index < itemsPerPage; index++) {
+                            skeletonLoaders.push(<SkeletonLoader key={index} />); // Push SkeletonLoader components into the array
+                        }
+                        return skeletonLoaders; // Return the array of skeleton loaders
+                    })()
                 ) : currentProducts.length > 0 ? (
-                    currentProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105"
-                        >
-                            <img
-                                src={product.image}
-                                alt={product.title}
-                                onError={handleImageError}
-                                className="w-full h-48 object-contain rounded mb-4"
-                            />
-                            <div>{product.title.split(" ").slice(0, 4).join(" ")}</div>
-                            <div>{product.description.split(" ").slice(0, 5).join(" ")}</div>
-                            <div>Rs: {product.price}</div>
-                        </div>
-                    ))
+                    // currentProducts.map((product) => (
+                    //     <div
+                    //         key={product.id}
+                    //         className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105"
+                    //     >
+                    //         <img
+                    //             src={product.image}
+                    //             alt={product.title}
+                    //             onError={handleImageError}
+                    //             className="w-full h-48 object-contain rounded mb-4"
+                    //         />
+                    //         <div>{product.title.split(" ").slice(0, 4).join(" ")}</div>
+                    //         <div>{product.description.split(" ").slice(0, 5).join(" ")}</div>
+                    //         <div>Rs: {product.price}</div>
+                    //     </div>
+                    // ))
+                    (() => {
+                        const productElements = []; // Initialize an array to hold product elements
+                        for (let i = 0; i < currentProducts.length; i++) {
+                            const product = currentProducts[i]; // Get the current product
+                            productElements.push(
+                                <div
+                                    key={product.id}
+                                    className="border shadow-md rounded-lg p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105"
+                                >
+                                    <img
+                                        src={product.image}
+                                        alt={product.title}
+                                        onError={handleImageError}
+                                        className="w-full h-48 object-contain rounded mb-4"
+                                    />
+                                    <div>{product.title.split(" ").slice(0, 4).join(" ")}</div>
+                                    <div>{product.description.split(" ").slice(0, 5).join(" ")}</div>
+                                    <div>Rs: {product.price}</div>
+                                </div>
+                            );
+                        }
+                        return productElements; // Return the array of product elements
+                    })()
                 ) : (
                     <div className="col-span-full text-center py-8">
                         <h1 className="text-xl text-gray-600">No Product Found</h1>
@@ -170,6 +246,7 @@ const Ssp = () => {
                 ))}
             </div>
 
+            {/* The && operator means “if the left side is true, then show the right side.” */}
             {showScrollToTop && (
                 <button
                     onClick={scrollToTop}

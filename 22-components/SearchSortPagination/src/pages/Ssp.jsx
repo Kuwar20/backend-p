@@ -98,6 +98,8 @@ const Ssp = () => {
         indexOfLastIndex
     );
 
+    // ceil rounds a number upward to the nearest integer
+    // max returns the max of two numbers
     const totalPage = Math.max(1, Math.ceil(sortedProduct.length / itemsPerPage));
 
     useEffect(() => {
