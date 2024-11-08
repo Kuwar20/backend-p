@@ -1,5 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
+const SkeletonLoader = () => (
+    <div className='border rounded shadow-md p-4 flex flex-col items-center animate-pulse'>
+        <div className='w-full h-48 object-contain rounded mb-2 bg-gray-300'></div>
+        <div className='w-3/4 h-6 bg-gray-300 mb-2 rounded'></div>
+        <div className='w-full h-6 bg-gray-300 mb-2 rounded'></div>
+        <div className='w-1/4 h-6 bg-gray-300 rounded'></div>
+    </div>
+)
+
+const ErrorMessage = ({ message }) => (
+    <div className="w-full p-4 mb-4 text-red-700 bg-red-100 border-l-4 border-red-500 rounded">
+        <div className="flex items-center">
+            <span className="font-bold">Error:</span>
+            <p className="ml-2">{message}</p>
+        </div>
+    </div>
+);
+
 const Ssp3 = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
@@ -7,6 +25,10 @@ const Ssp3 = () => {
     const [showScrollToTop, setShowScrollToTop] = useState(false)
     const [search, setSearch] = useState('')
     const [searched, setSearched] = useState([])
+    const [searchedHistory, setSearchedHistory] = useState([])
+    const [sortOrder, setSortOrder] = useState('asc')
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 8;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,13 +78,29 @@ const Ssp3 = () => {
             product?.description.toLowerCase().includes(search.toLowerCase()) ||
             product?.price.toString().includes(search.toLowerCase())
         )
-
+        setSearchedHistory((prevHistory) => {
+            if(search.trim()=== '') return prevHistory
+            return [...prevHistory, search]
+        })
         return setSearched(searchedProduct)
     }
 
+    const sortedProduct = searched.sort((a, b) => {
+        if (!a.title || !b.title) return;
+        return sortOrder === 'asc'
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title)
+    })
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = sortedProduct.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.max(1, Math.ceil(sortedProduct.length / itemsPerPage))
+
     return (
         <div className='flex flex-col items-center justify-center min-h-screen'>
-            {error && <p className='text-red-500'>{error}</p>}
+            {error && <ErrorMessage message={error} />}
 
             <div className='m-2'>
                 <input type="text"
@@ -72,16 +110,36 @@ const Ssp3 = () => {
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
-                <button className='border p-2 rounded'
+                <button
+                    className='border p-2 rounded'
                     onClick={handleSearch}
-                >Search</button>
+                >Search
+                </button>
+
+                <button
+                    className='border p-2 rounded'
+                    onClick={() => setSortOrder((prevOrder) => prevOrder === 'asc' ? "desc" : "asc")}
+                >Sort{sortOrder === 'asc' ? " (A-Z)" : " (Z-A)"}
+                </button>
+
+                <div>
+                    {searchedHistory.map((history, index) => (
+                        <li key={index} className='flex items-center justify-between m-1 p-1 bg-gray-200 rounded'>{index}: {history}
+                        <button 
+                            onClick={() => setSearchedHistory((prevHistory) => prevHistory.filter((_, i) => i !== index))}
+                        >x</button>
+                        </li>
+                    ))}
+                </div>
             </div>
 
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl'>
-                {loading ?
-                    <p>Loading...</p>
-                    : searched.length > 0 ? (
-                        searched.map((product) => (
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl'>
+                {loading ? (
+                    Array.from({ length: itemsPerPage }, (_, index) => (
+                        <SkeletonLoader key={index} />
+                    )))
+                    : currentItems.length > 0 ? (
+                        currentItems.map((product) => (
                             <div key={product.id}
                                 className='border shadow-md p-4 flex flex-col items-center transition-transform duration-300 hover:scale-105'
                             >
@@ -97,7 +155,18 @@ const Ssp3 = () => {
                         <p>No products found...</p>
                     )}
             </div>
-            <div></div>
+
+            <div className='mt-2'>
+                {
+                Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`border rounded px-3 py-1 font-medium mx-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'}
+                            transition-colors hover:bg-blue-400 hover:text-white`}
+                    >{index + 1}</button>
+                ))}
+            </div>
             {
                 showScrollToTop && (
                     <button
