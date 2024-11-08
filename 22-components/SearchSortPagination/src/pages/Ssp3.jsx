@@ -29,6 +29,7 @@ const Ssp3 = () => {
     const [sortOrder, setSortOrder] = useState('asc')
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 8;
+    const [currentTime, setCurrentTime] = useState(new Date())
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,7 +80,7 @@ const Ssp3 = () => {
             product?.price.toString().includes(search.toLowerCase())
         )
         setSearchedHistory((prevHistory) => {
-            if(search.trim()=== '') return prevHistory
+            if (search.trim() === '') return prevHistory
             return [...prevHistory, search]
         })
         return setSearched(searchedProduct)
@@ -98,11 +99,20 @@ const Ssp3 = () => {
 
     const totalPages = Math.max(1, Math.ceil(sortedProduct.length / itemsPerPage))
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(new Date())
+        }, 1000)
+
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <div className='flex flex-col items-center justify-center min-h-screen'>
             {error && <ErrorMessage message={error} />}
 
             <div className='m-2'>
+                {currentTime.toLocaleDateString()} : {currentTime.toLocaleTimeString()}
                 <input type="text"
                     className='p-2 m-1 border'
                     placeholder='Search by Title, Description, Price'
@@ -125,9 +135,9 @@ const Ssp3 = () => {
                 <div>
                     {searchedHistory.map((history, index) => (
                         <li key={index} className='flex items-center justify-between m-1 p-1 bg-gray-200 rounded'>{index}: {history}
-                        <button 
-                            onClick={() => setSearchedHistory((prevHistory) => prevHistory.filter((_, i) => i !== index))}
-                        >x</button>
+                            <button
+                                onClick={() => setSearchedHistory((prevHistory) => prevHistory.filter((_, i) => i !== index))}
+                            >x</button>
                         </li>
                     ))}
                 </div>
@@ -158,14 +168,14 @@ const Ssp3 = () => {
 
             <div className='mt-2'>
                 {
-                Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                        className={`border rounded px-3 py-1 font-medium mx-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'}
+                    Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => setCurrentPage(index + 1)}
+                            className={`border rounded px-3 py-1 font-medium mx-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'}
                             transition-colors hover:bg-blue-400 hover:text-white`}
-                    >{index + 1}</button>
-                ))}
+                        >{index + 1}</button>
+                    ))}
             </div>
             {
                 showScrollToTop && (
