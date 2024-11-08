@@ -70,6 +70,16 @@ const Ssp = () => {
     // .filter() doesn’t use an explicit if statement, but it does the same thing.
     // it returns a new array with the elements that pass the condition inside the callback function.
 
+    // filter(), map, forEach, reduce are built-in JavaScript method for arrays, like products. 
+    // It takes a function as an argument (a callback function) and automatically passes each element of the array to this function one by one.
+    
+    // for (let product of products) {
+    //     if (callbackFunction(product)) { // If the callback condition is true, include this product
+    //         // add product to the new filtered array
+    //     }
+    // }
+
+
     const searchedProduct = products.filter(
         (product) =>
             product.title?.toLowerCase().includes(search.toLowerCase()) ||
