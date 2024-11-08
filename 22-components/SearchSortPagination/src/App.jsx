@@ -1,10 +1,10 @@
 import React from 'react'
-import Ssp2 from './pages/Ssp2'
+import Ssp3 from './pages/Ssp3'
 
 const App = () => {
   return (
     <div className=''>
-      <Ssp2 />
+      <Ssp3 />
     </div>
   )
 }
