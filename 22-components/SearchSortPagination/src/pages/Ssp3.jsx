@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import users from '../assets/users.json'
 
 const SkeletonLoader = () => (
     <div className='border rounded shadow-md p-4 flex flex-col items-center animate-pulse'>
@@ -187,8 +188,65 @@ const Ssp3 = () => {
                     </button>
                 )
             }
+            <div>
+                <thead>
+                    <tr>
+                        {Object.keys(users[0]).map((key) => (
+                            <th>{key}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                        {users.map((user)=>(
+                            <tr key={user.id}>
+                                <td>{user.id}</td>
+                                <td>{user.name}</td>
+                                <td>{user.age}</td>
+                                <td>{user.occupation}</td>
+                            </tr>
+                        ))}
+                    {/* {users.map(({ id, name, age, occupation }) => (
+                        <tr>
+                            <td>{id}</td>
+                            <td>{name}</td>
+                            <td>{age}</td>
+                            <td>{occupation}</td>
+                        </tr>
+                    ))} */}
+                </tbody>
+            </div>
         </div>
     )
 }
 
 export default Ssp3
+
+
+
+// import React, { useEffect } from "react";
+
+// function App() {
+//     // Function to request permission and show notification
+//     const showNotification = () => {
+//         if (!("Notification" in window)) {
+//             alert("This browser does not support notifications.");
+//         } else if (Notification.permission === "granted") {
+//             new Notification("Hello! This is your React ");
+//         } else if (Notification.permission !== "denied") {
+//             Notification.requestPermission().then((permission) => {
+//                 if (permission === "granted") {
+//                     new Notification("Permission granted! Here's your React notification.");
+//                 }
+//             });
+//         }
+//     };
+
+//     return (
+//         <div style={{ textAlign: "center", marginTop: "50px" }}>
+//             <h1>React Notification Demo</h1>
+//             <button onClick={showNotification}>Show Notification</button>
+//         </div>
+//     );
+// }
+
+// export default App;
