@@ -1,8 +1,11 @@
 // src/components/Cart.jsx
-import { useCart } from '../context/CartContext';
+import { useContext } from 'react';
+import {CartContext} from '../context/CartContext'
+// import { useCart } from '../context/CartContext';
 
 const Cart = () => {
-    const { cart, removeFromCart, updateQuantity, getTotal } = useCart();
+    // const { cart, removeFromCart, updateQuantity, getTotal } = useCart();
+    const { cart, removeFromCart, updateQuantity, getTotal } = useContext(CartContext)
 
     return (
         <div className="p-4">

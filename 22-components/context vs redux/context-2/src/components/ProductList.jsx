@@ -1,5 +1,7 @@
 // src/components/ProductList.jsx
-import { useCart } from '../context/CartContext';
+import { useContext } from 'react';
+// import { useCart } from '../context/CartContext';
+import {CartContext} from '../context/CartContext'
 
 const products = [
     { id: 1, name: 'Laptop', price: 999 },
@@ -8,7 +10,8 @@ const products = [
 ];
 
 const ProductList = () => {
-    const { addToCart } = useCart();
+    // const { addToCart } = useCart();
+    const { addToCart } = useContext(CartContext)
 
     return (
         <div className="p-4">
