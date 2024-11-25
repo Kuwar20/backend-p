@@ -1,83 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { Trash2, Plus, Search } from 'lucide-react';
 
+const API_BASE_URL = 'http://localhost:5000/api/notes'; // Update to your backend URL
+
 const NoteApp = () => {
   const [notes, setNotes] = useState([]);
-  const [currentNote, setCurrentNote] = useState({ id: '', title: '', content: '', lastModified: '' });
+  const [currentNote, setCurrentNote] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  // Load notes from localStorage on component mount
+  // Load notes from backend on component mount
   useEffect(() => {
-    loadNotes();
-    // Listen for storage changes in other tabs
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    fetchNotes();
   }, []);
 
-  // Load notes from localStorage
-  const loadNotes = () => {
-    const savedNotes = localStorage.getItem('userNotes');
-    if (savedNotes) {
-      const parsedNotes = JSON.parse(savedNotes);
-      setNotes(parsedNotes);
-      // If we have a current note, update its content
-      if (currentNote.id) {
-        const updatedCurrentNote = parsedNotes.find(note => note.id === currentNote.id);
-        if (updatedCurrentNote) {
-          setCurrentNote(updatedCurrentNote);
-        }
-      }
+  // Fetch notes from the backend
+  const fetchNotes = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_BASE_URL);
+      const data = await response.json();
+      setNotes(data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching notes:', err);
+      setLoading(false);
     }
   };
 
-  // Handle storage changes from other tabs
-  const handleStorageChange = (e) => {
-    if (e.key === 'userNotes') {
-      loadNotes();
-    }
-  };
-
-  // Save notes to localStorage
-  const saveNotes = (updatedNotes) => {
-    localStorage.setItem('userNotes', JSON.stringify(updatedNotes));
-    setNotes(updatedNotes);
-  };
-
-  const createNewNote = () => {
+  // Create a new note
+  const createNewNote = async () => {
     const newNote = {
-      id: Date.now().toString(),
       title: 'Untitled Note',
       content: '',
-      lastModified: new Date().toISOString()
     };
-    const updatedNotes = [newNote, ...notes];
-    saveNotes(updatedNotes);
-    setCurrentNote(newNote);
-  };
-
-  const updateNote = (id, updates) => {
-    const updatedNotes = notes.map(note =>
-      note.id === id
-        ? { ...note, ...updates, lastModified: new Date().toISOString() }
-        : note
-    );
-    saveNotes(updatedNotes);
-    if (currentNote.id === id) {
-      setCurrentNote({ ...currentNote, ...updates });
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newNote),
+      });
+      const createdNote = await response.json();
+      setNotes([createdNote, ...notes]);
+      setCurrentNote(createdNote);
+    } catch (err) {
+      console.error('Error creating note:', err);
     }
   };
 
-  const deleteNote = (id) => {
-    const updatedNotes = notes.filter(note => note.id !== id);
-    saveNotes(updatedNotes);
-    if (currentNote.id === id) {
-      setCurrentNote({ id: '', title: '', content: '', lastModified: '' });
+  // Update an existing note
+  const updateNote = async (id, updates) => {
+    // Update the current note optimistically
+    setCurrentNote((prev) => ({ ...prev, ...updates }));
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...currentNote, ...updates }),
+      });
+      const updatedNote = await response.json();
+
+      // Update the notes list with the updated note
+      setNotes((prevNotes) =>
+        prevNotes.map((note) => (note.id === id ? updatedNote : note))
+      );
+    } catch (err) {
+      console.error('Error updating note:', err);
     }
   };
 
-  const filteredNotes = notes.filter(note =>
+  // Delete a note
+  const deleteNote = async (id) => {
+    try {
+      await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
+      setNotes(notes.filter((note) => note.id !== id));
+      if (currentNote?.id === id) setCurrentNote(null);
+    } catch (err) {
+      console.error('Error deleting note:', err);
+    }
+  };
+
+  // Filter notes by search query
+  const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -108,45 +113,49 @@ const NoteApp = () => {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
-          {filteredNotes.map(note => (
-            <div
-              key={note.id}
-              className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${
-                currentNote.id === note.id ? 'bg-blue-50' : ''
-              }`}
-              onClick={() => setCurrentNote(note)}
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-800 truncate">{note.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1 truncate">{note.content}</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {new Date(note.lastModified).toLocaleDateString()}
-                  </p>
+          {loading ? (
+            <p className="p-4 text-gray-500">Loading notes...</p>
+          ) : (
+            filteredNotes.map((note) => (
+              <div
+                key={note.id}
+                className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${
+                  currentNote?.id === note.id ? 'bg-blue-50' : ''
+                }`}
+                onClick={() => setCurrentNote(note)}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-800 truncate">{note.title}</h3>
+                    <p className="text-sm text-gray-500 mt-1 truncate">{note.content}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(note.lastModified).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNote(note.id);
+                    }}
+                    className="p-1 text-gray-400 hover:text-red-500 rounded"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteNote(note.id);
-                  }}
-                  className="p-1 text-gray-400 hover:text-red-500 rounded"
-                >
-                  <Trash2 size={16} />
-                </button>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {currentNote.id ? (
+        {currentNote ? (
           <>
             <div className="p-4 bg-white border-b border-gray-200">
               <input
                 type="text"
-                value={currentNote.title}
+                value={currentNote?.title || ''}
                 onChange={(e) => updateNote(currentNote.id, { title: e.target.value })}
                 className="w-full text-xl font-bold focus:outline-none"
                 placeholder="Note title"
@@ -154,7 +163,7 @@ const NoteApp = () => {
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
               <textarea
-                value={currentNote.content}
+                value={currentNote?.content || ''}
                 onChange={(e) => updateNote(currentNote.id, { content: e.target.value })}
                 className="w-full h-full p-4 focus:outline-none resize-none"
                 placeholder="Start writing your note here..."
@@ -180,3 +189,188 @@ const NoteApp = () => {
 };
 
 export default NoteApp;
+
+
+// basically without backend , just using localstorage
+// import React, { useState, useEffect } from 'react';
+// import { Trash2, Plus, Search } from 'lucide-react';
+
+// const NoteApp = () => {
+//   const [notes, setNotes] = useState([]);
+//   const [currentNote, setCurrentNote] = useState({ id: '', title: '', content: '', lastModified: '' });
+//   const [searchQuery, setSearchQuery] = useState('');
+
+//   // Load notes from localStorage on component mount
+//   useEffect(() => {
+//     loadNotes();
+//     // Listen for storage changes in other tabs
+//     window.addEventListener('storage', handleStorageChange);
+//     return () => {
+//       window.removeEventListener('storage', handleStorageChange);
+//     };
+//   }, []);
+
+//   // Load notes from localStorage
+//   const loadNotes = () => {
+//     const savedNotes = localStorage.getItem('userNotes');
+//     if (savedNotes) {
+//       const parsedNotes = JSON.parse(savedNotes);
+//       setNotes(parsedNotes);
+//       // If we have a current note, update its content
+//       if (currentNote.id) {
+//         const updatedCurrentNote = parsedNotes.find(note => note.id === currentNote.id);
+//         if (updatedCurrentNote) {
+//           setCurrentNote(updatedCurrentNote);
+//         }
+//       }
+//     }
+//   };
+
+//   // Handle storage changes from other tabs
+//   const handleStorageChange = (e) => {
+//     if (e.key === 'userNotes') {
+//       loadNotes();
+//     }
+//   };
+
+//   // Save notes to localStorage
+//   const saveNotes = (updatedNotes) => {
+//     localStorage.setItem('userNotes', JSON.stringify(updatedNotes));
+//     setNotes(updatedNotes);
+//   };
+
+//   const createNewNote = () => {
+//     const newNote = {
+//       id: Date.now().toString(),
+//       title: 'Untitled Note',
+//       content: '',
+//       lastModified: new Date().toISOString()
+//     };
+//     const updatedNotes = [newNote, ...notes];
+//     saveNotes(updatedNotes);
+//     setCurrentNote(newNote);
+//   };
+
+//   const updateNote = (id, updates) => {
+//     const updatedNotes = notes.map(note =>
+//       note.id === id
+//         ? { ...note, ...updates, lastModified: new Date().toISOString() }
+//         : note
+//     );
+//     saveNotes(updatedNotes);
+//     if (currentNote.id === id) {
+//       setCurrentNote({ ...currentNote, ...updates });
+//     }
+//   };
+
+//   const deleteNote = (id) => {
+//     const updatedNotes = notes.filter(note => note.id !== id);
+//     saveNotes(updatedNotes);
+//     if (currentNote.id === id) {
+//       setCurrentNote({ id: '', title: '', content: '', lastModified: '' });
+//     }
+//   };
+
+//   const filteredNotes = notes.filter(note =>
+//     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//     note.content.toLowerCase().includes(searchQuery.toLowerCase())
+//   );
+
+//   return (
+//     <div className="flex h-screen bg-gray-100">
+//       {/* Sidebar */}
+//       <div className="w-72 bg-white border-r border-gray-200 flex flex-col">
+//         <div className="p-4 border-b border-gray-200">
+//           <div className="flex items-center justify-between mb-4">
+//             <h1 className="text-xl font-bold text-gray-800">Notes</h1>
+//             <button
+//               onClick={createNewNote}
+//               className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full"
+//             >
+//               <Plus size={20} />
+//             </button>
+//           </div>
+//           <div className="relative">
+//             <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
+//             <input
+//               type="text"
+//               placeholder="Search notes..."
+//               className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//               value={searchQuery}
+//               onChange={(e) => setSearchQuery(e.target.value)}
+//             />
+//           </div>
+//         </div>
+//         <div className="flex-1 overflow-y-auto">
+//           {filteredNotes.map(note => (
+//             <div
+//               key={note.id}
+//               className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${
+//                 currentNote.id === note.id ? 'bg-blue-50' : ''
+//               }`}
+//               onClick={() => setCurrentNote(note)}
+//             >
+//               <div className="flex justify-between items-start">
+//                 <div className="flex-1">
+//                   <h3 className="font-medium text-gray-800 truncate">{note.title}</h3>
+//                   <p className="text-sm text-gray-500 mt-1 truncate">{note.content}</p>
+//                   <p className="text-xs text-gray-400 mt-1">
+//                     {new Date(note.lastModified).toLocaleDateString()}
+//                   </p>
+//                 </div>
+//                 <button
+//                   onClick={(e) => {
+//                     e.stopPropagation();
+//                     deleteNote(note.id);
+//                   }}
+//                   className="p-1 text-gray-400 hover:text-red-500 rounded"
+//                 >
+//                   <Trash2 size={16} />
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Main Content */}
+//       <div className="flex-1 flex flex-col">
+//         {currentNote.id ? (
+//           <>
+//             <div className="p-4 bg-white border-b border-gray-200">
+//               <input
+//                 type="text"
+//                 value={currentNote.title}
+//                 onChange={(e) => updateNote(currentNote.id, { title: e.target.value })}
+//                 className="w-full text-xl font-bold focus:outline-none"
+//                 placeholder="Note title"
+//               />
+//             </div>
+//             <div className="flex-1 p-4 overflow-y-auto">
+//               <textarea
+//                 value={currentNote.content}
+//                 onChange={(e) => updateNote(currentNote.id, { content: e.target.value })}
+//                 className="w-full h-full p-4 focus:outline-none resize-none"
+//                 placeholder="Start writing your note here..."
+//               />
+//             </div>
+//           </>
+//         ) : (
+//           <div className="flex-1 flex items-center justify-center text-gray-400">
+//             <div className="text-center">
+//               <p>Select a note or create a new one</p>
+//               <button
+//                 onClick={createNewNote}
+//                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+//               >
+//                 Create Note
+//               </button>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default NoteApp;
