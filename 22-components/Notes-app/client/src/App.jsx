@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Trash2, Plus, Search } from 'lucide-react';
+import { debounce } from 'lodash';
 
-const API_BASE_URL = 'http://localhost:5000/api/notes'; // Update to your backend URL
+const API_BASE_URL = 'http://localhost:5000/api/notes';
 
 const NoteApp = () => {
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [localNote, setLocalNote] = useState(null);
 
-  // Load notes from backend on component mount
   useEffect(() => {
     fetchNotes();
   }, []);
 
-  // Fetch notes from the backend
+  // Set local note whenever current note changes
+  useEffect(() => {
+    setLocalNote(currentNote);
+  }, [currentNote]);
+
   const fetchNotes = async () => {
     setLoading(true);
     try {
@@ -28,7 +33,6 @@ const NoteApp = () => {
     }
   };
 
-  // Create a new note
   const createNewNote = async () => {
     const newNote = {
       title: 'Untitled Note',
@@ -43,45 +47,61 @@ const NoteApp = () => {
       const createdNote = await response.json();
       setNotes([createdNote, ...notes]);
       setCurrentNote(createdNote);
+      setLocalNote(createdNote);
     } catch (err) {
       console.error('Error creating note:', err);
     }
   };
 
-  // Update an existing note
-  const updateNote = async (id, updates) => {
-    // Update the current note optimistically
-    setCurrentNote((prev) => ({ ...prev, ...updates }));
+  // Debounced API call for updating note
+  const debouncedUpdate = useCallback(
+    debounce(async (id, updates) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updates),
+        });
+        const updatedNote = await response.json();
+        
+        setNotes((prevNotes) =>
+          prevNotes.map((note) => (note.id === id ? updatedNote : note))
+        );
+        setCurrentNote(updatedNote);
+      } catch (err) {
+        console.error('Error updating note:', err);
+      }
+    }, 1000),
+    []
+  );
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...currentNote, ...updates }),
-      });
-      const updatedNote = await response.json();
-
-      // Update the notes list with the updated note
-      setNotes((prevNotes) =>
-        prevNotes.map((note) => (note.id === id ? updatedNote : note))
-      );
-    } catch (err) {
-      console.error('Error updating note:', err);
-    }
+  // Handle local updates immediately while debouncing API calls
+  const handleNoteUpdate = (id, updates) => {
+    const updatedNote = { ...localNote, ...updates };
+    setLocalNote(updatedNote);
+    
+    // Update the notes list immediately for UI
+    setNotes((prevNotes) =>
+      prevNotes.map((note) => (note.id === id ? updatedNote : note))
+    );
+    
+    // Debounce the API call
+    debouncedUpdate(id, updatedNote);
   };
 
-  // Delete a note
   const deleteNote = async (id) => {
     try {
       await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
       setNotes(notes.filter((note) => note.id !== id));
-      if (currentNote?.id === id) setCurrentNote(null);
+      if (currentNote?.id === id) {
+        setCurrentNote(null);
+        setLocalNote(null);
+      }
     } catch (err) {
       console.error('Error deleting note:', err);
     }
   };
 
-  // Filter notes by search query
   const filteredNotes = notes.filter((note) =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     note.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,21 +170,21 @@ const NoteApp = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {currentNote ? (
+        {localNote ? (
           <>
             <div className="p-4 bg-white border-b border-gray-200">
               <input
                 type="text"
-                value={currentNote?.title || ''}
-                onChange={(e) => updateNote(currentNote.id, { title: e.target.value })}
+                value={localNote?.title || ''}
+                onChange={(e) => handleNoteUpdate(localNote.id, { title: e.target.value })}
                 className="w-full text-xl font-bold focus:outline-none"
                 placeholder="Note title"
               />
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
               <textarea
-                value={currentNote?.content || ''}
-                onChange={(e) => updateNote(currentNote.id, { content: e.target.value })}
+                value={localNote?.content || ''}
+                onChange={(e) => handleNoteUpdate(localNote.id, { content: e.target.value })}
                 className="w-full h-full p-4 focus:outline-none resize-none"
                 placeholder="Start writing your note here..."
               />
@@ -189,7 +209,6 @@ const NoteApp = () => {
 };
 
 export default NoteApp;
-
 
 // basically without backend , just using localstorage
 // import React, { useState, useEffect } from 'react';
