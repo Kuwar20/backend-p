@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import Img from '../assets/T.png'
 
-const Navbar = () => {
+const Navbar = ({navItems}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+    console.log({navItems})
+    
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
     }
@@ -19,13 +21,23 @@ const Navbar = () => {
                     <h2 className='ml-2'>Website Name</h2>
                 </div>
 
-                <div className='hidden md:flex'>
+                {/* <div className='hidden md:flex'>
                     <ul className='flex space-x-4 mr-10 font-light'>
                         <li className='font-semibold'>Home</li>
                         <li>Find a doctor</li>
                         <li>App</li>
                         <li>Testimonials</li>
                         <li>About us</li>
+                    </ul>
+                </div> */}
+
+                <div className='hidden md:flex'>
+                    <ul className='flex space-x-4 mr-10 font-light'>
+                        {
+                            navItems.map((item, index)=>(
+                                <li key={index} className='inline-block ml-4'>{item.name}</li>
+                            ))
+                        }
                     </ul>
                 </div>
 
@@ -47,7 +59,7 @@ const Navbar = () => {
                         }
                     </button>
 
-                    {
+                    {/* {
                         isMenuOpen && (
                             <div className='absolute left-0 right-0 mt-4'>
                                 <div className='px-2 pt-2 pb-3 space-y-1'>
@@ -55,6 +67,20 @@ const Navbar = () => {
                                     <a href="" className='block'>About</a>
                                     <a href="" className='block'>Services</a>
                                     <a href="" className='block'>Contact</a>
+                                </div>
+                            </div>
+                        )
+                    } */}
+
+                    {
+                        isMenuOpen && (
+                            <div className='absolute left-0 right-0 mt-4'>
+                                <div className='px-2 pt-2 pb-3 space-y-1'>
+                                    {
+                                        navItems.map((item, index)=>(
+                                            <a key={index} href={item.link} className='block'>{item.name}</a>
+                                        ))
+                                    }
                                 </div>
                             </div>
                         )
