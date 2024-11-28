@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Img from '../assets/T.png'
 
-const Navbar = ({navItems}) => {
+const Navbar = ({ navItems }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    console.log({navItems})
-    
+    console.log({ navItems })
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
     }
@@ -34,7 +34,7 @@ const Navbar = ({navItems}) => {
                 <div className='hidden md:flex'>
                     <ul className='flex space-x-4 mr-10 font-light'>
                         {
-                            navItems.map((item, index)=>(
+                            navItems.map((item, index) => (
                                 <li key={index} className='inline-block ml-4'>{item.name}</li>
                             ))
                         }
@@ -77,7 +77,7 @@ const Navbar = ({navItems}) => {
                             <div className='absolute left-0 right-0 mt-4'>
                                 <div className='px-2 pt-2 pb-3 space-y-1'>
                                     {
-                                        navItems.map((item, index)=>(
+                                        navItems.map((item, index) => (
                                             <a key={index} href={item.link} className='block'>{item.name}</a>
                                         ))
                                     }
