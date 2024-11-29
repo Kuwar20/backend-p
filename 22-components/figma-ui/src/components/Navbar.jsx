@@ -11,7 +11,7 @@ const Navbar = ({ navItems }) => {
     }
 
     return (
-        <nav className='w-full bg-gray-200 shadow-sm'>
+        <nav className='w-full shadow-sm'>
             <div className='container mx-auto flex justify-between p-4'>
 
                 <div className='flex items-center ml-10'>
