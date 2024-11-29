@@ -3,14 +3,16 @@ import Hero from './components/Hero'
 import NavList from './components/NavList'
 import Services from './components/Services'
 import GridItems from './components/GridItems'
+import Layout from './layout/Layout'
 
 const App = () => {
   return (
     <div>
-      <NavList/>
+      <Layout>
       <Hero />
       <Services />
       <GridItems />
+      </Layout>
     </div>
   )
 }
