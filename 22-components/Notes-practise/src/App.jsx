@@ -1,11 +1,10 @@
 import React from 'react'
-import Notes from './components/Notes'
-import Notes1 from './components/Notes1'
+import Notes2 from './components/Notes2'
 
 const App = () => {
   return (
     <div>
-      <Notes1 />
+      <Notes2 />
     </div>
   )
 }
