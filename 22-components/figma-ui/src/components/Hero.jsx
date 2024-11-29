@@ -15,8 +15,9 @@ const Hero = () => {
             <button className='bg-blue-500 rounded-full text-white px-4 py-3'>Consult Today</button>
           </div>
         </div>
-        <div>
-          <img src={img} alt="img" />
+        <div className='flex justify-center md:w-1/2 p-4'>
+          <img src={img} alt="img" 
+          className='w-full h-auto object-contain'/>
         </div>
       </div>
     </div>
