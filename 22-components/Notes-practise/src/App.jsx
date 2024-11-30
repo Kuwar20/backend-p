@@ -1,6 +1,6 @@
 import React from 'react'
 import Notes2 from './components/Notes2'
-import MultiSelectDropdown from './components/Dropdown'
+import MultiSelectDropdown from './components/Dropdown1'
 
 const App = () => {
   return (
