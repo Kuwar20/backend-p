@@ -8,7 +8,7 @@ const App = () => {
     <div>
       <MultiSelectDropdown apiUrl={'https://jsonplaceholder.typicode.com/users'} />
       <BeautifulDragDrop />
-      {/* <Notes2 /> */}
+      <Notes2 />
     </div>
   )
 }
